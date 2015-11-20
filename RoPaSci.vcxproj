@@ -181,6 +181,9 @@ xcopy "$(ProjectDir)Data" "$(TargetDir)data\" /s /e /y</Command>
   <ItemGroup>
     <ClCompile Include="Src\Application.cpp" />
     <ClCompile Include="Src\Managers\ShaderManager.cpp" />
+    <ClCompile Include="Src\Managers\SimulationManager.cpp" />
+    <ClCompile Include="Src\Managers\TimingManager.cpp" />
+    <ClCompile Include="Src\Rendering\DebugRenderer.cpp" />
     <ClCompile Include="Src\RoPaSci.cpp" />
     <ClCompile Include="Src\Util\Log.cpp" />
     <ClCompile Include="Src\Util\Utils.cpp" />
@@ -191,7 +194,11 @@ xcopy "$(ProjectDir)Data" "$(TargetDir)data\" /s /e /y</Command>
   <ItemGroup>
     <ClInclude Include="Src\Application.h" />
     <ClInclude Include="Src\Managers\ShaderManager.h" />
+    <ClInclude Include="Src\Managers\SimulationManager.h" />
+    <ClInclude Include="Src\Managers\TimingManager.h" />
     <ClInclude Include="Src\Misc\StdAfx.h" />
+    <ClInclude Include="Src\Rendering\DebugRenderer.h" />
+    <ClInclude Include="Src\Rendering\IRenderer.h" />
     <ClInclude Include="Src\Rendering\MainRenderer.h" />
     <ClInclude Include="Src\Util\EasyLock.h" />
     <ClInclude Include="Src\Util\Log.h" />
@@ -203,6 +210,9 @@ xcopy "$(ProjectDir)Data" "$(TargetDir)data\" /s /e /y</Command>
     <ClInclude Include="Src\VFS\FSFile.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Data\graphics\paper.pgm" />
+    <None Include="Data\graphics\rock.pgm" />
+    <None Include="Data\graphics\scissors.pgm" />
     <None Include="Data\shaders\Test.fs" />
     <None Include="Data\shaders\Test.vs" />
   </ItemGroup>

@@ -39,6 +39,15 @@
     <ClCompile Include="Src\Application.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Src\Rendering\DebugRenderer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Managers\SimulationManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Managers\TimingManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\Managers\ShaderManager.h">
@@ -77,9 +86,24 @@
     <ClInclude Include="Src\Application.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Src\Rendering\DebugRenderer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Rendering\IRenderer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Managers\TimingManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Managers\SimulationManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Data\shaders\Test.vs" />
     <None Include="Data\shaders\Test.fs" />
+    <None Include="Data\graphics\paper.pgm" />
+    <None Include="Data\graphics\rock.pgm" />
+    <None Include="Data\graphics\scissors.pgm" />
   </ItemGroup>
 </Project>

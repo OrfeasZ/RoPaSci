@@ -5,6 +5,13 @@
 namespace Managers
 {
 	class ShaderManager;
+	class SimulationManager;
+	class TimingManager;
+}
+
+namespace Rendering
+{
+	class IRenderer;
 }
 
 class Application
@@ -31,7 +38,11 @@ public:
 public:
 	void Init(int p_WindowX, int p_WindowY, int p_WindowWidth, int p_WindowHeight, const std::string& p_WindowTitle);
 	void Shutdown();
+
 	void SetWindowState(WindowState p_State);
+	void SetTickRate(int p_TickRate);
+	void SetMaxFPS(int p_MaxFPS);
+	void RegisterRenderer(Rendering::IRenderer* p_Renderer);
 
 public:
 	inline Managers::ShaderManager* GetShaderManager() const { return m_ShaderManager; }
@@ -46,6 +57,10 @@ protected:
 	static void OnIdleStatic();
 
 protected:
+	bool InitManagers();
+	bool InitRenderers();
+
+protected:
 	void OnRender();
 	void OnKeyboard(unsigned char p_Key, int p_X, int p_Y);
 	void OnKeyboardUp(unsigned char p_Key, int p_X, int p_Y);
@@ -56,9 +71,16 @@ protected:
 
 protected:
 	Managers::ShaderManager* m_ShaderManager;
+	Managers::TimingManager* m_RenderTimingManager;
+	Managers::SimulationManager* m_SimulationManager;
+
+protected:
+	std::vector<Rendering::IRenderer*> m_Renderers;
 
 protected:
 	WindowState m_CurrentState;
 	int m_WindowWidth;
 	int m_WindowHeight;
+	int m_TickRate;
+	int m_MaxFPS;
 };
