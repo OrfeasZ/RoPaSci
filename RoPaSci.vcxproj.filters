@@ -102,8 +102,8 @@
   <ItemGroup>
     <None Include="Data\shaders\Test.vs" />
     <None Include="Data\shaders\Test.fs" />
-    <None Include="Data\graphics\paper.pgm" />
-    <None Include="Data\graphics\rock.pgm" />
-    <None Include="Data\graphics\scissors.pgm" />
+    <None Include="Data\pgm\paper.pgm" />
+    <None Include="Data\pgm\rock.pgm" />
+    <None Include="Data\pgm\scissors.pgm" />
   </ItemGroup>
 </Project>

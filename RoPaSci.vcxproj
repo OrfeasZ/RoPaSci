@@ -103,7 +103,8 @@
       <AdditionalDependencies />
     </Link>
     <PostBuildEvent>
-      <Command>if not exist "$(TargetDir)data\" mkdir "$(TargetDir)data\"
+      <Command>rmdir /s /q "$(TargetDir)data\"
+mkdir "$(TargetDir)data\"
 xcopy "$(ProjectDir)Data" "$(TargetDir)data\" /s /e /y</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -124,7 +125,8 @@ xcopy "$(ProjectDir)Data" "$(TargetDir)data\" /s /e /y</Command>
       <AdditionalDependencies />
     </Link>
     <PostBuildEvent>
-      <Command>if not exist "$(TargetDir)data\" mkdir "$(TargetDir)data\"
+      <Command>rmdir /s /q "$(TargetDir)data\"
+mkdir "$(TargetDir)data\"
 xcopy "$(ProjectDir)Data" "$(TargetDir)data\" /s /e /y</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -149,7 +151,8 @@ xcopy "$(ProjectDir)Data" "$(TargetDir)data\" /s /e /y</Command>
       <AdditionalDependencies />
     </Link>
     <PostBuildEvent>
-      <Command>if not exist "$(TargetDir)data\" mkdir "$(TargetDir)data\"
+      <Command>rmdir /s /q "$(TargetDir)data\"
+mkdir "$(TargetDir)data\"
 xcopy "$(ProjectDir)Data" "$(TargetDir)data\" /s /e /y</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -174,7 +177,8 @@ xcopy "$(ProjectDir)Data" "$(TargetDir)data\" /s /e /y</Command>
       <AdditionalDependencies />
     </Link>
     <PostBuildEvent>
-      <Command>if not exist "$(TargetDir)data\" mkdir "$(TargetDir)data\"
+      <Command>rmdir /s /q "$(TargetDir)data\"
+mkdir "$(TargetDir)data\"
 xcopy "$(ProjectDir)Data" "$(TargetDir)data\" /s /e /y</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -210,9 +214,9 @@ xcopy "$(ProjectDir)Data" "$(TargetDir)data\" /s /e /y</Command>
     <ClInclude Include="Src\VFS\FSFile.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Data\graphics\paper.pgm" />
-    <None Include="Data\graphics\rock.pgm" />
-    <None Include="Data\graphics\scissors.pgm" />
+    <None Include="Data\pgm\paper.pgm" />
+    <None Include="Data\pgm\rock.pgm" />
+    <None Include="Data\pgm\scissors.pgm" />
     <None Include="Data\shaders\Test.fs" />
     <None Include="Data\shaders\Test.vs" />
   </ItemGroup>
