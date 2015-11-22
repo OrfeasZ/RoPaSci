@@ -10,7 +10,7 @@
 #include <Managers/SceneManager.h>
 #include <Managers/ModelManager.h>
 
-#include <Rendering/Objects/Model.h>
+#include <Game/Main.h>
 
 Application* Application::m_Instance = nullptr;
 
@@ -99,6 +99,7 @@ void Application::Init(int p_WindowWidth, int p_WindowHeight, const std::string&
 		return;
 	}
 
+	glfwSetWindowSizeCallback(m_Window, OnResizeStatic);
 	glfwMakeContextCurrent(m_Window);
 
 	// Initialize glew.
@@ -134,6 +135,15 @@ void Application::Init(int p_WindowWidth, int p_WindowHeight, const std::string&
 	// Set max framerate and tick rate.
 	Managers::SceneManager::GetInstance()->SetMaxFPS(m_MaxFPS);
 	Managers::SimulationManager::GetInstance()->SetTickRate(m_TickRate);
+
+	// Initialize the game.
+	Logger(Util::LogLevel::Info, "Initializing main game logic.");
+	
+	if (!Game::Main::GetInstance()->Init())
+	{
+		Shutdown();
+		return;
+	}
 	
 	while (!glfwWindowShouldClose(m_Window))
 		OnRender();
@@ -209,7 +219,15 @@ void Application::OnRender()
 	std::this_thread::sleep_for(std::chrono::microseconds(1));
 }
 
-void Application::OnResize(int p_Width, int p_Height)
+void Application::OnResizeStatic(GLFWwindow* p_Window, int p_Width, int p_Height)
 {
-	// TODO: Handle resize
+	GetInstance()->OnResize(p_Window, p_Width, p_Height);
+}
+
+void Application::OnResize(GLFWwindow* p_Window, int p_Width, int p_Height)
+{
+	m_WindowWidth = p_Width;
+	m_WindowHeight = p_Height;
+
+	glViewport(0, 0, p_Width, p_Height);
 }

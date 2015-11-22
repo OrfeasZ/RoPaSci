@@ -184,6 +184,7 @@ xcopy "$(SolutionDir)Depends\bin\win64" "$(TargetDir)" /s /e /y</Command>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Src\Application.cpp" />
+    <ClCompile Include="Src\Game\Main.cpp" />
     <ClCompile Include="Src\Managers\InputManager.cpp" />
     <ClCompile Include="Src\Managers\ModelManager.cpp" />
     <ClCompile Include="Src\Managers\SceneManager.cpp" />
@@ -204,6 +205,7 @@ xcopy "$(SolutionDir)Depends\bin\win64" "$(TargetDir)" /s /e /y</Command>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\Application.h" />
+    <ClInclude Include="Src\Game\Main.h" />
     <ClInclude Include="Src\Managers\IManager.h" />
     <ClInclude Include="Src\Managers\InputManager.h" />
     <ClInclude Include="Src\Managers\Input\KeyAction.h" />

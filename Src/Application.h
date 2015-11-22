@@ -34,13 +34,18 @@ public:
 public:
 	inline FT_Library GetFreeType() const { return m_FreeType; }
 	inline GLFWwindow* GetWindow() const { return m_Window; }
+	inline int WindowWidth() const { return m_WindowWidth; }
+	inline int WindowHeight() const { return m_WindowHeight; }
 
 protected:
 	bool InitManagers();
 
 protected:
 	void OnRender();
-	void OnResize(int p_Width, int p_Height);
+
+protected:
+	static void OnResizeStatic(GLFWwindow* p_Window, int p_Width, int p_Height);
+	void OnResize(GLFWwindow* p_Window, int p_Width, int p_Height);
 	
 protected:
 	FT_Library m_FreeType;
