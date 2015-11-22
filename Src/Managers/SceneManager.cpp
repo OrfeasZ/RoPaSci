@@ -46,6 +46,16 @@ void SceneManager::RenderTask(void* p_Argument, int32_t p_ContextID, uint32_t p_
 	glClearColor(1, 1, 1, 1);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
+	glEnableClientState(GL_VERTEX_ARRAY);
+
+	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_CULL_FACE);
+	glCullFace(GL_BACK);
+
+	glDisableClientState(GL_VERTEX_ARRAY);
+
 	glfwSwapBuffers(m_Window);
 	glfwPollEvents();
 }

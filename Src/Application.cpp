@@ -115,6 +115,17 @@ void Application::Init(int p_WindowWidth, int p_WindowHeight, const std::string&
 		return;
 	}
 
+	if (!glewIsSupported("GL_VERSION_4_0"))
+	{
+		Logger(Util::LogLevel::Error, "This application requires at least OpenGL version 4.0.");
+		Shutdown();
+		return;
+	}
+
+	Logger(Util::LogLevel::Info, "Running OpenGL %s on %s %s.", glGetString(GL_VERSION), glGetString(GL_VENDOR), glGetString(GL_RENDERER));
+	Logger(Util::LogLevel::Info, "Supported GLSL version: %s.", glGetString(GL_SHADING_LANGUAGE_VERSION));
+	Logger(Util::LogLevel::Info, "GLEW %s context successfully initialized!", glewGetString(GLEW_VERSION));
+
 	// Enable the features we want to use.
 	//glEnable(GL_DEPTH_TEST);
 	//glDepthFunc(GL_LESS);
