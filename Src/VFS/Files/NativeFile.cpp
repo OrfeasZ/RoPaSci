@@ -39,6 +39,19 @@ std::string NativeFile::Read(size_t p_Length)
 	return s_StringBuffer;
 }
 
+int NativeFile::Scan(const char* p_Format, ...)
+{
+	if (!m_File)
+		return 0;
+
+	va_list s_Arguments;
+	va_start(s_Arguments, p_Format);
+	int s_Return = vfscanf(m_File, p_Format, s_Arguments);
+	va_end(s_Arguments);
+
+	return s_Return;
+}
+
 void NativeFile::Close()
 {
 	if (!m_File)

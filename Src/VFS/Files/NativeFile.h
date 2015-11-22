@@ -14,8 +14,10 @@ namespace VFS
 			virtual ~NativeFile() override;
 
 		public:
-			virtual size_t Write(const std::string& p_Data, int64_t p_Length = -1);
-			virtual std::string Read(size_t p_Length);
+			virtual size_t Write(const std::string& p_Data, int64_t p_Length = -1) override;
+			virtual std::string Read(size_t p_Length) override;
+			virtual int Scan(const char* p_Format, ...) override;
+
 			virtual void Close();
 			virtual void Flush();
 

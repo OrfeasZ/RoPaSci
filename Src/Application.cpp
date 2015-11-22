@@ -8,6 +8,7 @@
 #include <Managers/SimulationManager.h>
 #include <Managers/InputManager.h>
 #include <Managers/SceneManager.h>
+#include <Managers/ModelManager.h>
 
 Application* Application::m_Instance = nullptr;
 
@@ -51,6 +52,7 @@ Application::~Application()
 	Managers::InputManager::DestroyInstance();
 	Managers::SimulationManager::DestroyInstance();
 	Managers::ShaderManager::DestroyInstance();
+	Managers::ModelManager::DestroyInstance();
 	Managers::SceneManager::DestroyInstance();
 }
 
@@ -117,6 +119,8 @@ void Application::Init(int p_WindowWidth, int p_WindowHeight, const std::string&
 		return;
 	}
 
+	glViewport(0, 0, m_WindowWidth, m_WindowHeight);
+
 	Logger(Util::LogLevel::Info, "Running OpenGL %s on %s %s.", glGetString(GL_VERSION), glGetString(GL_VENDOR), glGetString(GL_RENDERER));
 	Logger(Util::LogLevel::Info, "Supported GLSL version: %s.", glGetString(GL_SHADING_LANGUAGE_VERSION));
 	Logger(Util::LogLevel::Info, "GLEW %s context successfully initialized!", glewGetString(GLEW_VERSION));
@@ -150,6 +154,9 @@ bool Application::InitManagers()
 		return false;
 
 	if (!Managers::ShaderManager::GetInstance()->Init())
+		return false;
+
+	if (!Managers::ModelManager::GetInstance()->Init())
 		return false;
 
 	if (!Managers::InputManager::GetInstance()->Init())
@@ -216,5 +223,5 @@ void Application::OnRender()
 
 void Application::OnResize(int p_Width, int p_Height)
 {
-
+	// TODO: Handle resize
 }

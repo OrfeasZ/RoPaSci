@@ -5,11 +5,11 @@
 #include <vector>
 #include <unordered_map>
 
+#include "FSFile.h"
+#include "FSBackend.h"
+
 namespace VFS
 {
-	class FSFile;
-	class FSBackend;
-
 	class FileSystem
 	{
 	public:

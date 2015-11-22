@@ -185,12 +185,14 @@ xcopy "$(SolutionDir)Depends\bin\win64" "$(TargetDir)" /s /e /y</Command>
   <ItemGroup>
     <ClCompile Include="Src\Application.cpp" />
     <ClCompile Include="Src\Managers\InputManager.cpp" />
+    <ClCompile Include="Src\Managers\ModelManager.cpp" />
     <ClCompile Include="Src\Managers\SceneManager.cpp" />
     <ClCompile Include="Src\Managers\ShaderManager.cpp" />
     <ClCompile Include="Src\Managers\SimulationManager.cpp" />
     <ClCompile Include="Src\Managers\TaskManager.cpp" />
     <ClCompile Include="Src\Managers\Task\TBBContextID.cpp" />
     <ClCompile Include="Src\Rendering\DebugRenderer.cpp" />
+    <ClCompile Include="Src\Rendering\Objects\Model.cpp" />
     <ClCompile Include="Src\RoPaSci.cpp" />
     <ClCompile Include="Src\Util\EngineTimer.cpp" />
     <ClCompile Include="Src\Util\Log.cpp" />
@@ -205,6 +207,8 @@ xcopy "$(SolutionDir)Depends\bin\win64" "$(TargetDir)" /s /e /y</Command>
     <ClInclude Include="Src\Managers\InputManager.h" />
     <ClInclude Include="Src\Managers\Input\KeyAction.h" />
     <ClInclude Include="Src\Managers\Input\MouseAction.h" />
+    <ClInclude Include="Src\Managers\ModelManager.h" />
+    <ClInclude Include="Src\Managers\Model\ModelData.h" />
     <ClInclude Include="Src\Managers\SceneManager.h" />
     <ClInclude Include="Src\Managers\ShaderManager.h" />
     <ClInclude Include="Src\Managers\SimulationManager.h" />
@@ -216,6 +220,7 @@ xcopy "$(SolutionDir)Depends\bin\win64" "$(TargetDir)" /s /e /y</Command>
     <ClInclude Include="Src\Rendering\DebugRenderer.h" />
     <ClInclude Include="Src\Rendering\IRenderer.h" />
     <ClInclude Include="Src\Rendering\MainRenderer.h" />
+    <ClInclude Include="Src\Rendering\Objects\Model.h" />
     <ClInclude Include="Src\Rendering\Textures\ITexture.h" />
     <ClInclude Include="Src\Util\AtomicOps.h" />
     <ClInclude Include="Src\Util\EasyLock.h" />
