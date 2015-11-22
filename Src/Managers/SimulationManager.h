@@ -3,6 +3,8 @@
 #include <Misc/StdAfx.h>
 #include "IManager.h"
 
+#include <Util/EngineTimer.h>
+
 #include <thread>
 #include <atomic>
 
@@ -28,17 +30,12 @@ namespace Managers
 
 	public:
 		virtual bool Init() override;
-
 		void SetTickRate(int p_TickRate);
-		void RegisterRenderer(Rendering::IRenderer* p_Renderer);
 
 	protected:
 		void Update();
 
 	protected:
-		int m_TickRate;
-
-	protected:
-		std::vector<Rendering::IRenderer*> m_Renderers;
+		Util::EngineTimer m_SimulationTimer;
 	};
 }

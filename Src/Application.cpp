@@ -30,7 +30,7 @@ void Application::DestroyInstance()
 
 Application::Application() :
 	m_CurrentState(Application::Windowed),
-	m_TickRate(120),
+	m_TickRate(128),
 	m_MaxFPS(300),
 	m_InputPostUpdateTask(~0),
 	m_SceneRenderTask(~0)
@@ -52,11 +52,6 @@ Application::~Application()
 	Managers::SimulationManager::DestroyInstance();
 	Managers::ShaderManager::DestroyInstance();
 	Managers::SceneManager::DestroyInstance();
-
-	for (auto s_Renderer : m_Renderers)
-		delete s_Renderer;
-
-	m_Renderers.clear();
 }
 
 void Application::Init(int p_WindowWidth, int p_WindowHeight, const std::string& p_WindowTitle)
@@ -126,20 +121,16 @@ void Application::Init(int p_WindowWidth, int p_WindowHeight, const std::string&
 	Logger(Util::LogLevel::Info, "Supported GLSL version: %s.", glGetString(GL_SHADING_LANGUAGE_VERSION));
 	Logger(Util::LogLevel::Info, "GLEW %s context successfully initialized!", glewGetString(GLEW_VERSION));
 
-	// Enable the features we want to use.
-	//glEnable(GL_DEPTH_TEST);
-	//glDepthFunc(GL_LESS);
-
-	glEnable(GL_CULL_FACE); 
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
 	// Initialize our managers.
 	if (!InitManagers())
 	{
 		Shutdown();
 		return;
 	}
+
+	// Set max framerate and tick rate.
+	Managers::SceneManager::GetInstance()->SetMaxFPS(m_MaxFPS);
+	Managers::SimulationManager::GetInstance()->SetTickRate(m_TickRate);
 	
 	while (!glfwWindowShouldClose(m_Window))
 		OnRender();
@@ -173,15 +164,6 @@ bool Application::InitManagers()
 	return true;
 }
 
-bool Application::InitRenderers()
-{
-	/*if (!RegisterRenderer(new Rendering::DebugRenderer()))
-		return false;
-	*/
-
-	return true;
-}
-
 void Application::SetTickRate(int p_TickRate)
 {
 	m_TickRate = p_TickRate;
@@ -191,17 +173,7 @@ void Application::SetTickRate(int p_TickRate)
 void Application::SetMaxFPS(int p_MaxFPS)
 {
 	m_MaxFPS = p_MaxFPS;
-
-	//if (m_RenderTimingManager)
-	//	m_RenderTimingManager->SetUpdatesPerSecond(m_MaxFPS);
-}
-
-bool Application::RegisterRenderer(Rendering::IRenderer* p_Renderer)
-{
-	/*m_Renderers.push_back(p_Renderer);
-
-	return p_Renderer->Init();*/
-	return false;
+	Managers::SceneManager::GetInstance()->SetMaxFPS(m_MaxFPS);
 }
 
 void Application::OnRender()
@@ -240,26 +212,6 @@ void Application::OnRender()
 
 	Managers::TaskManager::GetInstance()->WaitForSet(m_InputPostUpdateTask);
 	Managers::TaskManager::GetInstance()->ReleaseHandle(m_InputPostUpdateTask);
-}
-
-void Application::OnKeyboard(unsigned char p_Key, int p_X, int p_Y)
-{
-
-}
-
-void Application::OnKeyboardUp(unsigned char p_Key, int p_X, int p_Y)
-{
-
-}
-
-void Application::OnSpecial(int p_Key, int p_X, int p_Y)
-{
-
-}
-
-void Application::OnSpecialUp(int p_Key, int p_X, int p_Y)
-{
-
 }
 
 void Application::OnResize(int p_Width, int p_Height)

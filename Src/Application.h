@@ -2,11 +2,6 @@
 
 #include <Misc/StdAfx.h>
 
-namespace Rendering
-{
-	class IRenderer;
-}
-
 class Application
 {
 public:
@@ -35,7 +30,6 @@ public:
 	void SetWindowState(WindowState p_State);
 	void SetTickRate(int p_TickRate);
 	void SetMaxFPS(int p_MaxFPS);
-	bool RegisterRenderer(Rendering::IRenderer* p_Renderer);
 
 public:
 	inline FT_Library GetFreeType() const { return m_FreeType; }
@@ -43,19 +37,11 @@ public:
 
 protected:
 	bool InitManagers();
-	bool InitRenderers();
 
 protected:
 	void OnRender();
-	void OnKeyboard(unsigned char p_Key, int p_X, int p_Y);
-	void OnKeyboardUp(unsigned char p_Key, int p_X, int p_Y);
-	void OnSpecial(int p_Key, int p_X, int p_Y);
-	void OnSpecialUp(int p_Key, int p_X, int p_Y);
 	void OnResize(int p_Width, int p_Height);
 	
-protected:
-	std::vector<Rendering::IRenderer*> m_Renderers;
-
 protected:
 	FT_Library m_FreeType;
 	GLFWwindow* m_Window;

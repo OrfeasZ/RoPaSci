@@ -34,8 +34,6 @@ namespace Rendering
 		double m_UpdateTime;
 		double m_CurrentFramerate;
 		char m_Framerate[64];
-
-
 		
 		GLuint m_Basic2DProgram;
 		GLint m_Basic2DAttributeCoord;
