@@ -3,6 +3,7 @@
 #include <Misc/StdAfx.h>
 
 #include "IManager.h"
+#include "TaskManager.h"
 #include "Input/KeyAction.h"
 #include "Input/MouseAction.h"
 
@@ -22,8 +23,12 @@ namespace Managers
 		~InputManager();
 
 	public:
-		bool Init(GLFWwindow* p_Window);
-		void PostUpdate();
+		virtual bool Init() override;
+
+	public:
+		// Tasks
+		void PostUpdateTask(void* p_Argument, int32_t p_ContextID, uint32_t p_Index, uint32_t p_Size);
+		inline TaskManager::TaskSetFunction_t GetPostUpdateTask() const { return m_PostUpdateTask; }
 
 	public:
 		bool IsKeyboardKeyPressed(int p_Key) const;
@@ -67,5 +72,9 @@ namespace Managers
 	protected:
 		Input::KeyAction m_KeyActions[GLFW_KEY_LAST];
 		Input::MouseAction m_MouseActions[GLFW_MOUSE_BUTTON_LAST];
+
+	protected:
+		// Tasks
+		TaskManager::TaskSetFunction_t m_PostUpdateTask;
 	};
 }

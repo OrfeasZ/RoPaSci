@@ -27,7 +27,7 @@ namespace Managers
 		~SimulationManager();
 
 	public:
-		bool Init();
+		virtual bool Init() override;
 		void Stop();
 
 		void SetTickRate(int p_TickRate);

@@ -104,7 +104,8 @@
     <PostBuildEvent>
       <Command>rmdir /s /q "$(TargetDir)data\"
 mkdir "$(TargetDir)data\"
-xcopy "$(ProjectDir)Data" "$(TargetDir)data\" /s /e /y</Command>
+xcopy "$(ProjectDir)Data" "$(TargetDir)data\" /s /e /y
+xcopy "$(SolutionDir)Depends\bin\win32" "$(TargetDir)" /s /e /y</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -125,7 +126,8 @@ xcopy "$(ProjectDir)Data" "$(TargetDir)data\" /s /e /y</Command>
     <PostBuildEvent>
       <Command>rmdir /s /q "$(TargetDir)data\"
 mkdir "$(TargetDir)data\"
-xcopy "$(ProjectDir)Data" "$(TargetDir)data\" /s /e /y</Command>
+xcopy "$(ProjectDir)Data" "$(TargetDir)data\" /s /e /y
+xcopy "$(SolutionDir)Depends\bin\win64" "$(TargetDir)" /s /e /y</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -150,7 +152,8 @@ xcopy "$(ProjectDir)Data" "$(TargetDir)data\" /s /e /y</Command>
     <PostBuildEvent>
       <Command>rmdir /s /q "$(TargetDir)data\"
 mkdir "$(TargetDir)data\"
-xcopy "$(ProjectDir)Data" "$(TargetDir)data\" /s /e /y</Command>
+xcopy "$(ProjectDir)Data" "$(TargetDir)data\" /s /e /y
+xcopy "$(SolutionDir)Depends\bin\win32" "$(TargetDir)" /s /e /y</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -175,12 +178,14 @@ xcopy "$(ProjectDir)Data" "$(TargetDir)data\" /s /e /y</Command>
     <PostBuildEvent>
       <Command>rmdir /s /q "$(TargetDir)data\"
 mkdir "$(TargetDir)data\"
-xcopy "$(ProjectDir)Data" "$(TargetDir)data\" /s /e /y</Command>
+xcopy "$(ProjectDir)Data" "$(TargetDir)data\" /s /e /y
+xcopy "$(SolutionDir)Depends\bin\win64" "$(TargetDir)" /s /e /y</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Src\Application.cpp" />
     <ClCompile Include="Src\Managers\InputManager.cpp" />
+    <ClCompile Include="Src\Managers\SceneManager.cpp" />
     <ClCompile Include="Src\Managers\ShaderManager.cpp" />
     <ClCompile Include="Src\Managers\SimulationManager.cpp" />
     <ClCompile Include="Src\Managers\TaskManager.cpp" />

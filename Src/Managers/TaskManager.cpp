@@ -53,7 +53,8 @@ void TaskManager::DestroyInstance()
 
 TaskManager::TaskManager() :
 	m_TBBContextID(nullptr),
-	m_TBBInit(nullptr)
+	m_TBBInit(nullptr),
+	m_NextFreeSet(0)
 {
 	memset(m_Sets, 0x00, sizeof(m_Sets));
 }
@@ -92,7 +93,7 @@ void TaskManager::Shutdown()
 bool TaskManager::CreateTaskSet(TaskSetFunction_t p_Function, void* p_Argument, uint32_t p_TaskCount, uint32_t* p_Depends, uint32_t p_DependCount, char* p_SetName, uint32_t* p_Handle)
 {
 	uint32_t s_SetHandle;
-	uint32_t s_SetParent = -1;
+	uint32_t s_SetParent = ~0;
 	uint32_t* s_Depends = p_Depends;
 	UINT s_DependCount = p_DependCount;
 	BOOL s_Result = false;

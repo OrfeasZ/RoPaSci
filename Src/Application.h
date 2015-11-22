@@ -64,4 +64,8 @@ protected:
 	int m_WindowHeight;
 	int m_TickRate;
 	int m_MaxFPS;
+
+protected:
+	uint32_t m_InputPostUpdateTask;
+	uint32_t m_SceneRenderTask;
 };

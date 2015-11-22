@@ -39,6 +39,9 @@ SimulationManager::~SimulationManager()
 
 bool SimulationManager::Init()
 {
+	return true;
+
+	// TODO: Fix simulation
 	if (m_Running)
 		return false;
 

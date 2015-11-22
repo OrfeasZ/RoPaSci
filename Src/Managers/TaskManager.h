@@ -52,7 +52,7 @@ namespace Managers
 		~TaskManager();
 
 	public:
-		bool Init();
+		virtual bool Init() override;
 		void Shutdown();
 
 		bool CreateTaskSet(TaskSetFunction_t p_Function, void* p_Argument, uint32_t p_TaskCount, uint32_t* p_Depends, uint32_t p_DependCount, char* p_SetName, uint32_t* p_Handle);

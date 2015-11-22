@@ -40,7 +40,7 @@ namespace Managers
 				m_Function(nullptr), 
 				m_Argument(0), 
 				m_Size(0), 
-				m_SetHandle(-1), 
+				m_SetHandle(~0),
 				m_HasBeenWaitedOn(false)
 			{
 				m_Name[0] = 0;

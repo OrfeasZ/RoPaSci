@@ -1,5 +1,7 @@
 #include "InputManager.h"
 
+#include <Application.h>
+
 using namespace Managers;
 
 InputManager* InputManager::m_Instance = nullptr;
@@ -37,9 +39,10 @@ InputManager::~InputManager()
 
 }
 
-bool InputManager::Init(GLFWwindow* p_Window)
+bool InputManager::Init()
 {
-	m_Window = p_Window;
+	m_Window = Application::GetInstance()->GetWindow();
+	m_PostUpdateTask = std::bind(&InputManager::PostUpdateTask, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3, std::placeholders::_4);
 
 	memset(m_KeyActions, 0x00, sizeof(m_KeyActions));
 	memset(m_MouseActions, 0x00, sizeof(m_MouseActions));
@@ -54,7 +57,7 @@ bool InputManager::Init(GLFWwindow* p_Window)
 	return true;
 }
 
-void InputManager::PostUpdate()
+void InputManager::PostUpdateTask(void* p_Argument, int32_t p_ContextID, uint32_t p_Index, uint32_t p_Size)
 {
 
 }

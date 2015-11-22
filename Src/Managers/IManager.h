@@ -7,5 +7,6 @@ namespace Managers
 	class IManager
 	{
 	public:
+		virtual bool Init() = 0;
 	};
 }

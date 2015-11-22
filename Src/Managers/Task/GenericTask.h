@@ -41,7 +41,7 @@ namespace Managers
 				, m_Index(0)
 				, m_Size(0)
 				, m_SetName("")
-				, m_SetHandle(-1)
+				, m_SetHandle(~0)
 			{
 			}
 

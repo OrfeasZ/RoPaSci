@@ -9,8 +9,6 @@
 #include <Managers/InputManager.h>
 #include <Managers/SceneManager.h>
 
-#include <Rendering/DebugRenderer.h>
-
 Application* Application::m_Instance = nullptr;
 
 Application* Application::GetInstance()
@@ -33,7 +31,9 @@ void Application::DestroyInstance()
 Application::Application() :
 	m_CurrentState(Application::Windowed),
 	m_TickRate(120),
-	m_MaxFPS(300)
+	m_MaxFPS(300),
+	m_InputPostUpdateTask(~0),
+	m_SceneRenderTask(~0)
 {
 
 }
@@ -129,15 +129,6 @@ void Application::Init(int p_WindowWidth, int p_WindowHeight, const std::string&
 		Shutdown();
 		return;
 	}
-
-	Logger(Util::LogLevel::Info, "Initializing renderer...");
-
-	// Initialize our renderers.
-	if (!InitRenderers())
-	{
-		Shutdown();
-		return;
-	}
 	
 	while (!glfwWindowShouldClose(m_Window))
 		OnRender();
@@ -159,13 +150,13 @@ bool Application::InitManagers()
 	if (!Managers::ShaderManager::GetInstance()->Init())
 		return false;
 
-	if (!Managers::SimulationManager::GetInstance()->Init())
-		return false;
-
-	if (!Managers::InputManager::GetInstance()->Init(m_Window))
+	if (!Managers::InputManager::GetInstance()->Init())
 		return false;
 
 	if (!Managers::SceneManager::GetInstance()->Init())
+		return false;
+
+	if (!Managers::SimulationManager::GetInstance()->Init())
 		return false;
 
 	return true;
@@ -173,8 +164,9 @@ bool Application::InitManagers()
 
 bool Application::InitRenderers()
 {
-	if (!RegisterRenderer(new Rendering::DebugRenderer()))
+	/*if (!RegisterRenderer(new Rendering::DebugRenderer()))
 		return false;
+	*/
 
 	return true;
 }
@@ -195,9 +187,10 @@ void Application::SetMaxFPS(int p_MaxFPS)
 
 bool Application::RegisterRenderer(Rendering::IRenderer* p_Renderer)
 {
-	m_Renderers.push_back(p_Renderer);
+	/*m_Renderers.push_back(p_Renderer);
 
-	return p_Renderer->Init();
+	return p_Renderer->Init();*/
+	return false;
 }
 
 void Application::OnRender()
@@ -205,8 +198,37 @@ void Application::OnRender()
 	if (!m_Window)
 		return;
 
-	glfwSwapBuffers(m_Window);
-	glfwPollEvents();
+	// Create our basic task list.
+	// TODO: Simulation task.
+
+	if (m_SceneRenderTask != ~0)
+	{
+		Managers::TaskManager::GetInstance()->WaitForSet(m_SceneRenderTask);
+		Managers::TaskManager::GetInstance()->ReleaseHandle(m_SceneRenderTask);
+	}
+
+	// Input PostUpdate Task
+	Managers::TaskManager::GetInstance()->CreateTaskSet(
+		Managers::InputManager::GetInstance()->GetPostUpdateTask(),
+		nullptr,
+		1,
+		nullptr,
+		0,
+		"Input_PostUpdate",
+		&m_InputPostUpdateTask);
+
+	// Render Task.
+	Managers::TaskManager::GetInstance()->CreateTaskSet(
+		Managers::SceneManager::GetInstance()->GetRenderTask(),
+		nullptr,
+		1,
+		nullptr,
+		0,
+		"Input_PostUpdate",
+		&m_SceneRenderTask);
+
+	Managers::TaskManager::GetInstance()->WaitForSet(m_InputPostUpdateTask);
+	Managers::TaskManager::GetInstance()->ReleaseHandle(m_InputPostUpdateTask);
 }
 
 void Application::OnKeyboard(unsigned char p_Key, int p_X, int p_Y)

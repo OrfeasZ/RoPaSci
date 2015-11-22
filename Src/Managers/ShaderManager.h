@@ -33,7 +33,7 @@ namespace Managers
 		~ShaderManager();
 
 	public:
-		bool Init();
+		virtual bool Init() override;
 
 	public:
 		GLuint CreateShaderProgram(const std::string& p_Name, uint8_t p_ShaderTypes);
