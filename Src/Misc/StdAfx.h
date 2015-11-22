@@ -12,14 +12,24 @@
 #include <string>
 
 #include <GL/glew.h>
-#include <GL/freeglut.h>
+#include <GLFW/glfw3.h>
+#include <glm/glm.hpp>
+
+#include <ft2build.h>
+#include FT_FREETYPE_H
 
 #include <Util/Log.h>
 
 #ifdef _WIN32
+#	pragma comment(lib, "opengl32.lib")
+
 #	ifdef NDEBUG
+#		pragma comment(lib, "glfw3.lib")
+#		pragma comment(lib, "freetype.lib")
 #		pragma comment(lib, "glew32s.lib")
 #	else
+#		pragma comment(lib, "glfw3d.lib")
+#		pragma comment(lib, "freetyped.lib")
 #		pragma comment(lib, "glew32sd.lib")
 #	endif
 #endif

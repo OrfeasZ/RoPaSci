@@ -45,7 +45,10 @@
     <ClCompile Include="Src\Managers\SimulationManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Managers\TimingManager.cpp">
+    <ClCompile Include="Src\Managers\InputManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Util\EngineTimer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -92,10 +95,25 @@
     <ClInclude Include="Src\Rendering\IRenderer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Managers\TimingManager.h">
+    <ClInclude Include="Src\Managers\SimulationManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Managers\SimulationManager.h">
+    <ClInclude Include="Src\Managers\InputManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Util\AtomicOps.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Util\ReaderWriterQueue.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Rendering\Textures\ITexture.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Util\EngineTimer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Managers\IManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -105,5 +123,7 @@
     <None Include="Data\pgm\paper.pgm" />
     <None Include="Data\pgm\rock.pgm" />
     <None Include="Data\pgm\scissors.pgm" />
+    <None Include="Data\shaders\Basic2D.fs" />
+    <None Include="Data\shaders\Basic2D.vs" />
   </ItemGroup>
 </Project>

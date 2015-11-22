@@ -21,8 +21,18 @@ namespace Managers
 		};
 
 	public:
+		static ShaderManager* GetInstance();
+		static void DestroyInstance();
+
+	private:
+		static ShaderManager* m_Instance;
+
+	protected:
 		ShaderManager();
 		~ShaderManager();
+
+	public:
+		bool Init();
 
 	public:
 		GLuint CreateShaderProgram(const std::string& p_Name, uint8_t p_ShaderTypes);

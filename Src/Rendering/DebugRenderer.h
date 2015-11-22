@@ -13,8 +13,12 @@ namespace Rendering
 		virtual ~DebugRenderer() override;
 
 	public:
-		virtual void Update(double p_Delta);
-		virtual void Render(double p_Delta);
+		virtual bool Init() override;
+		virtual void Update(double p_Delta) override;
+		virtual void Render(double p_Delta) override;
+		
+	public:
+		void DrawTextString(const std::string& p_Text, float x, float y, float sx, float sy);
 
 	private:
 		// Update functions.
@@ -30,5 +34,12 @@ namespace Rendering
 		double m_UpdateTime;
 		double m_CurrentFramerate;
 		char m_Framerate[64];
+
+
+		
+		GLuint m_Basic2DProgram;
+		GLint m_Basic2DAttributeCoord;
+		GLint m_Basic2DUniformTex;
+		GLint m_Basic2DUniformColor;
 	};
 }

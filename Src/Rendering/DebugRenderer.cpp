@@ -1,5 +1,9 @@
 #include "DebugRenderer.h"
 
+#include <Application.h>
+#include <VFS/FileSystem.h>
+#include <Managers/ShaderManager.h>
+
 using namespace Rendering;
 
 DebugRenderer::DebugRenderer() :
@@ -8,12 +12,26 @@ DebugRenderer::DebugRenderer() :
 	m_CurrentFramerate(0.0),
 	m_UpdateTime(0.0)
 {
-
 }
 
 DebugRenderer::~DebugRenderer()
 {
 
+}
+
+bool DebugRenderer::Init()
+{
+	Logger(Util::LogLevel::Info, "Initializing the Debug Renderer.");
+
+	// Init our debug font.
+	std::string s_FontData;
+	if (!VFS::FileSystem::GetInstance()->ReadFile("/data/fonts/DebugFont.ttf", s_FontData))
+	{
+		Logger(Util::LogLevel::Warn, "Could not read debug font file.");
+		return false;
+	}
+
+	return true;
 }
 
 void DebugRenderer::Update(double p_Delta)
@@ -48,13 +66,9 @@ void DebugRenderer::DrawFPS(double p_Delta)
 		m_CurrentFramerate = (double) m_Frames / m_BaseTime;
 		m_BaseTime = m_Frames = 0;
 	}
+}
 
-	glColor3f(0.0f, 1.0f, 0.4f);
-
-	//  Specify the raster position for pixel operations.
-	glRasterPos3f(-0.95f, 0.9f, 0.f);
-
-	//  Draw the characters one by one
-	for (int i = 0; m_Framerate[i] != '\0'; ++i)
-		glutBitmapCharacter(GLUT_BITMAP_HELVETICA_12, m_Framerate[i]);
+void DebugRenderer::DrawTextString(const std::string& p_Text, float x, float y, float sx, float sy)
+{
+	
 }

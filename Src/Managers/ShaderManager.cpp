@@ -100,6 +100,18 @@ GLuint ShaderManager::GetShader(GLenum p_ShaderType, const std::string& p_Name) 
 	return s_ShaderIt->second;
 }
 
+GLuint ShaderManager::GetShaderProgram(const std::string& p_Name) const
+{
+	uint32_t s_ShaderHash = Util::Utils::StringHash(p_Name);
+
+	auto it = m_ShaderPrograms.find(s_ShaderHash);
+
+	if (it == m_ShaderPrograms.end())
+		return 0;
+
+	return it->second;
+}
+
 GLuint ShaderManager::CompileShader(GLenum p_ShaderType, const std::string& p_Name)
 {
 	Logger(Util::LogLevel::Info, "Compiling %s shader '%s'.", GetShaderTypeString(p_ShaderType).c_str(), p_Name.c_str());

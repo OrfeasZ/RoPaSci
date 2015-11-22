@@ -6,6 +6,7 @@
 #include <Managers/ShaderManager.h>
 #include <Managers/TimingManager.h>
 #include <Managers/SimulationManager.h>
+#include <Managers/InputManager.h>
 
 #include <Rendering/DebugRenderer.h>
 
@@ -38,8 +39,16 @@ Application::Application() :
 
 Application::~Application()
 {
-	if (m_SimulationManager)
-		delete m_SimulationManager;
+	if (m_Window)
+		glfwDestroyWindow(m_Window);
+
+	glfwTerminate();
+
+	m_Window = nullptr;
+
+	Managers::InputManager::DestroyInstance();
+	Managers::SimulationManager::DestroyInstance();
+	Managers::ShaderManager::DestroyInstance();
 
 	if (m_RenderTimingManager)
 		delete m_RenderTimingManager;
@@ -57,7 +66,7 @@ Application::~Application()
 	m_Renderers.clear();
 }
 
-void Application::Init(int p_WindowX, int p_WindowY, int p_WindowWidth, int p_WindowHeight, const std::string& p_WindowTitle)
+void Application::Init(int p_WindowWidth, int p_WindowHeight, const std::string& p_WindowTitle)
 {
 	m_WindowWidth = p_WindowWidth;
 	m_WindowHeight = p_WindowHeight;
@@ -75,29 +84,51 @@ void Application::Init(int p_WindowX, int p_WindowY, int p_WindowWidth, int p_Wi
 
 	Logger(Util::LogLevel::Info, "Starting application...");
 
-	// Initialize OpenGL and GLUT.
-	glutInit(&__argc, __argv);
+	// Initialize FreeType.
+	if (FT_Init_FreeType(&m_FreeType))
+	{
+		Logger(Util::LogLevel::Error, "Failed to initialize FreeType.");
+		return;
+	}
 
-	// Setup our window.
-	glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA);
-	glutInitWindowPosition(p_WindowX, p_WindowY);
-	glutInitWindowSize(p_WindowWidth, p_WindowHeight);
-	glutCreateWindow(p_WindowTitle.c_str());
+	// Initialize GLFW and create our window.
+	if (!glfwInit())
+	{
+		Logger(Util::LogLevel::Error, "Failed to initialize GLFW.");
+		return;
+	}
 
-	// Register the GLUT callbacks.
-	glutDisplayFunc(OnRenderStatic);
-	glutKeyboardFunc(OnKeyboardStatic);
-	glutKeyboardUpFunc(OnKeyboardUpStatic);
-	glutSpecialFunc(OnSpecialStatic);
-	glutSpecialUpFunc(OnSpecialUpStatic);
-	glutReshapeFunc(OnResizeStatic);
-	glutIdleFunc(OnIdleStatic);
+	glfwWindowHint(GLFW_SAMPLES, 4);
+	
+	m_Window = glfwCreateWindow(m_WindowWidth, m_WindowHeight, p_WindowTitle.c_str(), NULL, NULL);
+
+	if (m_Window == nullptr)
+	{
+		Logger(Util::LogLevel::Error, "Failed to create application window. Please verify that your graphics hardware supports OpenGL and try again.");
+		Shutdown();
+		return;
+	}
+
+	glfwMakeContextCurrent(m_Window);
+	glfwSwapInterval(1);
 
 	// Initialize glew.
-	glewInit();
+	glewExperimental = true;
+
+	if (glewInit() != GLEW_OK)
+	{
+		Logger(Util::LogLevel::Error, "Failed to initialize GLEW.");
+		Shutdown();
+		return;
+	}
 
 	// Enable the features we want to use.
-	glEnable(GL_DEPTH_TEST);
+	//glEnable(GL_DEPTH_TEST);
+	//glDepthFunc(GL_LESS);
+
+	glEnable(GL_CULL_FACE); 
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	// Initialize our managers.
 	if (!InitManagers())
@@ -105,9 +136,6 @@ void Application::Init(int p_WindowX, int p_WindowY, int p_WindowWidth, int p_Wi
 		Shutdown();
 		return;
 	}
-
-	// Set required OpenGL options.
-	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
 	Logger(Util::LogLevel::Info, "Initializing renderer...");
 
@@ -121,8 +149,8 @@ void Application::Init(int p_WindowX, int p_WindowY, int p_WindowWidth, int p_Wi
 	// Start the simulation.
 	m_SimulationManager->Init();
 
-	// Start the main application loop.
-	glutMainLoop();
+	while (!glfwWindowShouldClose(m_Window))
+		OnRender();
 
 	// After we're done we should shut down.
 	Shutdown();
@@ -140,6 +168,9 @@ bool Application::InitManagers()
 	if (m_ShaderManager->CreateShaderProgram("Test", Managers::ShaderManager::VertexShader | Managers::ShaderManager::FragmentShader) == 0)
 		return false;
 
+	if (m_ShaderManager->CreateShaderProgram("Basic2D", Managers::ShaderManager::VertexShader | Managers::ShaderManager::FragmentShader) == 0)
+		return false;
+
 	m_RenderTimingManager = new	Managers::TimingManager(m_MaxFPS);
 	m_SimulationManager = new Managers::SimulationManager(m_TickRate);
 
@@ -148,7 +179,8 @@ bool Application::InitManagers()
 
 bool Application::InitRenderers()
 {
-	RegisterRenderer(new Rendering::DebugRenderer());
+	if (!RegisterRenderer(new Rendering::DebugRenderer()))
+		return false;
 
 	return true;
 }
@@ -169,69 +201,46 @@ void Application::SetMaxFPS(int p_MaxFPS)
 		m_RenderTimingManager->SetUpdatesPerSecond(m_MaxFPS);
 }
 
-void Application::RegisterRenderer(Rendering::IRenderer* p_Renderer)
+bool Application::RegisterRenderer(Rendering::IRenderer* p_Renderer)
 {
 	m_Renderers.push_back(p_Renderer);
 
 	if (m_SimulationManager)
 		m_SimulationManager->RegisterRenderer(p_Renderer);
-}
 
-void Application::OnRenderStatic()
-{
-	GetInstance()->OnRender();
-}
-
-void Application::OnKeyboardStatic(unsigned char p_Key, int p_X, int p_Y)
-{
-	GetInstance()->OnKeyboard(p_Key, p_X, p_Y);
-}
-
-void Application::OnKeyboardUpStatic(unsigned char p_Key, int p_X, int p_Y)
-{
-	GetInstance()->OnKeyboardUp(p_Key, p_X, p_Y);
-}
-
-void Application::OnSpecialStatic(int p_Key, int p_X, int p_Y)
-{
-	GetInstance()->OnSpecial(p_Key, p_X, p_Y);
-}
-
-void Application::OnSpecialUpStatic(int p_Key, int p_X, int p_Y)
-{
-	GetInstance()->OnSpecialUp(p_Key, p_X, p_Y);
-}
-
-void Application::OnResizeStatic(int p_Width, int p_Height)
-{
-	GetInstance()->OnResize(p_Width, p_Height);
-}
-
-void Application::OnIdleStatic()
-{
-	GetInstance()->OnIdle();
+	return p_Renderer->Init();
 }
 
 void Application::OnRender()
 {
-	if (!m_RenderTimingManager)
+	if (!m_RenderTimingManager || !m_Window)
 		return;
 
 	m_RenderTimingManager->Update();
 	double s_Delta = m_RenderTimingManager->GetLastDelta();
 
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	glClearColor(0.f, 0.3f, 0.3f, 1.f);
+	float ratio;
+	int width, height;
 
-	for (auto s_Program : m_ShaderManager->GetShaderPrograms())
-		glUseProgram(s_Program.second);
+	glfwGetFramebufferSize(m_Window, &width, &height);
+	ratio = width / (float) height;
+	
+	glViewport(0, 0, width, height);
+	glClear(GL_COLOR_BUFFER_BIT);
+	
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	glOrtho(-ratio, ratio, -1.f, 1.f, 1.f, -1.f);
+	glMatrixMode(GL_MODELVIEW);
 
-	glDrawArrays(GL_TRIANGLES, 0, 3);
+	glLoadIdentity();
+	glRotatef((float) glfwGetTime() * 50.f, 0.f, 0.f, 1.f);
 
 	for (auto s_Renderer : m_Renderers)
 		s_Renderer->Render(s_Delta);
 
-	glutSwapBuffers();
+	glfwSwapBuffers(m_Window);
+	glfwPollEvents();
 }
 
 void Application::OnKeyboard(unsigned char p_Key, int p_X, int p_Y)
@@ -257,9 +266,4 @@ void Application::OnSpecialUp(int p_Key, int p_X, int p_Y)
 void Application::OnResize(int p_Width, int p_Height)
 {
 
-}
-
-void Application::OnIdle()
-{
-	glutPostRedisplay();
 }

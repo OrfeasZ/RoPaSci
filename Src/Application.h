@@ -36,25 +36,20 @@ public:
 	~Application();
 
 public:
-	void Init(int p_WindowX, int p_WindowY, int p_WindowWidth, int p_WindowHeight, const std::string& p_WindowTitle);
+	void Init(int p_WindowWidth, int p_WindowHeight, const std::string& p_WindowTitle);
 	void Shutdown();
 
 	void SetWindowState(WindowState p_State);
 	void SetTickRate(int p_TickRate);
 	void SetMaxFPS(int p_MaxFPS);
-	void RegisterRenderer(Rendering::IRenderer* p_Renderer);
+	bool RegisterRenderer(Rendering::IRenderer* p_Renderer);
 
 public:
 	inline Managers::ShaderManager* GetShaderManager() const { return m_ShaderManager; }
-
-protected:
-	static void OnRenderStatic();
-	static void OnKeyboardStatic(unsigned char p_Key, int p_X, int p_Y);
-	static void OnKeyboardUpStatic(unsigned char p_Key, int p_X, int p_Y);
-	static void OnSpecialStatic(int p_Key, int p_X, int p_Y);
-	static void OnSpecialUpStatic(int p_Key, int p_X, int p_Y);
-	static void OnResizeStatic(int p_Width, int p_Height);
-	static void OnIdleStatic();
+	inline Managers::TimingManager* GetRenderTimingManager() const { return m_RenderTimingManager; }
+	inline Managers::SimulationManager* GetSimulationManager() const { return m_SimulationManager; }
+	inline FT_Library GetFreeType() const { return m_FreeType; }
+	inline GLFWwindow* GetWindow() const { return m_Window; }
 
 protected:
 	bool InitManagers();
@@ -67,7 +62,6 @@ protected:
 	void OnSpecial(int p_Key, int p_X, int p_Y);
 	void OnSpecialUp(int p_Key, int p_X, int p_Y);
 	void OnResize(int p_Width, int p_Height);
-	void OnIdle();
 
 protected:
 	Managers::ShaderManager* m_ShaderManager;
@@ -78,6 +72,8 @@ protected:
 	std::vector<Rendering::IRenderer*> m_Renderers;
 
 protected:
+	FT_Library m_FreeType;
+	GLFWwindow* m_Window;
 	WindowState m_CurrentState;
 	int m_WindowWidth;
 	int m_WindowHeight;

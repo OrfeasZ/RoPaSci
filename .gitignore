@@ -160,5 +160,6 @@ $RECYCLE.BIN/
 /_build/
 
 !Depends/bin/
-!Depends/bin/*.pdb
-!Depends/lib/*.pdb
+!Depends/bin/**/*.pdb
+!Depends/lib/**/*.pdb
+

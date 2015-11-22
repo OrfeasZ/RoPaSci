@@ -10,6 +10,7 @@ namespace Rendering
 		virtual ~IRenderer() {};
 
 	public:
+		virtual bool Init() = 0;
 		virtual void Update(double p_Delta) = 0;
 		virtual void Render(double p_Delta) = 0;
 	};
