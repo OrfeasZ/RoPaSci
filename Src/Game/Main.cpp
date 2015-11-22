@@ -5,6 +5,8 @@
 #include <Managers/ModelManager.h>
 #include <Managers/InputManager.h>
 
+#include <Game/Entities/GridEntity.h>
+
 using namespace Game;
 
 Main* Main::m_Instance = nullptr;
@@ -42,6 +44,11 @@ bool Main::Init()
 		return false; 
 	
 	glfwSetWindowSize(Application::GetInstance()->GetWindow(), 750, 600);
+
+	// TODO: REMOVE THIS TEST CODE
+	auto s_Entity = new Entities::GridEntity(15, 12);
+	s_Entity->Init();
+	// TEST CODE END
 
 	return true;
 }

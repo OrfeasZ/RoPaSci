@@ -141,3 +141,10 @@ void MainRenderer::RenderModels()
 		}
 	}
 }
+
+void MainRenderer::OnResize(int p_Width, int p_Height)
+{
+	m_ProjectionMatrix = glm::perspective(glm::radians(70.0f),
+		(float) p_Width / (float) p_Height,
+		0.1f, 1000.f);
+}

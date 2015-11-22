@@ -23,9 +23,12 @@ namespace Rendering
 			inline bool ShouldRender() const { return m_Render; }
 
 			inline void Translate(glm::vec3 p_Coordinates) { m_ModelMatrix = glm::translate(m_ModelMatrix, p_Coordinates); }
+			
+			// TODO: Fix rotation and scaling.
 			inline void Rotate(float p_Angle, glm::vec3 p_Axis) { m_ModelMatrix = glm::rotate(m_ModelMatrix, p_Angle, p_Axis); }
 			inline void Scale(glm::vec3 p_Ratio) { m_ModelMatrix = glm::scale(m_ModelMatrix, p_Ratio); }
 
+			// TODO: Fix position setter.
 			inline void Position(glm::vec3 p_Position) { m_ModelMatrix[3] = p_Position[0] + p_Position[1] + p_Position[2] + m_ModelMatrix[3]; }
 			inline glm::vec3 Position() const { return glm::vec3(m_ModelMatrix[3]); }
 

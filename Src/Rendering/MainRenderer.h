@@ -22,6 +22,7 @@ namespace Rendering
 		virtual bool Init() override;
 		virtual void Update(double p_Delta) override;
 		virtual void Render(double p_Delta) override;
+		virtual void OnResize(int p_Width, int p_Height) override;
 
 	protected:
 		void RenderModels();

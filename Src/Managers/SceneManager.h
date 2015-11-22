@@ -29,6 +29,7 @@ namespace Managers
 		virtual bool Init() override;
 		void SetMaxFPS(int p_MaxFPS);
 		bool RegisterRenderer(Rendering::IRenderer* p_Renderer);
+		void OnResize(int p_Width, int p_Height);
 
 	public:
 		void Render();

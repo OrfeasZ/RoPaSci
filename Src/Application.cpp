@@ -230,4 +230,6 @@ void Application::OnResize(GLFWwindow* p_Window, int p_Width, int p_Height)
 	m_WindowHeight = p_Height;
 
 	glViewport(0, 0, p_Width, p_Height);
+
+	Managers::SceneManager::GetInstance()->OnResize(p_Width, p_Height);
 }

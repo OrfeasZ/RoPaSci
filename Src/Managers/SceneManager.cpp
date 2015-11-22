@@ -61,6 +61,12 @@ bool SceneManager::RegisterRenderer(Rendering::IRenderer* p_Renderer)
 	return true;
 }
 
+void SceneManager::OnResize(int p_Width, int p_Height)
+{
+	for (auto s_Renderer : m_Renderers)
+		s_Renderer->OnResize(p_Width, p_Height);
+}
+
 void SceneManager::Render()
 {
 	if (!m_RenderTimer.ShouldUpdate())

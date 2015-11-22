@@ -184,6 +184,8 @@ xcopy "$(SolutionDir)Depends\bin\win64" "$(TargetDir)" /s /e /y</Command>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Src\Application.cpp" />
+    <ClCompile Include="Src\Game\Entities\BlockEntity.cpp" />
+    <ClCompile Include="Src\Game\Entities\GridEntity.cpp" />
     <ClCompile Include="Src\Game\Main.cpp" />
     <ClCompile Include="Src\Managers\InputManager.cpp" />
     <ClCompile Include="Src\Managers\ModelManager.cpp" />
@@ -205,6 +207,9 @@ xcopy "$(SolutionDir)Depends\bin\win64" "$(TargetDir)" /s /e /y</Command>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\Application.h" />
+    <ClInclude Include="Src\Game\Entities\BlockEntity.h" />
+    <ClInclude Include="Src\Game\Entities\GridEntity.h" />
+    <ClInclude Include="Src\Game\Entities\IEntity.h" />
     <ClInclude Include="Src\Game\Main.h" />
     <ClInclude Include="Src\Managers\IManager.h" />
     <ClInclude Include="Src\Managers\InputManager.h" />
