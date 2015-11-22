@@ -2,6 +2,7 @@
 
 #include <Misc/StdAfx.h>
 
+#include <Managers/Shader/Program.h>
 #include <Managers/Model/ModelData.h>
 
 #include <vector>
@@ -14,7 +15,7 @@ namespace Rendering
 		class Model
 		{
 		public:
-			Model(Managers::Model::ModelData* p_Data, GLuint p_ShaderProgram);
+			Model(Managers::Model::ModelData* p_Data, Managers::Shader::Program* p_ShaderProgram);
 			~Model();
 			
 		public:
@@ -37,13 +38,13 @@ namespace Rendering
 
 			inline size_t IndexCount() const { return m_Indices.size(); }
 
-			inline GLuint ShaderProgram() const { return m_ShaderProgram; }
+			inline Managers::Shader::Program* ShaderProgram() const { return m_ShaderProgram; }
 
 		protected:
 			void ParseModelData(Managers::Model::ModelData* p_Data);
 
 		private:
-			GLuint m_ShaderProgram;
+			Managers::Shader::Program* m_ShaderProgram;
 			glm::mat4 m_ModelMatrix;
 			bool m_Render;
 

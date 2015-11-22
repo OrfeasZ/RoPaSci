@@ -1,7 +1,9 @@
 #pragma once
 
 #include <Misc/StdAfx.h>
+
 #include "IManager.h"
+#include "Shader/Program.h"
 
 #include <GL/glew.h>
 #include <unordered_map>
@@ -36,13 +38,13 @@ namespace Managers
 		virtual bool Init() override;
 
 	public:
-		GLuint CreateShaderProgram(const std::string& p_Name, uint8_t p_ShaderTypes);
+		Shader::Program* CreateShaderProgram(const std::string& p_Name, uint8_t p_ShaderTypes);
 		GLuint CompileShader(GLenum p_ShaderType, const std::string& p_Name);
 
 		GLuint GetShader(GLenum p_ShaderType, const std::string& p_Name) const;
-		GLuint GetShaderProgram(const std::string& p_Name) const;
+		Shader::Program* GetShaderProgram(const std::string& p_Name) const;
 
-		inline std::unordered_map<uint32_t, GLuint> GetShaderPrograms() const { return m_ShaderPrograms; }
+		inline std::unordered_map<uint32_t, Shader::Program*> GetShaderPrograms() const { return m_ShaderPrograms; }
 		inline std::unordered_map<uint32_t, std::unordered_map<GLenum, GLuint>> GetShaders() const { return m_Shaders; }
 
 	protected:
@@ -50,7 +52,7 @@ namespace Managers
 		static std::string GetShaderTypeString(GLenum p_ShaderType);
 
 	protected:
-		std::unordered_map<uint32_t, GLuint> m_ShaderPrograms;
+		std::unordered_map<uint32_t, Shader::Program*> m_ShaderPrograms;
 		std::unordered_map<uint32_t, std::unordered_map<GLenum, GLuint>> m_Shaders;
 	};
 }

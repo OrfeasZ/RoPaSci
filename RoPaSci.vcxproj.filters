@@ -119,12 +119,6 @@
     <ClInclude Include="Src\Managers\InputManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Util\AtomicOps.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Util\ReaderWriterQueue.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Src\Rendering\Textures\ITexture.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -167,13 +161,14 @@
     <ClInclude Include="Src\Managers\Model\ModelData.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Src\Managers\Shader\Program.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Data\pgm\paper.pgm" />
     <None Include="Data\pgm\rock.pgm" />
     <None Include="Data\pgm\scissors.pgm" />
-    <None Include="Data\shaders\Basic2D.fs" />
-    <None Include="Data\shaders\Basic2D.vs" />
     <None Include="Data\shaders\ShadedModel.fs" />
     <None Include="Data\shaders\ShadedModel.vs" />
   </ItemGroup>

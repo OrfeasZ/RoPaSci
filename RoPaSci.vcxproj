@@ -212,6 +212,7 @@ xcopy "$(SolutionDir)Depends\bin\win64" "$(TargetDir)" /s /e /y</Command>
     <ClInclude Include="Src\Managers\Model\ModelData.h" />
     <ClInclude Include="Src\Managers\SceneManager.h" />
     <ClInclude Include="Src\Managers\ShaderManager.h" />
+    <ClInclude Include="Src\Managers\Shader\Program.h" />
     <ClInclude Include="Src\Managers\SimulationManager.h" />
     <ClInclude Include="Src\Managers\TaskManager.h" />
     <ClInclude Include="Src\Managers\Task\GenericTask.h" />
@@ -223,11 +224,9 @@ xcopy "$(SolutionDir)Depends\bin\win64" "$(TargetDir)" /s /e /y</Command>
     <ClInclude Include="Src\Rendering\MainRenderer.h" />
     <ClInclude Include="Src\Rendering\Objects\Model.h" />
     <ClInclude Include="Src\Rendering\Textures\ITexture.h" />
-    <ClInclude Include="Src\Util\AtomicOps.h" />
     <ClInclude Include="Src\Util\EasyLock.h" />
     <ClInclude Include="Src\Util\EngineTimer.h" />
     <ClInclude Include="Src\Util\Log.h" />
-    <ClInclude Include="Src\Util\ReaderWriterQueue.h" />
     <ClInclude Include="Src\Util\SpinLock.h" />
     <ClInclude Include="Src\Util\Utils.h" />
     <ClInclude Include="Src\VFS\Backends\WinBackend.h" />
@@ -240,8 +239,6 @@ xcopy "$(SolutionDir)Depends\bin\win64" "$(TargetDir)" /s /e /y</Command>
     <None Include="Data\pgm\paper.pgm" />
     <None Include="Data\pgm\rock.pgm" />
     <None Include="Data\pgm\scissors.pgm" />
-    <None Include="Data\shaders\Basic2D.fs" />
-    <None Include="Data\shaders\Basic2D.vs" />
     <None Include="Data\shaders\ShadedModel.fs" />
     <None Include="Data\shaders\ShadedModel.vs" />
   </ItemGroup>

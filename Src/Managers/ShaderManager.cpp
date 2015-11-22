@@ -35,7 +35,10 @@ ShaderManager::~ShaderManager()
 {
 	// Delete our programs.
 	for (auto s_Program : m_ShaderPrograms)
-		glDeleteProgram(s_Program.second);
+	{
+		glDeleteProgram(s_Program.second->GetProgram());
+		delete s_Program.second;
+	}
 
 	// Delete our shaders.
 	for (auto s_ShaderCollection : m_Shaders)
@@ -45,19 +48,16 @@ ShaderManager::~ShaderManager()
 
 bool ShaderManager::Init()
 {
-	if (CreateShaderProgram("Basic2D", VertexShader | FragmentShader) == 0)
-		return false;
-
 	if (CreateShaderProgram("ShadedModel", VertexShader | FragmentShader) == 0)
 		return false;
 
 	return true;
 }
 
-GLuint ShaderManager::CreateShaderProgram(const std::string& p_Name, uint8_t p_ShaderTypes)
+Shader::Program* ShaderManager::CreateShaderProgram(const std::string& p_Name, uint8_t p_ShaderTypes)
 {
 	if (p_ShaderTypes == 0)
-		return 0;
+		return nullptr;
 
 	Logger(Util::LogLevel::Info, "Creating shader program '%s'.", p_Name.c_str());
 
@@ -110,9 +110,10 @@ GLuint ShaderManager::CreateShaderProgram(const std::string& p_Name, uint8_t p_S
 	}
 
 	// Store the program in our local map.
-	m_ShaderPrograms[Util::Utils::StringHash(p_Name)] = s_Program;
+	Shader::Program* s_ShaderProgram = new Shader::Program(s_Program);
+	m_ShaderPrograms[Util::Utils::StringHash(p_Name)] = s_ShaderProgram;
 
-	return s_Program;
+	return s_ShaderProgram;
 }
 
 GLuint ShaderManager::GetShader(GLenum p_ShaderType, const std::string& p_Name) const
@@ -132,7 +133,7 @@ GLuint ShaderManager::GetShader(GLenum p_ShaderType, const std::string& p_Name) 
 	return s_ShaderIt->second;
 }
 
-GLuint ShaderManager::GetShaderProgram(const std::string& p_Name) const
+Shader::Program* ShaderManager::GetShaderProgram(const std::string& p_Name) const
 {
 	uint32_t s_ShaderHash = Util::Utils::StringHash(p_Name);
 

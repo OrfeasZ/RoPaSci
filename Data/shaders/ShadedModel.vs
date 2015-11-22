@@ -5,37 +5,43 @@ layout(location = 1) in vec2 ModelUVs;
 layout(location = 2) in vec3 ModelNormals;
 
 out vec2 UV;
-out vec3 Position_worldspace;
-out vec3 Normal_cameraspace;
-out vec3 EyeDirection_cameraspace;
-out vec3 LightDirection_cameraspace;
+out vec3 WorldPos;
+out vec3 NormalCameraPos;
+out vec3 EyeCameraDirection;
+out vec3 LightCameraDirection;
 
-// Values that stay constant for the whole mesh.
-uniform mat4 projection;
-uniform mat4 view;
-uniform mat4 model;
-uniform vec3 light;
+// Projection
+uniform mat4 p;
+
+// View
+uniform mat4 v;
+
+// Model
+uniform mat4 m;
+
+// Light
+uniform vec3 l;
 
 void main()
 {
 	// Output position of the vertex, in clip space : MVP * position
-	gl_Position =  (projection * view * model) * vec4(ModelVertices, 1);
+	gl_Position =  (p * v * m) * vec4(ModelVertices, 1);
 	
 	// Position of the vertex, in worldspace : M * position
-	Position_worldspace = (model * vec4(ModelVertices, 1)).xyz;
+	WorldPos = (m * vec4(ModelVertices, 1)).xyz;
 	
 	// Vector that goes from the vertex to the camera, in camera space.
 	// In camera space, the camera is at the origin (0,0,0).
-	vec3 vertexPosition_cameraspace = (view * model * vec4(ModelVertices, 1)).xyz;
-	EyeDirection_cameraspace = vec3(0, 0, 0) - vertexPosition_cameraspace;
+	vec3 VertexCameraPos = (v * m * vec4(ModelVertices, 1)).xyz;
+	EyeCameraDirection = vec3(0, 0, 0) - VertexCameraPos;
 
-	// Vector that goes from the vertex to the light, in camera space. M is ommited because it's identity.
-	vec3 LightPosition_cameraspace = (view * vec4(light, 1)).xyz;
-	LightDirection_cameraspace = LightPosition_cameraspace + EyeDirection_cameraspace;
+	// Vector that goes from the vertex to the light, in camera space.
+	vec3 LightPosition_cameraspace = (v * vec4(l, 1)).xyz;
+	LightCameraDirection = LightPosition_cameraspace + EyeCameraDirection;
 	
-	// Normal of the the vertex, in camera space
-	Normal_cameraspace = (view * transpose(inverse(model)) * vec4(ModelNormals, 0)).xyz; // Only correct if ModelMatrix does not scale the model ! Use its inverse transpose if not.
+	// Normal of the the vertex, in camera space.
+	NormalCameraPos = (v * transpose(inverse(m)) * vec4(ModelNormals, 0)).xyz;
 	
-	// UV of the vertex. No special space for this one.
+	// UV of the vertex.
 	UV = ModelUVs;
 }

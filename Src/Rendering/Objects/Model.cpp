@@ -2,7 +2,7 @@
 
 using namespace Rendering::Objects;
 
-Model::Model(Managers::Model::ModelData* p_Data, GLuint p_ShaderProgram) :
+Model::Model(Managers::Model::ModelData* p_Data, Managers::Shader::Program* p_ShaderProgram) :
 	m_ShaderProgram(p_ShaderProgram),
 	m_ModelMatrix(1.0),
 	m_Render(true)

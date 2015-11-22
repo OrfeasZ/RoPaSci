@@ -184,10 +184,10 @@ void ModelManager::RegisterModel(Rendering::Objects::Model* p_Model)
 	if (!p_Model)
 		return;
 
-	if (m_Models.find(p_Model->ShaderProgram()) == m_Models.end())
-		m_Models[p_Model->ShaderProgram()] = std::unordered_set<Rendering::Objects::Model*>();
+	if (m_Models.find(p_Model->ShaderProgram()->GetProgram()) == m_Models.end())
+		m_Models[p_Model->ShaderProgram()->GetProgram()] = std::unordered_set<Rendering::Objects::Model*>();
 
-	m_Models[p_Model->ShaderProgram()].insert(p_Model);
+	m_Models[p_Model->ShaderProgram()->GetProgram()].insert(p_Model);
 }
 
 void ModelManager::RemoveModel(Rendering::Objects::Model* p_Model)
@@ -195,7 +195,7 @@ void ModelManager::RemoveModel(Rendering::Objects::Model* p_Model)
 	if (!p_Model)
 		return;
 
-	auto s_Iterator = m_Models.find(p_Model->ShaderProgram());
+	auto s_Iterator = m_Models.find(p_Model->ShaderProgram()->GetProgram());
 
 	if (s_Iterator == m_Models.end())
 		return;

@@ -103,13 +103,18 @@ void MainRenderer::RenderModels()
 	// Iterate the groups, start using the program, and render every model in the group.
 	for (auto s_ModelGroup : s_Models)
 	{
-		glUseProgram(s_ModelGroup.first);
+		if (s_ModelGroup.second.size() == 0)
+			continue;
+
+		auto s_Program = (*s_ModelGroup.second.begin())->ShaderProgram();
+
+		glUseProgram(s_Program->GetProgram());
 
 		// TODO: This should be precached. Introduce a new shader wrapper class which caches these.
-		GLuint s_ProjectionMatrixLocation = glGetUniformLocation(s_ModelGroup.first, "projection");
-		GLuint s_ViewMatrixLocation = glGetUniformLocation(s_ModelGroup.first, "view");
-		GLuint s_ModelMatrixLocation = glGetUniformLocation(s_ModelGroup.first, "model");
-		GLuint s_LightVectorLocation = glGetUniformLocation(s_ModelGroup.first, "light");
+		GLuint s_ProjectionMatrixLocation = s_Program->GetUniformLocation("p");
+		GLuint s_ViewMatrixLocation = s_Program->GetUniformLocation("v");
+		GLuint s_ModelMatrixLocation = s_Program->GetUniformLocation("m");
+		GLuint s_LightVectorLocation = s_Program->GetUniformLocation("l");
 
 		for (auto s_Model : s_ModelGroup.second)
 		{
