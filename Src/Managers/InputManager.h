@@ -26,9 +26,10 @@ namespace Managers
 		virtual bool Init() override;
 
 	public:
-		// Tasks
-		void PostUpdateTask(void* p_Argument, int32_t p_ContextID, uint32_t p_Index, uint32_t p_Size);
 		inline TaskManager::TaskSetFunction_t GetPostUpdateTask() const { return m_PostUpdateTask; }
+
+	protected:
+		void PostUpdateTask(void* p_Argument, int32_t p_ContextID, uint32_t p_Index, uint32_t p_Size);
 
 	public:
 		bool IsKeyboardKeyPressed(int p_Key) const;

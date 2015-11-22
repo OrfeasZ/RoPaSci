@@ -63,32 +63,6 @@ void MainRenderer::Update(double p_Delta)
 
 void MainRenderer::Render(double p_Delta)
 {
-	auto s_Models = Managers::ModelManager::GetInstance()->GetModels();
-
-	for (auto s_ModelGroup : s_Models)
-	{
-		for (auto s_Model : s_ModelGroup.second)
-		{
-			if (Managers::InputManager::GetInstance()->IsKeyboardKeyPressed(GLFW_KEY_D))
-				s_Model->Translate(glm::vec3(0.0005f, 0.f, 0.f));
-
-			if (Managers::InputManager::GetInstance()->IsKeyboardKeyPressed(GLFW_KEY_Q))
-				s_Model->Translate(glm::vec3(0.f, 0.0005f, 0.f));
-
-			if (Managers::InputManager::GetInstance()->IsKeyboardKeyPressed(GLFW_KEY_A))
-				s_Model->Translate(glm::vec3(-0.0005f, 0.f, 0.f));
-
-			if (Managers::InputManager::GetInstance()->IsKeyboardKeyPressed(GLFW_KEY_E))
-				s_Model->Translate(glm::vec3(0.f, -0.0005f, 0.f));
-
-			if (Managers::InputManager::GetInstance()->IsKeyboardKeyPressed(GLFW_KEY_S))
-				s_Model->Translate(glm::vec3(0.f, 0.f, 0.0005f));
-
-			if (Managers::InputManager::GetInstance()->IsKeyboardKeyPressed(GLFW_KEY_W))
-				s_Model->Translate(glm::vec3(0.f, 0.f, -0.0005f));
-		}
-	}
-
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glClearColor(1.f, 1.f, 1.f, 1.f);
 
@@ -110,7 +84,6 @@ void MainRenderer::RenderModels()
 
 		glUseProgram(s_Program->GetProgram());
 
-		// TODO: This should be precached. Introduce a new shader wrapper class which caches these.
 		GLuint s_ProjectionMatrixLocation = s_Program->GetUniformLocation("p");
 		GLuint s_ViewMatrixLocation = s_Program->GetUniformLocation("v");
 		GLuint s_ModelMatrixLocation = s_Program->GetUniformLocation("m");

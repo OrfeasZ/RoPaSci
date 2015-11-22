@@ -4,6 +4,7 @@
 #include "IManager.h"
 
 #include <Util/EngineTimer.h>
+#include <Managers/TaskManager.h>
 
 #include <thread>
 #include <atomic>
@@ -32,10 +33,18 @@ namespace Managers
 		virtual bool Init() override;
 		void SetTickRate(int p_TickRate);
 
+	public:
+		inline TaskManager::TaskSetFunction_t GetUpdateTask() const { return m_UpdateTask; }
+
 	protected:
-		void Update();
+		void UpdateTask(void* p_Argument, int32_t p_ContextID, uint32_t p_Index, uint32_t p_Size);
 
 	protected:
 		Util::EngineTimer m_SimulationTimer;
+
+	protected:
+		// Tasks
+		TaskManager::TaskSetFunction_t m_UpdateTask;
+		uint32_t m_InputPostUpdateTask;
 	};
 }

@@ -52,5 +52,5 @@ protected:
 	int m_MaxFPS;
 
 protected:
-	uint32_t m_InputPostUpdateTask;
+	uint32_t m_SimulationUpdateTask;
 };

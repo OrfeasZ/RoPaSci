@@ -35,7 +35,7 @@ Application::Application() :
 	m_CurrentState(Application::Windowed),
 	m_TickRate(128),
 	m_MaxFPS(60),
-	m_InputPostUpdateTask(~0)
+	m_SimulationUpdateTask(~0)
 {
 }
 
@@ -134,17 +134,6 @@ void Application::Init(int p_WindowWidth, int p_WindowHeight, const std::string&
 	// Set max framerate and tick rate.
 	Managers::SceneManager::GetInstance()->SetMaxFPS(m_MaxFPS);
 	Managers::SimulationManager::GetInstance()->SetTickRate(m_TickRate);
-
-	// TODO: REMOVE THIS TEST CODE
-
-	auto s_Model = new Rendering::Objects::Model(
-		Managers::ModelManager::GetInstance()->GetModelData("GameBlock"),
-		Managers::ShaderManager::GetInstance()->GetShaderProgram("ShadedModel")
-	);
-
-	Managers::ModelManager::GetInstance()->RegisterModel(s_Model);
-
-	// TEST CODE END
 	
 	while (!glfwWindowShouldClose(m_Window))
 		OnRender();
@@ -200,24 +189,24 @@ void Application::OnRender()
 
 	glfwPollEvents();
 
-	// Create our basic task list.
-	// TODO: Simulation task.
-
-	// Input PostUpdate Task
+	// Simulation Update Task
 	Managers::TaskManager::GetInstance()->CreateTaskSet(
-		Managers::InputManager::GetInstance()->GetPostUpdateTask(),
+		Managers::SimulationManager::GetInstance()->GetUpdateTask(),
 		nullptr,
 		1,
 		nullptr,
 		0,
-		"Input_PostUpdate",
-		&m_InputPostUpdateTask);
+		"Simulation_Update",
+		&m_SimulationUpdateTask);
+
+	Managers::TaskManager::GetInstance()->WaitForSet(m_SimulationUpdateTask);
+	Managers::TaskManager::GetInstance()->ReleaseHandle(m_SimulationUpdateTask);
 
 	// Render Task.
 	Managers::SceneManager::GetInstance()->Render();
 
-	Managers::TaskManager::GetInstance()->WaitForSet(m_InputPostUpdateTask);
-	Managers::TaskManager::GetInstance()->ReleaseHandle(m_InputPostUpdateTask);
+	// Sleep here so we don't kill the CPU.
+	std::this_thread::sleep_for(std::chrono::microseconds(1));
 }
 
 void Application::OnResize(int p_Width, int p_Height)
