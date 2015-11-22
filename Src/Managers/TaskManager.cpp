@@ -89,7 +89,7 @@ void TaskManager::Shutdown()
 }
 
 
-bool TaskManager::CreateTaskSet(void *p_Function, void* p_Argument, uint32_t p_TaskCount, uint32_t* p_Depends, uint32_t p_DependCount, char* p_SetName, uint32_t* p_Handle)
+bool TaskManager::CreateTaskSet(TaskSetFunction_t p_Function, void* p_Argument, uint32_t p_TaskCount, uint32_t* p_Depends, uint32_t p_DependCount, char* p_SetName, uint32_t* p_Handle)
 {
 	uint32_t s_SetHandle;
 	uint32_t s_SetParent = -1;

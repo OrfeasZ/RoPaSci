@@ -26,6 +26,7 @@
 #include <tbb/task.h>
 #include <Util/SpinLock.h>
 
+#include <Managers/TaskManager.h>
 #include "GenericTask.h"
 
 namespace Managers
@@ -65,7 +66,7 @@ namespace Managers
 			uint32_t m_SetHandle;
 			bool m_HasBeenWaitedOn;
 
-			void* m_Function;
+			TaskManager::TaskSetFunction_t m_Function;
 			void* m_Argument;
 
 			volatile uint32_t m_StartCount;

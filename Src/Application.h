@@ -2,13 +2,6 @@
 
 #include <Misc/StdAfx.h>
 
-namespace Managers
-{
-	class ShaderManager;
-	class SimulationManager;
-	class TimingManager;
-}
-
 namespace Rendering
 {
 	class IRenderer;
@@ -45,9 +38,6 @@ public:
 	bool RegisterRenderer(Rendering::IRenderer* p_Renderer);
 
 public:
-	inline Managers::ShaderManager* GetShaderManager() const { return m_ShaderManager; }
-	inline Managers::TimingManager* GetRenderTimingManager() const { return m_RenderTimingManager; }
-	inline Managers::SimulationManager* GetSimulationManager() const { return m_SimulationManager; }
 	inline FT_Library GetFreeType() const { return m_FreeType; }
 	inline GLFWwindow* GetWindow() const { return m_Window; }
 
@@ -62,12 +52,7 @@ protected:
 	void OnSpecial(int p_Key, int p_X, int p_Y);
 	void OnSpecialUp(int p_Key, int p_X, int p_Y);
 	void OnResize(int p_Width, int p_Height);
-
-protected:
-	Managers::ShaderManager* m_ShaderManager;
-	Managers::TimingManager* m_RenderTimingManager;
-	Managers::SimulationManager* m_SimulationManager;
-
+	
 protected:
 	std::vector<Rendering::IRenderer*> m_Renderers;
 

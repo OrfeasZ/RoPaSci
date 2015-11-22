@@ -22,7 +22,9 @@
 #pragma once
 
 #include <Misc/StdAfx.h>
+
 #include "IManager.h"
+#include <functional>
 
 namespace Managers
 {
@@ -35,6 +37,9 @@ namespace Managers
 
 	class TaskManager : public IManager
 	{
+	public:
+		typedef std::function<void(void*, int32_t, uint32_t, uint32_t)> TaskSetFunction_t;
+
 	public:
 		static TaskManager* GetInstance();
 		static void DestroyInstance();
@@ -50,7 +55,7 @@ namespace Managers
 		bool Init();
 		void Shutdown();
 
-		bool CreateTaskSet(void* p_Function, void* p_Argument, uint32_t p_TaskCount, uint32_t* p_Depends, uint32_t p_DependCount, char* p_SetName, uint32_t* p_Handle);
+		bool CreateTaskSet(TaskSetFunction_t p_Function, void* p_Argument, uint32_t p_TaskCount, uint32_t* p_Depends, uint32_t p_DependCount, char* p_SetName, uint32_t* p_Handle);
 		void ReleaseHandle(uint32_t p_SetHandle);
 		void ReleaseHandles(uint32_t* p_SetHandle, uint32_t p_Count);
 		void WaitForSet(uint32_t p_SetHandle);

@@ -3,9 +3,11 @@
 #include <Util/Utils.h>
 #include <VFS/FileSystem.h>
 
+#include <Managers/TaskManager.h>
 #include <Managers/ShaderManager.h>
 #include <Managers/SimulationManager.h>
 #include <Managers/InputManager.h>
+#include <Managers/SceneManager.h>
 
 #include <Rendering/DebugRenderer.h>
 
@@ -28,7 +30,6 @@ void Application::DestroyInstance()
 }
 
 Application::Application() :
-	m_ShaderManager(0),
 	m_CurrentState(Application::Windowed),
 	m_TickRate(120),
 	m_MaxFPS(300)
@@ -45,19 +46,11 @@ Application::~Application()
 
 	m_Window = nullptr;
 
+	Managers::TaskManager::DestroyInstance();
 	Managers::InputManager::DestroyInstance();
 	Managers::SimulationManager::DestroyInstance();
 	Managers::ShaderManager::DestroyInstance();
-
-	if (m_RenderTimingManager)
-		delete m_RenderTimingManager;
-
-	if (m_ShaderManager)
-		delete m_ShaderManager;
-
-	m_SimulationManager = nullptr;
-	m_RenderTimingManager = nullptr;
-	m_ShaderManager = nullptr;
+	Managers::SceneManager::DestroyInstance();
 
 	for (auto s_Renderer : m_Renderers)
 		delete s_Renderer;
@@ -144,10 +137,7 @@ void Application::Init(int p_WindowWidth, int p_WindowHeight, const std::string&
 		Shutdown();
 		return;
 	}
-
-	// Start the simulation.
-	m_SimulationManager->Init();
-
+	
 	while (!glfwWindowShouldClose(m_Window))
 		OnRender();
 
@@ -162,16 +152,20 @@ void Application::Shutdown()
 
 bool Application::InitManagers()
 {
-	m_ShaderManager = new Managers::ShaderManager();
-
-	if (m_ShaderManager->CreateShaderProgram("Test", Managers::ShaderManager::VertexShader | Managers::ShaderManager::FragmentShader) == 0)
+	if (!Managers::TaskManager::GetInstance()->Init())
 		return false;
 
-	if (m_ShaderManager->CreateShaderProgram("Basic2D", Managers::ShaderManager::VertexShader | Managers::ShaderManager::FragmentShader) == 0)
+	if (!Managers::ShaderManager::GetInstance()->Init())
 		return false;
 
-	m_RenderTimingManager = new	Managers::TimingManager(m_MaxFPS);
-	m_SimulationManager = new Managers::SimulationManager(m_TickRate);
+	if (!Managers::SimulationManager::GetInstance()->Init())
+		return false;
+
+	if (!Managers::InputManager::GetInstance()->Init(m_Window))
+		return false;
+
+	if (!Managers::SceneManager::GetInstance()->Init())
+		return false;
 
 	return true;
 }
@@ -187,56 +181,28 @@ bool Application::InitRenderers()
 void Application::SetTickRate(int p_TickRate)
 {
 	m_TickRate = p_TickRate;
-
-	if (m_SimulationManager)
-		m_SimulationManager->SetTickRate(m_TickRate);
+	Managers::SimulationManager::GetInstance()->SetTickRate(m_TickRate);
 }
 
 void Application::SetMaxFPS(int p_MaxFPS)
 {
 	m_MaxFPS = p_MaxFPS;
 
-	if (m_RenderTimingManager)
-		m_RenderTimingManager->SetUpdatesPerSecond(m_MaxFPS);
+	//if (m_RenderTimingManager)
+	//	m_RenderTimingManager->SetUpdatesPerSecond(m_MaxFPS);
 }
 
 bool Application::RegisterRenderer(Rendering::IRenderer* p_Renderer)
 {
 	m_Renderers.push_back(p_Renderer);
 
-	if (m_SimulationManager)
-		m_SimulationManager->RegisterRenderer(p_Renderer);
-
 	return p_Renderer->Init();
 }
 
 void Application::OnRender()
 {
-	if (!m_RenderTimingManager || !m_Window)
+	if (!m_Window)
 		return;
-
-	m_RenderTimingManager->Update();
-	double s_Delta = m_RenderTimingManager->GetLastDelta();
-
-	float ratio;
-	int width, height;
-
-	glfwGetFramebufferSize(m_Window, &width, &height);
-	ratio = width / (float) height;
-	
-	glViewport(0, 0, width, height);
-	glClear(GL_COLOR_BUFFER_BIT);
-	
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-	glOrtho(-ratio, ratio, -1.f, 1.f, 1.f, -1.f);
-	glMatrixMode(GL_MODELVIEW);
-
-	glLoadIdentity();
-	glRotatef((float) glfwGetTime() * 50.f, 0.f, 0.f, 1.f);
-
-	for (auto s_Renderer : m_Renderers)
-		s_Renderer->Render(s_Delta);
 
 	glfwSwapBuffers(m_Window);
 	glfwPollEvents();

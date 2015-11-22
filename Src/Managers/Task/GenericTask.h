@@ -36,7 +36,7 @@ namespace Managers
 		{
 		public:
 			GenericTask()
-				: m_Function(0)
+				: m_Function(nullptr)
 				, m_Argument(0)
 				, m_Index(0)
 				, m_Size(0)
@@ -45,7 +45,7 @@ namespace Managers
 			{
 			}
 
-			GenericTask(void* p_Function, void* p_Argument, uint32_t p_Index, uint32_t p_Size, char* p_SetName, uint32_t p_SetHandle)
+			GenericTask(TaskManager::TaskSetFunction_t p_Function, void* p_Argument, uint32_t p_Index, uint32_t p_Size, char* p_SetName, uint32_t p_SetHandle)
 				: m_Function(p_Function)
 				, m_Argument(p_Argument)
 				, m_Index(p_Index)
@@ -67,12 +67,11 @@ namespace Managers
 				// Notify the TaskManager that this set completed one of its tasks.
 				Managers::TaskManager::GetInstance()->CompleteTaskSet(m_SetHandle);
 
-				return NULL;
+				return nullptr;
 			}
 
 		private:
-
-			void* m_Function;
+			TaskManager::TaskSetFunction_t m_Function;
 			void* m_Argument;
 			UINT m_Index;
 			UINT m_Size;
