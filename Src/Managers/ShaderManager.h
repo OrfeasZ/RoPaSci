@@ -1,13 +1,14 @@
 #pragma once
 
 #include <Misc/StdAfx.h>
+#include "IManager.h"
 
 #include <GL/glew.h>
 #include <unordered_map>
 
 namespace Managers
 {
-	class ShaderManager
+	class ShaderManager : public IManager
 	{
 	public:
 		enum ShaderTypeFlags : uint8_t

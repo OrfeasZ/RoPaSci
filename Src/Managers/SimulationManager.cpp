@@ -4,9 +4,29 @@
 
 using namespace Managers;
 
-SimulationManager::SimulationManager(int p_TickRate) :
-	m_TickRate(p_TickRate),
-	m_TimingManager(p_TickRate),
+SimulationManager* SimulationManager::m_Instance = nullptr;
+
+SimulationManager* SimulationManager::GetInstance()
+{
+	if (!m_Instance)
+		m_Instance = new SimulationManager();
+
+	return m_Instance;
+}
+
+void SimulationManager::DestroyInstance()
+{
+	if (!m_Instance)
+		return;
+
+	delete m_Instance;
+	m_Instance = nullptr;
+}
+
+//////////////////////////////////////////////////////////////////////////
+
+SimulationManager::SimulationManager() :
+	m_TickRate(0),
 	m_Running(false)
 {
 }
@@ -17,15 +37,17 @@ SimulationManager::~SimulationManager()
 	m_Renderers.clear();
 }
 
-void SimulationManager::Init()
+bool SimulationManager::Init()
 {
 	if (m_Running)
-		return;
+		return false;
 
 	Logger(Util::LogLevel::Info, "Initializing simulation at %d tick.", m_TickRate);
 
 	m_Running = true;
 	m_WorkerThread = std::thread(&SimulationManager::Update, this);
+
+	return true;
 }
 
 void SimulationManager::Stop()
@@ -36,7 +58,7 @@ void SimulationManager::Stop()
 
 void SimulationManager::SetTickRate(int p_TickRate)
 {
-	m_TimingManager.SetUpdatesPerSecond(p_TickRate);
+	//m_TimingManager.SetUpdatesPerSecond(p_TickRate);
 }
 
 void SimulationManager::RegisterRenderer(Rendering::IRenderer* p_Renderer)
@@ -48,10 +70,10 @@ void SimulationManager::Update()
 {
 	while (m_Running)
 	{
-		m_TimingManager.Update();
-		double s_Delta = m_TimingManager.GetLastDelta();
+		//m_TimingManager.Update();
+		//double s_Delta = m_TimingManager.GetLastDelta();
 
-		for (auto s_Renderer : m_Renderers)
-			s_Renderer->Update(s_Delta);
+		//for (auto s_Renderer : m_Renderers)
+		//	s_Renderer->Update(s_Delta);
 	}
 }

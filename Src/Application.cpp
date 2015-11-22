@@ -4,7 +4,6 @@
 #include <VFS/FileSystem.h>
 
 #include <Managers/ShaderManager.h>
-#include <Managers/TimingManager.h>
 #include <Managers/SimulationManager.h>
 #include <Managers/InputManager.h>
 

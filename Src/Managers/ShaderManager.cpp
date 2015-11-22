@@ -5,6 +5,27 @@
 
 using namespace Managers;
 
+ShaderManager* ShaderManager::m_Instance = nullptr;
+
+ShaderManager* ShaderManager::GetInstance()
+{
+	if (!m_Instance)
+		m_Instance = new ShaderManager();
+
+	return m_Instance;
+}
+
+void ShaderManager::DestroyInstance()
+{
+	if (!m_Instance)
+		return;
+
+	delete m_Instance;
+	m_Instance = nullptr;
+}
+
+//////////////////////////////////////////////////////////////////////////
+
 ShaderManager::ShaderManager()
 {
 
@@ -20,6 +41,17 @@ ShaderManager::~ShaderManager()
 	for (auto s_ShaderCollection : m_Shaders)
 		for (auto s_Shader : s_ShaderCollection.second)
 			glDeleteShader(s_Shader.second);
+}
+
+bool ShaderManager::Init()
+{
+	if (CreateShaderProgram("Basic2D", VertexShader | FragmentShader) == 0)
+		return false;
+
+	if (CreateShaderProgram("Test", VertexShader | FragmentShader) == 0)
+		return false;
+
+	return true;
 }
 
 GLuint ShaderManager::CreateShaderProgram(const std::string& p_Name, uint8_t p_ShaderTypes)

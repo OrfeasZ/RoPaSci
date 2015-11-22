@@ -1,6 +1,7 @@
 #pragma once
 
 #include <Misc/StdAfx.h>
+#include "IManager.h"
 
 #include <thread>
 #include <atomic>
@@ -12,7 +13,7 @@ namespace Rendering
 
 namespace Managers
 {
-	class SimulationManager
+	class SimulationManager : public IManager
 	{
 	public:
 		static SimulationManager* GetInstance();
@@ -22,7 +23,7 @@ namespace Managers
 		static SimulationManager* m_Instance;
 
 	protected:
-		SimulationManager(int p_TickRate);
+		SimulationManager();
 		~SimulationManager();
 
 	public:
