@@ -27,6 +27,7 @@ void Application::DestroyInstance()
 		return;
 
 	delete m_Instance;
+	m_Instance = nullptr;
 }
 
 Application::Application() :

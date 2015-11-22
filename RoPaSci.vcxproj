@@ -198,6 +198,8 @@ xcopy "$(ProjectDir)Data" "$(TargetDir)data\" /s /e /y</Command>
     <ClInclude Include="Src\Application.h" />
     <ClInclude Include="Src\Managers\IManager.h" />
     <ClInclude Include="Src\Managers\InputManager.h" />
+    <ClInclude Include="Src\Managers\Input\KeyAction.h" />
+    <ClInclude Include="Src\Managers\Input\MouseAction.h" />
     <ClInclude Include="Src\Managers\SceneManager.h" />
     <ClInclude Include="Src\Managers\ShaderManager.h" />
     <ClInclude Include="Src\Managers\SimulationManager.h" />

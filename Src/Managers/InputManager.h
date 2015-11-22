@@ -1,7 +1,10 @@
 #pragma once
 
 #include <Misc/StdAfx.h>
+
 #include "IManager.h"
+#include "Input/KeyAction.h"
+#include "Input/MouseAction.h"
 
 namespace Managers
 {
@@ -20,6 +23,24 @@ namespace Managers
 
 	public:
 		bool Init(GLFWwindow* p_Window);
+		void PostUpdate();
+
+	public:
+		bool IsKeyboardKeyPressed(int p_Key) const;
+		bool IsKeyboardKeyRepeated(int p_Key) const;
+
+		bool IsMouseButtonPressed(int p_Button) const;
+		bool IsMouseButtonRepeated(int p_Button) const;
+
+	public:
+		inline bool IsCursorInFrame() const { return m_MouseInside; }
+		inline double GetCursorX() { return m_MouseX; }
+		inline double GetCursorY() { return m_MouseY; }
+
+		inline int GetKeyboardKeyScanCode(int p_Key) const { return m_KeyActions[p_Key].ScanCode; }
+		inline int GetKeyboardKeyModifiers(int p_Key) const { return m_KeyActions[p_Key].Modifiers; }
+
+		inline int GetMouseButtonModifiers(int p_Button) const { return m_MouseActions[p_Button].Modifiers; }
 
 	protected:
 		static void OnKeyStatic(GLFWwindow* p_Window, int p_Key, int p_ScanCode, int p_Action, int p_Modifiers);
@@ -42,5 +63,9 @@ namespace Managers
 		double m_MouseX;
 		double m_MouseY;
 		bool m_MouseInside;
+
+	protected:
+		Input::KeyAction m_KeyActions[GLFW_KEY_LAST];
+		Input::MouseAction m_MouseActions[GLFW_MOUSE_BUTTON_LAST];
 	};
 }
