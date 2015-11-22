@@ -95,8 +95,8 @@ bool TaskManager::CreateTaskSet(TaskSetFunction_t p_Function, void* p_Argument, 
 	uint32_t s_SetHandle;
 	uint32_t s_SetParent = ~0;
 	uint32_t* s_Depends = p_Depends;
-	UINT s_DependCount = p_DependCount;
-	BOOL s_Result = false;
+	uint32_t s_DependCount = p_DependCount;
+	bool s_Result = false;
 
 	//  Validate incoming parameters
 	if (p_TaskCount == 0 || p_Function == nullptr)

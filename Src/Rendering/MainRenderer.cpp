@@ -40,10 +40,10 @@ MainRenderer::~MainRenderer()
 
 bool MainRenderer::Init()
 {
-	m_ProjectionMatrix = glm::perspective(glm::radians(45.0f), 4.0f / 3.0f, 0.1f, 100.0f);
+	m_ProjectionMatrix = glm::perspective(glm::radians(70.0f), 4.0f / 3.0f, 0.1f, 1000.f);
 
 	m_ViewMatrix = glm::lookAt(
-		glm::vec3(4, 3, -3),
+		glm::vec3(0, 3, 0.0001),
 		glm::vec3(0, 0, 0),
 		glm::vec3(0, 1, 0)
 	);
@@ -69,21 +69,28 @@ void MainRenderer::Render(double p_Delta)
 	{
 		for (auto s_Model : s_ModelGroup.second)
 		{
-			if (Managers::InputManager::GetInstance()->IsKeyboardKeyPressed(GLFW_KEY_A))
-				s_Model->Translate(glm::vec3(0.005f, 0.f, 0.f));
-
-			if (Managers::InputManager::GetInstance()->IsKeyboardKeyPressed(GLFW_KEY_W))
-				s_Model->Translate(glm::vec3(0.f, 0.005f, 0.f));
-
 			if (Managers::InputManager::GetInstance()->IsKeyboardKeyPressed(GLFW_KEY_D))
-				s_Model->Translate(glm::vec3(-0.005f, 0.f, 0.f));
+				s_Model->Translate(glm::vec3(0.0005f, 0.f, 0.f));
+
+			if (Managers::InputManager::GetInstance()->IsKeyboardKeyPressed(GLFW_KEY_Q))
+				s_Model->Translate(glm::vec3(0.f, 0.0005f, 0.f));
+
+			if (Managers::InputManager::GetInstance()->IsKeyboardKeyPressed(GLFW_KEY_A))
+				s_Model->Translate(glm::vec3(-0.0005f, 0.f, 0.f));
+
+			if (Managers::InputManager::GetInstance()->IsKeyboardKeyPressed(GLFW_KEY_E))
+				s_Model->Translate(glm::vec3(0.f, -0.0005f, 0.f));
 
 			if (Managers::InputManager::GetInstance()->IsKeyboardKeyPressed(GLFW_KEY_S))
-				s_Model->Translate(glm::vec3(0.f, -0.005f, 0.f));
+				s_Model->Translate(glm::vec3(0.f, 0.f, 0.0005f));
+
+			if (Managers::InputManager::GetInstance()->IsKeyboardKeyPressed(GLFW_KEY_W))
+				s_Model->Translate(glm::vec3(0.f, 0.f, -0.0005f));
 		}
 	}
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glClearColor(1.f, 1.f, 1.f, 1.f);
 
 	RenderModels();
 }
@@ -133,7 +140,7 @@ void MainRenderer::RenderModels()
 			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, s_Model->IndexBuffer());
 
 			// Draw all our triangles.
-			glDrawElements(GL_TRIANGLES, s_Model->IndexCount(), GL_UNSIGNED_SHORT, nullptr);
+			glDrawElements(GL_TRIANGLES, (GLsizei) s_Model->IndexCount(), GL_UNSIGNED_SHORT, nullptr);
 
 			glDisableVertexAttribArray(0);
 			glDisableVertexAttribArray(1);

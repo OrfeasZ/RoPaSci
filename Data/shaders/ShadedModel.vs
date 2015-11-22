@@ -19,7 +19,7 @@ uniform vec3 light;
 void main()
 {
 	// Output position of the vertex, in clip space : MVP * position
-	gl_Position =  projection * view * model * vec4(ModelVertices, 1);
+	gl_Position =  (projection * view * model) * vec4(ModelVertices, 1);
 	
 	// Position of the vertex, in worldspace : M * position
 	Position_worldspace = (model * vec4(ModelVertices, 1)).xyz;
@@ -34,7 +34,7 @@ void main()
 	LightDirection_cameraspace = LightPosition_cameraspace + EyeDirection_cameraspace;
 	
 	// Normal of the the vertex, in camera space
-	Normal_cameraspace = (view * model * vec4(ModelNormals, 0)).xyz; // Only correct if ModelMatrix does not scale the model ! Use its inverse transpose if not.
+	Normal_cameraspace = (view * transpose(inverse(model)) * vec4(ModelNormals, 0)).xyz; // Only correct if ModelMatrix does not scale the model ! Use its inverse transpose if not.
 	
 	// UV of the vertex. No special space for this one.
 	UV = ModelUVs;

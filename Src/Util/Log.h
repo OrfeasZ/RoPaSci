@@ -6,11 +6,7 @@
 
 // We only want the logging function if we're in debug mode
 // Otherwise it should be nothing
-#ifdef _DEBUG
 #define Logger(x, y, ...) Util::Log::GetInstance()->Write(x, __FILE__, __LINE__, __FUNCTION__, y, __VA_ARGS__);
-#else 
-#define Logger(x, y, ...) 
-#endif
 
 namespace VFS
 {

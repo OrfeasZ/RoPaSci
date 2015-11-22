@@ -17,7 +17,7 @@ Model::~Model()
 
 void Model::ParseModelData(Managers::Model::ModelData* p_Data)
 {
-	for (size_t i = 0; i < p_Data->Vertices.size(); i++)
+	for (size_t i = 0; i < p_Data->Vertices.size(); ++i)
 	{
 		uint16_t s_Index = ~0;
 
