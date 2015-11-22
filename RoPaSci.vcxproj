@@ -242,8 +242,8 @@ xcopy "$(SolutionDir)Depends\bin\win64" "$(TargetDir)" /s /e /y</Command>
     <None Include="Data\pgm\scissors.pgm" />
     <None Include="Data\shaders\Basic2D.fs" />
     <None Include="Data\shaders\Basic2D.vs" />
-    <None Include="Data\shaders\Test.fs" />
-    <None Include="Data\shaders\Test.vs" />
+    <None Include="Data\shaders\ShadedModel.fs" />
+    <None Include="Data\shaders\ShadedModel.vs" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

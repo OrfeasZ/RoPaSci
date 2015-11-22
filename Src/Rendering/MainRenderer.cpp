@@ -47,6 +47,8 @@ bool MainRenderer::Init()
 		glm::vec3(0, 1, 0)
 	);
 
+	m_LightPosition = glm::vec3(4, 4, 4);
+
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LESS);
 
@@ -82,6 +84,7 @@ void MainRenderer::RenderModels()
 		GLuint s_ProjectionMatrixLocation = glGetUniformLocation(s_ModelGroup.first, "projection");
 		GLuint s_ViewMatrixLocation = glGetUniformLocation(s_ModelGroup.first, "view");
 		GLuint s_ModelMatrixLocation = glGetUniformLocation(s_ModelGroup.first, "model");
+		GLuint s_LightVectorLocation = glGetUniformLocation(s_ModelGroup.first, "light");
 
 		for (auto s_Model : s_ModelGroup.second)
 		{
@@ -89,6 +92,9 @@ void MainRenderer::RenderModels()
 			glUniformMatrix4fv(s_ProjectionMatrixLocation, 1, GL_FALSE, &m_ProjectionMatrix[0][0]);
 			glUniformMatrix4fv(s_ViewMatrixLocation, 1, GL_FALSE, &m_ViewMatrix[0][0]);
 			glUniformMatrix4fv(s_ModelMatrixLocation, 1, GL_FALSE, &s_Model->ModelMatrix()[0][0]);
+
+			// Set the light position.
+			glUniform3f(s_LightVectorLocation, m_LightPosition.x, m_LightPosition.y, m_LightPosition.z);
 
 			// Set Vertices.
 			glEnableVertexAttribArray(0);

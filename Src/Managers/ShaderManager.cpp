@@ -48,7 +48,7 @@ bool ShaderManager::Init()
 	if (CreateShaderProgram("Basic2D", VertexShader | FragmentShader) == 0)
 		return false;
 
-	if (CreateShaderProgram("Test", VertexShader | FragmentShader) == 0)
+	if (CreateShaderProgram("ShadedModel", VertexShader | FragmentShader) == 0)
 		return false;
 
 	return true;

@@ -29,5 +29,6 @@ namespace Rendering
 	protected:
 		glm::mat4 m_ProjectionMatrix;
 		glm::mat4 m_ViewMatrix;
+		glm::vec3 m_LightPosition;
 	};
 }

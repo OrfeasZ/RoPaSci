@@ -10,6 +10,8 @@
 #include <Managers/SceneManager.h>
 #include <Managers/ModelManager.h>
 
+#include <Rendering/Objects/Model.h>
+
 Application* Application::m_Instance = nullptr;
 
 Application* Application::GetInstance()
@@ -132,6 +134,17 @@ void Application::Init(int p_WindowWidth, int p_WindowHeight, const std::string&
 	// Set max framerate and tick rate.
 	Managers::SceneManager::GetInstance()->SetMaxFPS(m_MaxFPS);
 	Managers::SimulationManager::GetInstance()->SetTickRate(m_TickRate);
+
+	// TODO: REMOVE THIS TEST CODE
+
+	auto s_Model = new Rendering::Objects::Model(
+		Managers::ModelManager::GetInstance()->GetModelData("GameBlock"),
+		Managers::ShaderManager::GetInstance()->GetShaderProgram("ShadedModel")
+		);
+
+	Managers::ModelManager::GetInstance()->RegisterModel(s_Model);
+
+	// TEST CODE END
 	
 	while (!glfwWindowShouldClose(m_Window))
 		OnRender();

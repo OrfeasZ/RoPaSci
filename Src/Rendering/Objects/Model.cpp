@@ -37,7 +37,7 @@ void Model::ParseModelData(Managers::Model::ModelData* p_Data)
 			}
 		}
 
-		if (s_Index != ~0)
+		if (s_Index != (uint16_t) ~0)
 		{
 			m_Indices.push_back(s_Index);
 			continue;
