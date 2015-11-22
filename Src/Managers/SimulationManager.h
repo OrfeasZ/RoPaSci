@@ -28,7 +28,6 @@ namespace Managers
 
 	public:
 		virtual bool Init() override;
-		void Stop();
 
 		void SetTickRate(int p_TickRate);
 		void RegisterRenderer(Rendering::IRenderer* p_Renderer);
@@ -38,8 +37,6 @@ namespace Managers
 
 	protected:
 		int m_TickRate;
-		volatile bool m_Running;
-		std::thread m_WorkerThread;
 
 	protected:
 		std::vector<Rendering::IRenderer*> m_Renderers;

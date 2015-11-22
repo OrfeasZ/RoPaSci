@@ -43,6 +43,9 @@ bool SceneManager::Init()
 
 void SceneManager::RenderTask(void* p_Argument, int32_t p_ContextID, uint32_t p_Index, uint32_t p_Size)
 {
+	glClearColor(1, 1, 1, 1);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
 	glfwSwapBuffers(m_Window);
 	glfwPollEvents();
 }
