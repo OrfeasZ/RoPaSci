@@ -162,4 +162,4 @@ $RECYCLE.BIN/
 !Depends/bin/
 !Depends/bin/**/*.pdb
 !Depends/lib/**/*.pdb
-
+!Data/**
