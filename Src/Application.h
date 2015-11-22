@@ -53,5 +53,4 @@ protected:
 
 protected:
 	uint32_t m_InputPostUpdateTask;
-	uint32_t m_SceneRenderTask;
 };

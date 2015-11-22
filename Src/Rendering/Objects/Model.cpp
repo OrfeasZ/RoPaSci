@@ -63,7 +63,7 @@ void Model::ParseModelData(Managers::Model::ModelData* p_Data)
 	glBindBuffer(GL_ARRAY_BUFFER, m_NormalBuffer);
 	glBufferData(GL_ARRAY_BUFFER, m_Normals.size() * sizeof(glm::vec3), &m_Normals[0], GL_STATIC_DRAW);
 
-	glGenBuffers(1, &m_ElementBuffer);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_ElementBuffer);
+	glGenBuffers(1, &m_IndexBuffer);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_IndexBuffer);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_Indices.size() * sizeof(uint16_t), &m_Indices[0], GL_STATIC_DRAW);
 }

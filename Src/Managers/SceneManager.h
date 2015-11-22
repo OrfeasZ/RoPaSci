@@ -31,17 +31,11 @@ namespace Managers
 		bool RegisterRenderer(Rendering::IRenderer* p_Renderer);
 
 	public:
-		// Tasks
-		void RenderTask(void* p_Argument, int32_t p_ContextID, uint32_t p_Index, uint32_t p_Size);
-		inline TaskManager::TaskSetFunction_t GetRenderTask() const { return m_RenderTask; }
+		void Render();
 
 	protected:
 		GLFWwindow* m_Window;
 		Util::EngineTimer m_RenderTimer;
 		std::vector<Rendering::IRenderer*> m_Renderers;
-
-	protected:
-		// Tasks
-		TaskManager::TaskSetFunction_t m_RenderTask;
 	};
 }

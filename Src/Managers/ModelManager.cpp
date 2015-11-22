@@ -2,6 +2,7 @@
 
 #include <VFS/FileSystem.h>
 #include <Util/Utils.h>
+#include <Rendering/Objects/Model.h>
 
 using namespace Managers;
 
@@ -176,4 +177,28 @@ Model::ModelData* ModelManager::GetModelData(const std::string& p_Name) const
 		return nullptr;
 
 	return s_Iterator->second;
+}
+
+void ModelManager::RegisterModel(Rendering::Objects::Model* p_Model)
+{
+	if (!p_Model)
+		return;
+
+	if (m_Models.find(p_Model->ShaderProgram()) == m_Models.end())
+		m_Models[p_Model->ShaderProgram()] = std::unordered_set<Rendering::Objects::Model*>();
+
+	m_Models[p_Model->ShaderProgram()].insert(p_Model);
+}
+
+void ModelManager::RemoveModel(Rendering::Objects::Model* p_Model)
+{
+	if (!p_Model)
+		return;
+
+	auto s_Iterator = m_Models.find(p_Model->ShaderProgram());
+
+	if (s_Iterator == m_Models.end())
+		return;
+
+	s_Iterator->second.erase(p_Model);
 }

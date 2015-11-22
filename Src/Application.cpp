@@ -32,11 +32,9 @@ void Application::DestroyInstance()
 Application::Application() :
 	m_CurrentState(Application::Windowed),
 	m_TickRate(128),
-	m_MaxFPS(300),
-	m_InputPostUpdateTask(~0),
-	m_SceneRenderTask(~0)
+	m_MaxFPS(60),
+	m_InputPostUpdateTask(~0)
 {
-
 }
 
 Application::~Application()
@@ -100,7 +98,6 @@ void Application::Init(int p_WindowWidth, int p_WindowHeight, const std::string&
 	}
 
 	glfwMakeContextCurrent(m_Window);
-	glfwSwapInterval(1);
 
 	// Initialize glew.
 	glewExperimental = true;
@@ -191,12 +188,6 @@ void Application::OnRender()
 	// Create our basic task list.
 	// TODO: Simulation task.
 
-	if (m_SceneRenderTask != ~0)
-	{
-		Managers::TaskManager::GetInstance()->WaitForSet(m_SceneRenderTask);
-		Managers::TaskManager::GetInstance()->ReleaseHandle(m_SceneRenderTask);
-	}
-
 	// Input PostUpdate Task
 	Managers::TaskManager::GetInstance()->CreateTaskSet(
 		Managers::InputManager::GetInstance()->GetPostUpdateTask(),
@@ -208,14 +199,7 @@ void Application::OnRender()
 		&m_InputPostUpdateTask);
 
 	// Render Task.
-	Managers::TaskManager::GetInstance()->CreateTaskSet(
-		Managers::SceneManager::GetInstance()->GetRenderTask(),
-		nullptr,
-		1,
-		nullptr,
-		0,
-		"Input_PostUpdate",
-		&m_SceneRenderTask);
+	Managers::SceneManager::GetInstance()->Render();
 
 	Managers::TaskManager::GetInstance()->WaitForSet(m_InputPostUpdateTask);
 	Managers::TaskManager::GetInstance()->ReleaseHandle(m_InputPostUpdateTask);

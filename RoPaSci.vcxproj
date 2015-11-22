@@ -192,6 +192,7 @@ xcopy "$(SolutionDir)Depends\bin\win64" "$(TargetDir)" /s /e /y</Command>
     <ClCompile Include="Src\Managers\TaskManager.cpp" />
     <ClCompile Include="Src\Managers\Task\TBBContextID.cpp" />
     <ClCompile Include="Src\Rendering\DebugRenderer.cpp" />
+    <ClCompile Include="Src\Rendering\MainRenderer.cpp" />
     <ClCompile Include="Src\Rendering\Objects\Model.cpp" />
     <ClCompile Include="Src\RoPaSci.cpp" />
     <ClCompile Include="Src\Util\EngineTimer.cpp" />

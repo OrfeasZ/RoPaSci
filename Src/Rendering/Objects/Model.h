@@ -28,10 +28,16 @@ namespace Rendering
 			inline void Position(glm::vec3 p_Position) { m_ModelMatrix[3] = p_Position[0] + p_Position[1] + p_Position[2] + m_ModelMatrix[3]; }
 			inline glm::vec3 Position() const { return glm::vec3(m_ModelMatrix[3]); }
 
+			inline glm::mat4 ModelMatrix() const { return m_ModelMatrix; }
+
 			inline GLuint VertexBuffer() const { return m_VertexBuffer; }
 			inline GLuint UVBuffer() const { return m_UVBuffer; }
 			inline GLuint NormalBuffer() const { return m_NormalBuffer; }
-			inline GLuint ElementBuffer() const { return m_ElementBuffer; }
+			inline GLuint IndexBuffer() const { return m_IndexBuffer; }
+
+			inline size_t IndexCount() const { return m_Indices.size(); }
+
+			inline GLuint ShaderProgram() const { return m_ShaderProgram; }
 
 		protected:
 			void ParseModelData(Managers::Model::ModelData* p_Data);
@@ -51,7 +57,7 @@ namespace Rendering
 			GLuint m_VertexBuffer;
 			GLuint m_UVBuffer;
 			GLuint m_NormalBuffer;
-			GLuint m_ElementBuffer;
+			GLuint m_IndexBuffer;
 		};
 	}
 }
