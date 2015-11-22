@@ -19,5 +19,6 @@ namespace Game
 
 	public:
 		bool Init();
+		void Update(double p_Delta);
 	};
 }

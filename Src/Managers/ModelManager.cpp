@@ -41,9 +41,6 @@ ModelManager::~ModelManager()
 
 bool ModelManager::Init()
 {
-	if (!PreCacheModel("GameBlock"))
-		return false;
-
 	return true;
 }
 

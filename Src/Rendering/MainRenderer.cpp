@@ -1,8 +1,10 @@
 #include "MainRenderer.h"
 
+#include <Application.h>
 #include <Managers/ModelManager.h>
 #include <Managers/InputManager.h>
 #include <Rendering/Objects/Model.h>
+
 #include <glm/gtc/matrix_transform.hpp>
 
 using namespace Rendering;
@@ -40,7 +42,9 @@ MainRenderer::~MainRenderer()
 
 bool MainRenderer::Init()
 {
-	m_ProjectionMatrix = glm::perspective(glm::radians(70.0f), 4.0f / 3.0f, 0.1f, 1000.f);
+	m_ProjectionMatrix = glm::perspective(glm::radians(70.0f), 
+		(float) Application::GetInstance()->WindowWidth() / (float) Application::GetInstance()->WindowHeight(), 
+		0.1f, 1000.f);
 
 	m_ViewMatrix = glm::lookAt(
 		glm::vec3(0, 3, 0.0001),
@@ -93,15 +97,22 @@ void MainRenderer::RenderModels()
 		for (auto s_Model : s_ModelGroup.second)
 		{
 			// Set all the matrices.
-			glUniformMatrix4fv(s_ProjectionMatrixLocation, 1, GL_FALSE, &m_ProjectionMatrix[0][0]);
-			glUniformMatrix4fv(s_ViewMatrixLocation, 1, GL_FALSE, &m_ViewMatrix[0][0]);
-			glUniformMatrix4fv(s_ModelMatrixLocation, 1, GL_FALSE, &s_Model->ModelMatrix()[0][0]);
+			if (s_ProjectionMatrixLocation != -1)
+				glUniformMatrix4fv(s_ProjectionMatrixLocation, 1, GL_FALSE, &m_ProjectionMatrix[0][0]);
+
+			if (s_ViewMatrixLocation != -1)
+				glUniformMatrix4fv(s_ViewMatrixLocation, 1, GL_FALSE, &m_ViewMatrix[0][0]);
+
+			if (s_ModelMatrixLocation != -1)
+				glUniformMatrix4fv(s_ModelMatrixLocation, 1, GL_FALSE, &s_Model->ModelMatrix()[0][0]);
 
 			// Set the light position.
-			glUniform3f(s_LightVectorLocation, m_LightPosition.x, m_LightPosition.y, m_LightPosition.z);
+			if (s_LightVectorLocation != -1)
+				glUniform3f(s_LightVectorLocation, m_LightPosition.x, m_LightPosition.y, m_LightPosition.z);
 
 			// Set the model color.
-			glUniform3f(s_ColorVectorLocation, s_Model->Color().x, s_Model->Color().y, s_Model->Color().z);
+			if (s_ColorVectorLocation != -1)
+				glUniform3f(s_ColorVectorLocation, s_Model->Color().x, s_Model->Color().y, s_Model->Color().z);
 
 			// Set Vertices.
 			glEnableVertexAttribArray(0);

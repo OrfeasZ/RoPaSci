@@ -6,6 +6,8 @@
 #include <thread>
 #include <chrono>
 
+#include <Game/Main.h>
+
 using namespace Managers;
 
 SimulationManager* SimulationManager::m_Instance = nullptr;
@@ -63,6 +65,10 @@ void SimulationManager::UpdateTask(void* p_Argument, int32_t p_ContextID, uint32
 		Managers::TaskManager::GetInstance()->WaitForSet(m_InputPostUpdateTask);
 		Managers::TaskManager::GetInstance()->ReleaseHandle(m_InputPostUpdateTask);
 	}
+
+	auto s_Delta = m_SimulationTimer.GetLastDelta();
+
+	Game::Main::GetInstance()->Update(s_Delta);
 	
 	// Input PostUpdate Task
 	Managers::TaskManager::GetInstance()->CreateTaskSet(
@@ -74,6 +80,4 @@ void SimulationManager::UpdateTask(void* p_Argument, int32_t p_ContextID, uint32
 		"Input_PostUpdate",
 		&m_InputPostUpdateTask
 	);
-
-	auto s_Delta = m_SimulationTimer.GetLastDelta();
 }
