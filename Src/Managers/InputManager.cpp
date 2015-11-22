@@ -59,7 +59,6 @@ bool InputManager::Init()
 
 void InputManager::PostUpdateTask(void* p_Argument, int32_t p_ContextID, uint32_t p_Index, uint32_t p_Size)
 {
-
 }
 
 bool InputManager::IsKeyboardKeyPressed(int p_Key) const
@@ -135,7 +134,7 @@ void InputManager::OnCursor(GLFWwindow* p_Window, double p_X, double p_Y)
 
 void InputManager::OnCursorEnter(GLFWwindow* p_Window, int p_Entered)
 {
-	m_MouseInside = p_Entered;
+	m_MouseInside = p_Entered != 0;
 }
 
 void InputManager::OnMouseButton(GLFWwindow* p_Window, int p_Button, int p_Action, int p_Modifiers)

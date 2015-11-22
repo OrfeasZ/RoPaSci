@@ -140,7 +140,7 @@ void Application::Init(int p_WindowWidth, int p_WindowHeight, const std::string&
 	auto s_Model = new Rendering::Objects::Model(
 		Managers::ModelManager::GetInstance()->GetModelData("GameBlock"),
 		Managers::ShaderManager::GetInstance()->GetShaderProgram("ShadedModel")
-		);
+	);
 
 	Managers::ModelManager::GetInstance()->RegisterModel(s_Model);
 
@@ -197,6 +197,8 @@ void Application::OnRender()
 {
 	if (!m_Window)
 		return;
+
+	glfwPollEvents();
 
 	// Create our basic task list.
 	// TODO: Simulation task.

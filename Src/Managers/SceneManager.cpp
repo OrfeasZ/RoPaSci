@@ -72,5 +72,4 @@ void SceneManager::Render()
 		s_Renderer->Render(s_Delta);
 
 	glfwSwapBuffers(m_Window);
-	glfwPollEvents();
 }
