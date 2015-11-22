@@ -9,6 +9,7 @@ out vec3 WorldPos;
 out vec3 NormalCameraPos;
 out vec3 EyeCameraDirection;
 out vec3 LightCameraDirection;
+out vec3 Color;
 
 // Projection
 uniform mat4 p;
@@ -22,8 +23,13 @@ uniform mat4 m;
 // Light
 uniform vec3 l;
 
+// Color
+uniform vec3 c;
+
 void main()
 {
+	Color = c;
+
 	// Output position of the vertex, in clip space : MVP * position
 	gl_Position =  (p * v * m) * vec4(ModelVertices, 1);
 	

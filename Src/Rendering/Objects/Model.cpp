@@ -5,7 +5,8 @@ using namespace Rendering::Objects;
 Model::Model(Managers::Model::ModelData* p_Data, Managers::Shader::Program* p_ShaderProgram) :
 	m_ShaderProgram(p_ShaderProgram),
 	m_ModelMatrix(1.0),
-	m_Render(true)
+	m_Render(true),
+	m_ModelColor(0.f, 1.f, 0.f)
 {
 	ParseModelData(p_Data);
 }

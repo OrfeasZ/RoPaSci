@@ -88,6 +88,7 @@ void MainRenderer::RenderModels()
 		GLuint s_ViewMatrixLocation = s_Program->GetUniformLocation("v");
 		GLuint s_ModelMatrixLocation = s_Program->GetUniformLocation("m");
 		GLuint s_LightVectorLocation = s_Program->GetUniformLocation("l");
+		GLuint s_ColorVectorLocation = s_Program->GetUniformLocation("c");
 
 		for (auto s_Model : s_ModelGroup.second)
 		{
@@ -98,6 +99,9 @@ void MainRenderer::RenderModels()
 
 			// Set the light position.
 			glUniform3f(s_LightVectorLocation, m_LightPosition.x, m_LightPosition.y, m_LightPosition.z);
+
+			// Set the model color.
+			glUniform3f(s_ColorVectorLocation, s_Model->Color().x, s_Model->Color().y, s_Model->Color().z);
 
 			// Set Vertices.
 			glEnableVertexAttribArray(0);

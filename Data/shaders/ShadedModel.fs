@@ -6,6 +6,7 @@ in vec3 WorldPos;
 in vec3 NormalCameraPos;
 in vec3 EyeCameraDirection;
 in vec3 LightCameraDirection;
+in vec3 Color;
 
 // Ouput data
 out vec3 color;
@@ -17,7 +18,7 @@ void main()
 {
 	// Material properties
 	//vec3 MaterialDiffuseColor = texture(myTextureSampler, UV).rgb;
-	vec3 MaterialDiffuseColor = vec3(1.0, 0.1, 0.1);
+	vec3 MaterialDiffuseColor = Color;
 	vec3 MaterialAmbientColor = vec3(0.1, 0.1, 0.1) * MaterialDiffuseColor;
 
     vec3 NormalizedNormal = normalize(NormalCameraPos);

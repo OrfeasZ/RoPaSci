@@ -38,6 +38,9 @@ namespace Rendering
 
 			inline size_t IndexCount() const { return m_Indices.size(); }
 
+			inline glm::vec3 Color() const { return m_ModelColor; }
+			inline void Color(glm::vec3 p_Color) { m_ModelColor = p_Color; }
+
 			inline Managers::Shader::Program* ShaderProgram() const { return m_ShaderProgram; }
 
 		protected:
@@ -46,6 +49,7 @@ namespace Rendering
 		private:
 			Managers::Shader::Program* m_ShaderProgram;
 			glm::mat4 m_ModelMatrix;
+			glm::vec3 m_ModelColor;
 			bool m_Render;
 
 		private:
