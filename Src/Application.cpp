@@ -9,6 +9,7 @@
 #include <Managers/InputManager.h>
 #include <Managers/SceneManager.h>
 #include <Managers/ModelManager.h>
+#include <Managers/CameraManager.h>
 
 #include <Game/Main.h>
 
@@ -54,6 +55,7 @@ Application::~Application()
 	Managers::ShaderManager::DestroyInstance();
 	Managers::ModelManager::DestroyInstance();
 	Managers::SceneManager::DestroyInstance();
+	Managers::CameraManager::DestroyInstance();
 }
 
 void Application::Init(int p_WindowWidth, int p_WindowHeight, const std::string& p_WindowTitle)
@@ -169,6 +171,9 @@ bool Application::InitManagers()
 		return false;
 
 	if (!Managers::InputManager::GetInstance()->Init())
+		return false;
+
+	if (!Managers::CameraManager::GetInstance()->Init())
 		return false;
 
 	if (!Managers::SceneManager::GetInstance()->Init())

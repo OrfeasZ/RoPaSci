@@ -32,17 +32,24 @@ namespace Game
 
 		public:
 			void Type(BlockType p_Type);
-			void Position(glm::vec2 p_Position);
+			void Position(int p_X, int p_Y);
+			void Active(bool p_Active);
+			void Hover(bool p_Hover);
 
 		public:
 			inline BlockType Type() const { return m_Type; }
-			inline glm::vec2 Position() const { return m_Position; }
+			inline int X() const { return m_X; }
+			inline int Y() const { return m_Y; }
 
 		private:
 			BlockType m_Type;
-			glm::vec2 m_Position;
-			glm::vec2 m_GridSize;
+			int m_X;
+			int m_Y;
+			int m_GridColumns;
+			int m_GridRows;
 			Rendering::Objects::Model* m_Model;
+			bool m_Active;
+			bool m_Hover;
 		};
 	}
 }

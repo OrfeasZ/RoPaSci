@@ -19,7 +19,23 @@ namespace Game
 			virtual void Init() override;
 			virtual void Update(double p_Delta) override;
 
+		public:
+			void SetActiveBlock(int p_X, int p_Y);
+			void SetHoverBlock(int p_X, int p_Y);
+
+		public:
+			inline BlockEntity** GetBlocks() const { return m_Blocks; }
+			inline BlockEntity* GetBlock(int p_X, int p_Y) const { return m_Blocks[p_X + (p_Y * m_Columns)]; }
+
+			inline int GetColumns() const { return m_Columns; }
+			inline int GetRows() const { return m_Rows; }
+
+			inline BlockEntity* GetActiveBlock() const { return m_ActiveBlock; }
+			inline BlockEntity* GetHoverBlock() const { return m_HoverBlock; }
+
 		private:
+			BlockEntity* m_ActiveBlock;
+			BlockEntity* m_HoverBlock;
 			BlockEntity** m_Blocks;
 			int m_Columns;
 			int m_Rows;

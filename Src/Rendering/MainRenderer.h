@@ -24,6 +24,13 @@ namespace Rendering
 		virtual void Render(double p_Delta) override;
 		virtual void OnResize(int p_Width, int p_Height) override;
 
+	public:
+		glm::vec3 ScreenToWorld(int p_X, int p_Y);
+
+	public:
+		inline glm::mat4 ProjectionMatrix() const { return m_ProjectionMatrix; }
+		inline glm::mat4 ViewMatrix() const { return m_ViewMatrix; }
+
 	protected:
 		void RenderModels();
 

@@ -3,6 +3,7 @@
 #include <Application.h>
 #include <Managers/ModelManager.h>
 #include <Managers/InputManager.h>
+#include <Managers/CameraManager.h>
 #include <Rendering/Objects/Model.h>
 
 #include <glm/gtc/matrix_transform.hpp>
@@ -47,13 +48,14 @@ bool MainRenderer::Init()
 		0.1f, 1000.f);
 
 	m_ViewMatrix = glm::lookAt(
-		glm::vec3(0, 3, 0.0001),
-		glm::vec3(0, 0, 0),
+		Managers::CameraManager::GetInstance()->EyePosition(),
+		Managers::CameraManager::GetInstance()->LookAtPosition(),
 		glm::vec3(0, 1, 0)
 	);
 
 	m_LightPosition = glm::vec3(4, 4, 4);
 
+	glEnable(GL_DEPTH);
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LESS);
 
@@ -65,8 +67,35 @@ void MainRenderer::Update(double p_Delta)
 
 }
 
+glm::vec3 MainRenderer::ScreenToWorld(int p_X, int p_Y)
+{
+	auto s_ViewProjection = glm::inverse(m_ProjectionMatrix * m_ViewMatrix);
+
+	auto s_WorldCoordinates = s_ViewProjection * glm::vec4(
+		2.0 * Managers::InputManager::GetInstance()->GetCursorX() / Application::GetInstance()->WindowWidth() - 1, 
+		-2.0 * Managers::InputManager::GetInstance()->GetCursorY() / Application::GetInstance()->WindowHeight() + 1, 
+		0.0,
+		1.0
+	);
+
+	s_WorldCoordinates *= Managers::CameraManager::GetInstance()->EyePosition().y;
+
+	return glm::vec3(s_WorldCoordinates.x, s_WorldCoordinates.y, s_WorldCoordinates.z);
+}
+
 void MainRenderer::Render(double p_Delta)
 {
+	if (Managers::CameraManager::GetInstance()->Dirty())
+	{
+		Managers::CameraManager::GetInstance()->Dirty(false);
+
+		m_ViewMatrix = glm::lookAt(
+			Managers::CameraManager::GetInstance()->EyePosition(),
+			Managers::CameraManager::GetInstance()->LookAtPosition(),
+			glm::vec3(0, 1, 0)
+		);
+	}
+
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glClearColor(1.f, 1.f, 1.f, 1.f);
 

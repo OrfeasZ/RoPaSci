@@ -6,6 +6,7 @@
 #include <Managers/InputManager.h>
 
 #include <Game/Entities/GridEntity.h>
+#include <Game/Entities/BlockEntity.h>
 
 using namespace Game;
 
@@ -38,6 +39,8 @@ Main::~Main()
 
 }
 
+static Entities::GridEntity* s_Entity;
+
 bool Main::Init()
 {
 	if (!Managers::ModelManager::GetInstance()->PreCacheModel("GameBlock"))
@@ -46,7 +49,7 @@ bool Main::Init()
 	glfwSetWindowSize(Application::GetInstance()->GetWindow(), 750, 600);
 
 	// TODO: REMOVE THIS TEST CODE
-	auto s_Entity = new Entities::GridEntity(15, 12);
+	s_Entity = new Entities::GridEntity(15, 12);
 	s_Entity->Init();
 	// TEST CODE END
 
@@ -61,4 +64,6 @@ void Main::Update(double p_Delta)
 		glfwSetWindowShouldClose(Application::GetInstance()->GetWindow(), GL_TRUE);
 		return;
 	}
+
+	s_Entity->Update(p_Delta);
 }
