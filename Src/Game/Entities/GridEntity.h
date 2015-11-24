@@ -34,6 +34,9 @@ namespace Game
 			inline BlockEntity* GetHoverBlock() const { return m_HoverBlock; }
 
 		private:
+			bool DestructionStep(bool p_Simulated = false);
+
+		private:
 			BlockEntity* m_ActiveBlock;
 			BlockEntity* m_HoverBlock;
 			BlockEntity** m_Blocks;

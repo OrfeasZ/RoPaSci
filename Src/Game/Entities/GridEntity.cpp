@@ -44,7 +44,11 @@ void GridEntity::Init()
 		}
 	}
 
-	// TODO: Destroy neighboring blocks.
+	// Run a destruction simulation to make sure we don't already have formed groups.
+	while (DestructionStep(true))
+		continue;
+
+	//DestructionStep(true);
 }
 
 void GridEntity::Update(double p_Delta)
@@ -54,6 +58,9 @@ void GridEntity::Update(double p_Delta)
 	// TODO: Turn these updates into tasks.
 	for (int i = 0; i < m_Rows * m_Columns; ++i)
 	{
+		if (m_Blocks[i] == nullptr)
+			continue;
+
 		m_Blocks[i]->Update(p_Delta);
 
 		if (m_Blocks[i]->Animating())
@@ -127,6 +134,9 @@ void GridEntity::SetActiveBlock(int p_X, int p_Y)
 			m_ActiveBlock->Position(p_X, p_Y);
 			m_ActiveBlock = nullptr;
 
+			// Run destruction.
+			DestructionStep();
+
 			return;
 		}
 
@@ -161,4 +171,127 @@ void GridEntity::SetHoverBlock(int p_X, int p_Y)
 
 	m_HoverBlock = GetBlock(p_X, p_Y);
 	m_HoverBlock->Hover(true);
+}
+
+bool GridEntity::DestructionStep(bool p_Simulated /* = false */)
+{
+	// Tuple: x, y, size, horizontal
+	std::vector<std::tuple<int, int, int, bool>> s_Groups;
+
+	// Search for horizontal groups.
+	for (int j = 0; j < m_Rows; ++j) 
+	{
+		// We always have 1 match since we start with a single block.
+		int s_MatchedBlocks = 1;
+
+		for (int i = 0; i < m_Columns; ++i) 
+		{
+			bool s_Check = false;
+
+			// Is this the last tile?
+			if (i == m_Columns - 1) 
+			{
+				s_Check = true;
+			}
+			else 
+			{
+				// Make sure the block types match while ignoring bombs.
+				if (GetBlock(i, j) != nullptr && GetBlock(i + 1, j) != nullptr &&
+					GetBlock(i, j)->Type() == GetBlock(i + 1, j)->Type() && 
+					GetBlock(i, j)->Type() != BlockEntity::Bomb)
+					s_MatchedBlocks += 1;
+				else
+					s_Check = true;
+			}
+
+			// Did we have a group?
+			if (s_Check) 
+			{
+				// We did! Add it to our collection.
+				if (s_MatchedBlocks >= 3) 
+					s_Groups.push_back(std::make_tuple(i + 1 - s_MatchedBlocks, j, s_MatchedBlocks, true));
+
+				s_MatchedBlocks = 1;
+			}
+		}
+	}
+
+	// Do the same for vertical groups.
+	for (int i = 0; i < m_Columns; ++i) 
+	{
+		// Start with a single tile, cluster of 1
+		int s_MatchedBlocks = 1;
+
+		for (int j = 0; j < m_Rows; ++j) 
+		{
+			bool s_Check = false;
+
+			if (j == m_Rows - 1) 
+			{
+				s_Check = true;
+			}
+			else
+			{
+				if (GetBlock(i, j) != nullptr && GetBlock(i, j + 1) != nullptr &&
+					GetBlock(i, j)->Type() == GetBlock(i, j + 1)->Type() && 
+					GetBlock(i, j)->Type() != BlockEntity::Bomb)
+					s_MatchedBlocks += 1;
+				else 
+					s_Check = true;
+			}
+
+			if (s_Check)
+			{
+				if (s_MatchedBlocks >= 3) 
+					s_Groups.push_back(std::make_tuple(i, j + 1 - s_MatchedBlocks, s_MatchedBlocks, false));
+
+				s_MatchedBlocks = 1;
+			}
+		}
+	}
+
+	if (s_Groups.size() == 0)
+		return false;
+
+	// Destroy blocks.
+	for (size_t i = 0; i < s_Groups.size(); ++i) 
+	{
+		auto s_Group = s_Groups[i];
+		
+		int s_ColumnOffset = 0;
+		int s_RowOffset = 0;
+
+		for (int j = 0; j < std::get<2>(s_Group); ++j)
+		{
+			int x = std::get<0>(s_Group) + s_ColumnOffset;
+			int y = std::get<1>(s_Group) + s_RowOffset;
+
+			if (m_Blocks[x + (y * m_Columns)] != nullptr)
+			{
+				if (p_Simulated)
+				{
+					// If we're running in simulation mode just replace the color.
+					m_Blocks[x + (y * m_Columns)]->Type((BlockEntity::BlockType) (rand() % BlockEntity::Count));
+				}
+				else
+				{
+					// Otherwise move the block to top and replace it with the top-most one.
+					// TODO
+					delete m_Blocks[x + (y * m_Columns)];
+					m_Blocks[x + (y * m_Columns)] = nullptr;
+				}
+
+			}
+
+			if (std::get<3>(s_Group))
+				++s_ColumnOffset;
+			else
+				++s_RowOffset;
+		}
+	}
+
+	if (p_Simulated)
+		return true;
+
+	return true;
 }
