@@ -47,8 +47,6 @@ void GridEntity::Init()
 	// Run a destruction simulation to make sure we don't already have formed groups.
 	while (DestructionStep(true))
 		continue;
-
-	//DestructionStep(true);
 }
 
 void GridEntity::Update(double p_Delta)
@@ -146,6 +144,10 @@ void GridEntity::SetActiveBlock(int p_X, int p_Y)
 
 	// Activate the newly selected block.
 	m_ActiveBlock = GetBlock(p_X, p_Y);
+
+	if (m_ActiveBlock == nullptr)
+		return;
+
 	m_ActiveBlock->Active(true);
 }
 
@@ -178,6 +180,7 @@ bool GridEntity::DestructionStep(bool p_Simulated /* = false */)
 	// Tuple: x, y, size, horizontal
 	std::vector<std::tuple<int, int, int, bool>> s_Groups;
 
+	// TODO: Split this to tasks.
 	// Search for horizontal groups.
 	for (int j = 0; j < m_Rows; ++j) 
 	{
@@ -255,43 +258,98 @@ bool GridEntity::DestructionStep(bool p_Simulated /* = false */)
 
 	// Destroy blocks.
 	for (size_t i = 0; i < s_Groups.size(); ++i) 
-	{
-		auto s_Group = s_Groups[i];
-		
-		int s_ColumnOffset = 0;
-		int s_RowOffset = 0;
-
-		for (int j = 0; j < std::get<2>(s_Group); ++j)
-		{
-			int x = std::get<0>(s_Group) + s_ColumnOffset;
-			int y = std::get<1>(s_Group) + s_RowOffset;
-
-			if (m_Blocks[x + (y * m_Columns)] != nullptr)
-			{
-				if (p_Simulated)
-				{
-					// If we're running in simulation mode just replace the color.
-					m_Blocks[x + (y * m_Columns)]->Type((BlockEntity::BlockType) (rand() % BlockEntity::Count));
-				}
-				else
-				{
-					// Otherwise move the block to top and replace it with the top-most one.
-					// TODO
-					delete m_Blocks[x + (y * m_Columns)];
-					m_Blocks[x + (y * m_Columns)] = nullptr;
-				}
-
-			}
-
-			if (std::get<3>(s_Group))
-				++s_ColumnOffset;
-			else
-				++s_RowOffset;
-		}
-	}
+		DestroyGroup(s_Groups[i], p_Simulated);
 
 	if (p_Simulated)
 		return true;
 
 	return true;
+}
+
+void GridEntity::DestroyGroup(std::tuple<int, int, int, bool> p_Group, bool p_Simulated /* = false */)
+{
+	int s_ColumnOffset = 0;
+	int s_RowOffset = 0;
+
+	auto s_BlockType = GetBlock(std::get<0>(p_Group), std::get<1>(p_Group))->Type();
+
+	// Destroy the main blocks.
+	for (int j = 0; j < std::get<2>(p_Group); ++j)
+	{
+		int x = std::get<0>(p_Group) +s_ColumnOffset;
+		int y = std::get<1>(p_Group) +s_RowOffset;
+
+		if (m_Blocks[x + (y * m_Columns)] != nullptr)
+		{
+			if (p_Simulated)
+			{
+				// If we're running in simulation mode just replace the color.
+				m_Blocks[x + (y * m_Columns)]->Type((BlockEntity::BlockType) (rand() % BlockEntity::Count));
+			}
+			else
+			{
+				// Otherwise, handle a proper block destruction along with destruction of neighboring blocks.
+				// TODO
+				// TODO: Scoring.
+				delete m_Blocks[x + (y * m_Columns)];
+				m_Blocks[x + (y * m_Columns)] = nullptr;
+			}
+
+		}
+
+		if (std::get<3>(p_Group))
+			++s_ColumnOffset;
+		else
+			++s_RowOffset;
+	}
+
+	if (p_Simulated)
+		return;
+
+	// Red and blue blocks don't destroy neighboring blocks.
+	if (s_BlockType == BlockEntity::Blue ||
+		s_BlockType == BlockEntity::Red)
+		return;
+
+	// Destroy all neighboring blocks.
+	int s_StartX = std::get<0>(p_Group) - 3;
+	int s_EndX = std::get<3>(p_Group) ? (std::get<0>(p_Group) + std::get<2>(p_Group) + 4) : std::get<0>(p_Group) + 4;
+
+	int s_StartY = std::get<1>(p_Group) - 3;
+	int s_EndY = !std::get<3>(p_Group) ? (std::get<1>(p_Group) + std::get<2>(p_Group) + 4) : std::get<1>(p_Group) + 4;
+	
+	if (s_StartX < 0)
+		s_StartX = 0;
+
+	if (s_EndX > m_Columns)
+		s_EndX = m_Columns;
+
+	if (s_StartY < 0)
+		s_StartY = 0;
+
+	if (s_StartY > m_Rows)
+		s_StartY = m_Rows;
+
+	for (int y = s_StartY; y < s_EndY; ++y)
+	{
+		for (int x = s_StartX; x < s_EndX; ++x)
+		{
+			if (m_Blocks[x + (y * m_Columns)] == nullptr)
+				continue;
+
+			if (s_BlockType == BlockEntity::Rock && m_Blocks[x + (y * m_Columns)]->Type() == BlockEntity::Paper)
+				continue;
+
+			if (s_BlockType == BlockEntity::Paper && m_Blocks[x + (y * m_Columns)]->Type() == BlockEntity::Scissors)
+				continue;
+
+			if (s_BlockType == BlockEntity::Scissors && m_Blocks[x + (y * m_Columns)]->Type() == BlockEntity::Rock)
+				continue;
+
+			// TODO
+			// TODO: Scoring.
+			delete m_Blocks[x + (y * m_Columns)];
+			m_Blocks[x + (y * m_Columns)] = nullptr;
+		}
+	}
 }

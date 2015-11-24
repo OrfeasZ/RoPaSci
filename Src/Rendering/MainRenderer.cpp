@@ -55,7 +55,7 @@ bool MainRenderer::Init()
 		glm::vec3(0, 1, 0)
 	);
 
-	m_LightPosition = glm::vec3(4, 4, 4);
+	m_LightPosition = glm::vec3(50, 50, 50);
 
 	glEnable(GL_DEPTH);
 	glEnable(GL_DEPTH_TEST);
