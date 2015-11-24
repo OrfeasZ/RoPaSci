@@ -34,8 +34,9 @@ CameraManager::~CameraManager()
 bool CameraManager::Init()
 {
 	m_Dirty = true;
-	m_EyePosition = glm::vec3(0, 3, 0.00001);
+	m_EyePosition = glm::vec3(0, 4.5, 0.00001);
 	m_LookAtPosition = glm::vec3(0, 0, 0);
+	m_FOV = 50.f;
 
 	return true;
 }

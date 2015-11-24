@@ -19,7 +19,8 @@ namespace Game
 				Scissors,
 				Red,
 				Blue,
-				Bomb
+				Bomb,
+				Count
 			};
 
 		public:
@@ -40,6 +41,7 @@ namespace Game
 			inline BlockType Type() const { return m_Type; }
 			inline int X() const { return m_X; }
 			inline int Y() const { return m_Y; }
+			inline bool Animating() const { return m_Animating; }
 
 		private:
 			BlockType m_Type;
@@ -50,6 +52,13 @@ namespace Game
 			Rendering::Objects::Model* m_Model;
 			bool m_Active;
 			bool m_Hover;
+
+		private:
+			bool m_Animating;
+			float m_TargetX;
+			float m_TargetY;
+			float m_TargetZ;
+			bool m_ResetHeight;
 		};
 	}
 }

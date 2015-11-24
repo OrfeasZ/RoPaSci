@@ -43,9 +43,11 @@ MainRenderer::~MainRenderer()
 
 bool MainRenderer::Init()
 {
-	m_ProjectionMatrix = glm::perspective(glm::radians(70.0f), 
+	m_ProjectionMatrix = glm::perspective(glm::radians(Managers::CameraManager::GetInstance()->FOV()),
 		(float) Application::GetInstance()->WindowWidth() / (float) Application::GetInstance()->WindowHeight(), 
 		0.1f, 1000.f);
+
+	m_ProjectionMatrix = glm::ortho(0.f, (float) Application::GetInstance()->WindowWidth(), (float) Application::GetInstance()->WindowHeight(), 0.f, 0.1f, 1000.f);
 
 	m_ViewMatrix = glm::lookAt(
 		Managers::CameraManager::GetInstance()->EyePosition(),
@@ -88,6 +90,10 @@ void MainRenderer::Render(double p_Delta)
 	if (Managers::CameraManager::GetInstance()->Dirty())
 	{
 		Managers::CameraManager::GetInstance()->Dirty(false);
+
+		m_ProjectionMatrix = glm::perspective(glm::radians(Managers::CameraManager::GetInstance()->FOV()),
+			(float) Application::GetInstance()->WindowWidth() / (float) Application::GetInstance()->WindowHeight(),
+			0.1f, 1000.f);
 
 		m_ViewMatrix = glm::lookAt(
 			Managers::CameraManager::GetInstance()->EyePosition(),
@@ -173,7 +179,7 @@ void MainRenderer::RenderModels()
 
 void MainRenderer::OnResize(int p_Width, int p_Height)
 {
-	m_ProjectionMatrix = glm::perspective(glm::radians(70.0f),
+	m_ProjectionMatrix = glm::perspective(glm::radians(Managers::CameraManager::GetInstance()->FOV()),
 		(float) p_Width / (float) p_Height,
 		0.1f, 1000.f);
 }

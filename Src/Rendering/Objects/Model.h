@@ -29,7 +29,7 @@ namespace Rendering
 			inline void Scale(glm::vec3 p_Ratio) { m_ModelMatrix = glm::scale(m_ModelMatrix, p_Ratio); }
 
 			// TODO: Fix position setter.
-			inline void Position(glm::vec3 p_Position) { m_ModelMatrix[3] = p_Position[0] + p_Position[1] + p_Position[2] + m_ModelMatrix[3]; }
+			inline void Position(glm::vec3 p_Position) { m_ModelMatrix[3].x = p_Position.x; m_ModelMatrix[3].y = p_Position.y; m_ModelMatrix[3].z = p_Position.z; }
 			inline glm::vec3 Position() const { return glm::vec3(m_ModelMatrix[3]); }
 
 			inline glm::mat4 ModelMatrix() const { return m_ModelMatrix; }
