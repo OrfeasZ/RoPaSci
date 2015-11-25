@@ -45,6 +45,7 @@ namespace Game
 			BlockEntity** m_Blocks;
 			int m_Columns;
 			int m_Rows;
+			bool m_PendingDestruction;
 		};
 	}
 }

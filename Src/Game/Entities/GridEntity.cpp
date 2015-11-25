@@ -13,9 +13,9 @@ GridEntity::GridEntity(int p_Columns, int p_Rows) :
 	m_Columns(p_Columns),
 	m_Rows(p_Rows),
 	m_ActiveBlock(nullptr),
-	m_HoverBlock(nullptr)
+	m_HoverBlock(nullptr),
+	m_PendingDestruction(false)
 {
-
 }
 
 GridEntity::~GridEntity()
@@ -66,6 +66,13 @@ void GridEntity::Update(double p_Delta)
 
 	if (s_Animating)
 		return;
+
+	if (m_PendingDestruction)
+	{
+		m_PendingDestruction = false;
+		DestructionStep();
+		return;
+	}
 
 	double s_CenterX = (m_Columns - 1.0) / 2.0;
 	double s_CenterY = (m_Rows - 1.0) / 2.0;
@@ -176,6 +183,8 @@ void GridEntity::SetHoverBlock(int p_X, int p_Y)
 
 bool GridEntity::DestructionStep(bool p_Simulated /* = false */)
 {
+	Logger(Util::LogLevel::Debug, "Running Grid Destruction.");
+
 	// Tuple: x, y, size, horizontal
 	std::vector<std::tuple<int, int, int, bool>> s_Groups;
 
@@ -265,6 +274,9 @@ bool GridEntity::DestructionStep(bool p_Simulated /* = false */)
 	// Repopulate destroyed blocks.
 	RepopulateBlocks();
 
+	// Run one more destruction once we're done with this.
+	m_PendingDestruction = true;
+
 	return true;
 }
 
@@ -291,7 +303,6 @@ void GridEntity::DestroyGroup(std::tuple<int, int, int, bool> p_Group, bool p_Si
 			else
 			{
 				// Otherwise, handle a proper block destruction along with destruction of neighboring blocks.
-				// TODO
 				// TODO: Scoring.
 				m_Blocks[x + (y * m_Columns)]->Destroyed(true);
 			}
@@ -393,7 +404,7 @@ void GridEntity::RepopulateBlocks()
 				// TODO: Weight this differently.
 				s_CurrentBlock->Type((BlockEntity::BlockType) (rand() % BlockEntity::Count));
 				s_CurrentBlock->Destroyed(false);
-				s_CurrentBlock->MoveToTop(s_ColumnBlocks[x]);
+				s_CurrentBlock->MoveToTop(s_ColumnBlocks[x], 0.5f);
 				
 				continue;
 			}
@@ -403,7 +414,7 @@ void GridEntity::RepopulateBlocks()
 			s_CurrentBlock->Position(s_ReplacementBlock->X(), s_ReplacementBlock->Y(), true);
 
 			m_Blocks[x + (y * m_Columns)] = s_ReplacementBlock;
-			s_ReplacementBlock->Position(x, y);
+			s_ReplacementBlock->Position(x, y, false, 0.5f);
 		}
 	}
 

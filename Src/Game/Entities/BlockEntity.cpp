@@ -17,9 +17,10 @@ BlockEntity::BlockEntity(BlockType p_Type, int p_X, int p_Y, int p_Columns, int 
 	m_TargetX(0.f),
 	m_TargetY(0.f),
 	m_TargetZ(0.f),
-	m_Animating(false),
+	m_AnimatingMovement(false),
 	m_ResetHeight(false),
-	m_Destroyed(false)
+	m_Destroyed(false),
+	m_PendingPosition(false)
 {
 	Logger(Util::LogLevel::Debug, "Creating BlockEntity of type '%d' at %dx%d.", m_Type, m_X, m_Y);
 }
@@ -78,79 +79,123 @@ void BlockEntity::Init()
 
 void BlockEntity::Update(double p_Delta)
 {
-	if (m_Animating)
+	if (m_ScaleStep > 0)
 	{
-		auto s_Position = m_Model->Position();
+		m_Model->Scale(glm::vec3(1.0 - (m_ScaleStep * p_Delta), 1.0 - (m_ScaleStep * p_Delta), 1.0 - (m_ScaleStep * p_Delta)));
+		m_ScaleTimer += p_Delta;
 
-		glm::vec3 s_Animation(0.f, 0.f, 0.f);
-
-		bool s_Animating = false;
-
-		if (s_Position.x < m_TargetX)
-		{
-			s_Animating = true;
-			s_Animation.x += 0.5 * p_Delta;
-
-			if (s_Position.x + s_Animation.x > m_TargetX)
-				s_Animation.x = m_TargetX - s_Position.x;
-		}
-
-		if (s_Position.x > m_TargetX)
-		{
-			s_Animating = true;
-			s_Animation.x -= 0.5 * p_Delta;
-
-			if (s_Position.x - s_Animation.x < m_TargetX)
-				s_Animation.x = m_TargetX - s_Position.x;
-		}
-
-		if (s_Position.y < m_TargetY)
-		{
-			s_Animating = true;
-			s_Animation.y += 0.5 * p_Delta;
-
-			if (s_Position.y + s_Animation.y > m_TargetY)
-				s_Animation.y = m_TargetY - s_Position.y;
-		}
-
-		if (s_Position.y > m_TargetY)
-		{
-			s_Animating = true;
-			s_Animation.y -= 0.5 * p_Delta;
-
-			if (s_Position.y - s_Animation.y < m_TargetY)
-				s_Animation.y = m_TargetY - s_Position.y;
-		}
-
-		if (s_Position.z < m_TargetZ)
-		{
-			s_Animating = true;
-			s_Animation.z += 0.5 * p_Delta;
-
-			if (s_Position.z + s_Animation.z > m_TargetZ)
-				s_Animation.z = m_TargetZ - s_Position.z;
-		}
-
-		if (s_Position.z > m_TargetZ)
-		{
-			s_Animating = true;
-			s_Animation.z -= 0.5 * p_Delta;
-
-			if (s_Position.z - s_Animation.z < m_TargetZ)
-				s_Animation.z = m_TargetZ - s_Position.z;
-		}
-
-		if (!s_Animating)
-			m_Animating = false;
-
-		m_Model->Translate(s_Animation);
+		if (m_ScaleTimer >= 1.f / m_ScaleStep)
+			m_ScaleStep = 0.f;
 	}
 
-	if (!m_Animating && m_ResetHeight)
+	if (m_AnimatingMovement)
+	{
+		if (m_MovementDelay > 0.f)
+		{
+			m_MovementDelay -= p_Delta;
+
+			if (m_MovementDelay < 0.f)
+				m_MovementDelay = 0.f;
+		}
+		else
+		{
+			auto s_Position = m_Model->Position();
+
+			glm::vec3 s_Animation(0.f, 0.f, 0.f);
+
+			bool s_Animating = false;
+
+			if (s_Position.x < m_TargetX)
+			{
+				s_Animating = true;
+				s_Animation.x += 0.5 * p_Delta;
+
+				if (s_Position.x + s_Animation.x > m_TargetX)
+					s_Animation.x = m_TargetX - s_Position.x;
+			}
+
+			if (s_Position.x > m_TargetX)
+			{
+				s_Animating = true;
+				s_Animation.x -= 0.5 * p_Delta;
+
+				if (s_Position.x - s_Animation.x < m_TargetX)
+					s_Animation.x = m_TargetX - s_Position.x;
+			}
+
+			if (s_Position.y < m_TargetY)
+			{
+				s_Animating = true;
+				s_Animation.y += 0.5 * p_Delta;
+
+				if (s_Position.y + s_Animation.y > m_TargetY)
+					s_Animation.y = m_TargetY - s_Position.y;
+			}
+
+			if (s_Position.y > m_TargetY)
+			{
+				s_Animating = true;
+				s_Animation.y -= 0.5 * p_Delta;
+
+				if (s_Position.y - s_Animation.y < m_TargetY)
+					s_Animation.y = m_TargetY - s_Position.y;
+			}
+
+			if (s_Position.z < m_TargetZ)
+			{
+				s_Animating = true;
+				s_Animation.z += 0.5 * p_Delta;
+
+				if (s_Position.z + s_Animation.z > m_TargetZ)
+					s_Animation.z = m_TargetZ - s_Position.z;
+			}
+
+			if (s_Position.z > m_TargetZ)
+			{
+				s_Animating = true;
+				s_Animation.z -= 0.5 * p_Delta;
+
+				if (s_Position.z - s_Animation.z < m_TargetZ)
+					s_Animation.z = m_TargetZ - s_Position.z;
+			}
+
+			if (!s_Animating)
+				m_AnimatingMovement = false;
+
+			m_Model->Translate(s_Animation);
+		}
+	}
+
+	if (!m_AnimatingMovement && m_ResetHeight)
 	{
 		m_TargetY = 0.f;
 		m_ResetHeight = false;
-		m_Animating = true;
+		m_AnimatingMovement = true;
+	}
+
+	if (m_PendingPosition)
+	{
+		if (m_MovementDelay > 0.f)
+		{
+			m_MovementDelay -= p_Delta;
+
+			if (m_MovementDelay < 0.f)
+				m_MovementDelay = 0.f;
+		}
+		else
+		{
+			m_PendingPosition = false;
+
+			float s_CenterX = (m_GridColumns - 1.0) / 2.0;
+			float s_CenterY = (m_GridRows - 1.0) / 2.0;
+
+			float s_TargetX = (m_PendingX - s_CenterX) * 0.30;
+			float s_TargetZ = (m_PendingY - s_CenterY) * 0.30;
+
+			m_Model->Position(glm::vec3(s_TargetX, m_TargetY, s_TargetZ));
+			m_Model->SetScale(glm::vec3(1.f, 1.f, 1.f));
+			m_AnimatingMovement = true;
+		}
 	}
 }
 
@@ -189,7 +234,7 @@ void BlockEntity::Type(BlockType p_Type)
 	}
 }
 
-void BlockEntity::Position(int p_X, int p_Y, bool p_Simulated)
+void BlockEntity::Position(int p_X, int p_Y, bool p_Simulated, float p_Delay)
 {
 	if (m_X == p_X && m_Y == p_Y)
 		return;
@@ -203,19 +248,23 @@ void BlockEntity::Position(int p_X, int p_Y, bool p_Simulated)
 	float s_CenterX = (m_GridColumns - 1.0) / 2.0;
 	float s_CenterY = (m_GridRows - 1.0) / 2.0;
 
-	m_TargetX = (m_X - s_CenterX) * 0.30;
-	m_TargetZ = (m_Y - s_CenterY) * 0.30;
+	m_TargetX = (p_X - s_CenterX) * 0.30;
+	m_TargetZ = (p_Y - s_CenterY) * 0.30;
+
+	m_MovementDelay = p_Delay;
 
 	if (!p_Simulated)
 	{
-		m_Animating = true;
+		m_AnimatingMovement = true;
 		m_ResetHeight = true;
 		m_Active = false;
 		
 		return;
 	}
 
-	m_Model->Position(glm::vec3(m_TargetX, m_TargetY, m_TargetZ));
+	m_PendingX = p_X;
+	m_PendingY = p_Y;
+	m_PendingPosition = true;
 }
 
 void BlockEntity::Active(bool p_Active)
@@ -230,85 +279,36 @@ void BlockEntity::Active(bool p_Active)
 	else
 		m_TargetY = 0.f;
 
-	m_Animating = true;
+	m_AnimatingMovement = true;
 }
 
 void BlockEntity::Hover(bool p_Hover)
 {
-	/*if (m_Hover == p_Hover)
-		return;
 
-	m_Hover = p_Hover;
-
-	if (m_Active)
-		return;
-
-	if (m_Hover)
-	{
-		m_Model->Translate(glm::vec3(0.0, 0.15, 0.0));
-	}
-	else
-	{
-		m_Model->Translate(glm::vec3(0.0, -0.15, 0.0));
-	}
-
-	return;
-
-	if (m_Hover)
-	{
-		m_Model->Color(glm::vec3(0.5, 0.5, 1.0));
-		return;
-	}
-
-	switch (m_Type)
-	{
-	case BlockEntity::Rock:
-		m_Model->Color(glm::vec3(1.0, 1.0, 0.0));
-		break;
-
-	case BlockEntity::Paper:
-		m_Model->Color(glm::vec3(0.0, 1.0, 1.0));
-		break;
-
-	case BlockEntity::Scissors:
-		m_Model->Color(glm::vec3(0.0, 1.0, 0.0));
-		break;
-
-	case BlockEntity::Red:
-		m_Model->Color(glm::vec3(1.0, 0.0, 0.0));
-		break;
-
-	case BlockEntity::Blue:
-		m_Model->Color(glm::vec3(0.0, 0.0, 1.0));
-		break;
-
-	case BlockEntity::Bomb:
-		m_Model->Color(glm::vec3(0.15, 0.15, 0.15));
-		break;
-	}*/
 }
 
 void BlockEntity::Destroyed(bool p_Destroyed)
 {
 	// TODO: Animation
 	m_Destroyed = p_Destroyed;
+	m_AnimatingMovement = false;
+	m_Active = false;
+
+	if (m_Destroyed)
+	{
+		m_ScaleTimer = 0.f;
+		m_ScaleStep = 2.0f;
+	}
 }
 
-void BlockEntity::MoveToTop(int p_Y)
+void BlockEntity::MoveToTop(int p_Y, float p_Delay)
 {
-	float s_CenterX = (m_GridColumns - 1.0) / 2.0;
-	float s_CenterY = (m_GridRows - 1.0) / 2.0;
+	m_PendingX = m_X;
+	m_PendingY = p_Y;
+	m_MovementDelay = p_Delay;
 
-	m_TargetX = (m_X - s_CenterX) * 0.30;
-	m_TargetY = 0.0;
-	m_TargetZ = (m_Y - s_CenterY) * 0.30;
-
-	float s_TargetZ = (p_Y - s_CenterY) * 0.30;
-
-	m_Model->Position(glm::vec3(m_TargetX, 0.f, s_TargetZ));
-
-	m_Animating = true;
-	m_Active = false;
+	m_PendingPosition = true;
+	m_AnimatingMovement = false;
 
 	return;
 }
