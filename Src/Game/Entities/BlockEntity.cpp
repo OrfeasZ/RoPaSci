@@ -18,7 +18,8 @@ BlockEntity::BlockEntity(BlockType p_Type, int p_X, int p_Y, int p_Columns, int 
 	m_TargetY(0.f),
 	m_TargetZ(0.f),
 	m_Animating(false),
-	m_ResetHeight(false)
+	m_ResetHeight(false),
+	m_Destroyed(false)
 {
 	Logger(Util::LogLevel::Debug, "Creating BlockEntity of type '%d' at %dx%d.", m_Type, m_X, m_Y);
 }
@@ -188,7 +189,7 @@ void BlockEntity::Type(BlockType p_Type)
 	}
 }
 
-void BlockEntity::Position(int p_X, int p_Y)
+void BlockEntity::Position(int p_X, int p_Y, bool p_Simulated)
 {
 	if (m_X == p_X && m_Y == p_Y)
 		return;
@@ -205,9 +206,16 @@ void BlockEntity::Position(int p_X, int p_Y)
 	m_TargetX = (m_X - s_CenterX) * 0.30;
 	m_TargetZ = (m_Y - s_CenterY) * 0.30;
 
-	m_Animating = true;
-	m_ResetHeight = true;
-	m_Active = false;
+	if (!p_Simulated)
+	{
+		m_Animating = true;
+		m_ResetHeight = true;
+		m_Active = false;
+		
+		return;
+	}
+
+	m_Model->Position(glm::vec3(m_TargetX, m_TargetY, m_TargetZ));
 }
 
 void BlockEntity::Active(bool p_Active)
@@ -278,4 +286,16 @@ void BlockEntity::Hover(bool p_Hover)
 		m_Model->Color(glm::vec3(0.15, 0.15, 0.15));
 		break;
 	}*/
+}
+
+void BlockEntity::Destroyed(bool p_Destroyed)
+{
+	// TODO: Animation
+	m_Destroyed = p_Destroyed;
+	m_Model->Color(glm::vec3(1.f, 1.f, 1.f));
+}
+
+void BlockEntity::MoveToTop()
+{
+	// TODO: Movement and animation.
 }

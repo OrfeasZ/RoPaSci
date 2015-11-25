@@ -36,6 +36,8 @@ namespace Game
 		private:
 			bool DestructionStep(bool p_Simulated = false);
 			void DestroyGroup(std::tuple<int, int, int, bool> p_Group, bool p_Simulated = false);
+			void RepopulateBlocks();
+			BlockEntity* GenerateRandomBlock(int p_X, int p_Y);
 
 		private:
 			BlockEntity* m_ActiveBlock;

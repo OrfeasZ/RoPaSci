@@ -38,8 +38,7 @@ void GridEntity::Init()
 	{
 		for (int i = 0; i < m_Columns; ++i)
 		{
-			// TODO: Different weights per block type.
-			m_Blocks[i + (j * m_Columns)] = new BlockEntity((BlockEntity::BlockType) (rand() % BlockEntity::Count), i, j, m_Columns, m_Rows);
+			m_Blocks[i + (j * m_Columns)] = GenerateRandomBlock(i, j);
 			m_Blocks[i + (j * m_Columns)]->Init();
 		}
 	}
@@ -263,6 +262,9 @@ bool GridEntity::DestructionStep(bool p_Simulated /* = false */)
 	if (p_Simulated)
 		return true;
 
+	// Repopulate destroyed blocks.
+	RepopulateBlocks();
+
 	return true;
 }
 
@@ -291,8 +293,7 @@ void GridEntity::DestroyGroup(std::tuple<int, int, int, bool> p_Group, bool p_Si
 				// Otherwise, handle a proper block destruction along with destruction of neighboring blocks.
 				// TODO
 				// TODO: Scoring.
-				delete m_Blocks[x + (y * m_Columns)];
-				m_Blocks[x + (y * m_Columns)] = nullptr;
+				m_Blocks[x + (y * m_Columns)]->Destroyed(true);
 			}
 
 		}
@@ -327,14 +328,17 @@ void GridEntity::DestroyGroup(std::tuple<int, int, int, bool> p_Group, bool p_Si
 	if (s_StartY < 0)
 		s_StartY = 0;
 
-	if (s_StartY > m_Rows)
-		s_StartY = m_Rows;
+	if (s_EndY > m_Rows)
+		s_EndY = m_Rows;
 
 	for (int y = s_StartY; y < s_EndY; ++y)
 	{
 		for (int x = s_StartX; x < s_EndX; ++x)
 		{
 			if (m_Blocks[x + (y * m_Columns)] == nullptr)
+				continue;
+
+			if (s_BlockType == m_Blocks[x + (y * m_Columns)]->Type())
 				continue;
 
 			if (s_BlockType == BlockEntity::Rock && m_Blocks[x + (y * m_Columns)]->Type() == BlockEntity::Paper)
@@ -348,8 +352,59 @@ void GridEntity::DestroyGroup(std::tuple<int, int, int, bool> p_Group, bool p_Si
 
 			// TODO
 			// TODO: Scoring.
-			delete m_Blocks[x + (y * m_Columns)];
-			m_Blocks[x + (y * m_Columns)] = nullptr;
+			m_Blocks[x + (y * m_Columns)]->Destroyed(true);
 		}
 	}
+}
+
+void GridEntity::RepopulateBlocks()
+{
+	// Go from bottom to top and shift blocks.
+	for (int y = m_Rows - 1; y >= 0; --y)
+	{
+		for (int x = 0; x < m_Columns; ++x)
+		{
+			auto s_CurrentBlock = m_Blocks[x + (y * m_Columns)];
+
+			// Check if block is destroyed.
+			if (!s_CurrentBlock->Destroyed())
+				continue;
+
+			// Find a block in the same column to replace this block.
+			BlockEntity* s_ReplacementBlock = nullptr;
+
+			for (int i = y - 1; i >= 0; --i)
+			{
+				if (m_Blocks[x + (i * m_Columns)]->Destroyed())
+					continue;
+
+				s_ReplacementBlock = m_Blocks[x + (i * m_Columns)];
+				break;
+			}
+
+			// No replacement block found; re-create the current one.
+			if (s_ReplacementBlock == nullptr)
+			{
+				// TODO: Weight this differently.
+				s_CurrentBlock->Type((BlockEntity::BlockType) (rand() % BlockEntity::Count));
+				s_CurrentBlock->Destroyed(true);
+				s_CurrentBlock->MoveToTop();
+				
+				continue;
+			}
+
+			// Replacement block found; replace it.
+			m_Blocks[s_ReplacementBlock->X() + (s_ReplacementBlock->Y() * m_Columns)] = s_CurrentBlock;
+			s_CurrentBlock->Position(s_ReplacementBlock->X(), s_ReplacementBlock->Y(), true);
+
+			m_Blocks[x + (y * m_Columns)] = s_ReplacementBlock;
+			s_ReplacementBlock->Position(x, y);
+		}
+	}
+}
+
+BlockEntity* GridEntity::GenerateRandomBlock(int p_X, int p_Y)
+{
+	// TODO: Different randomization factors / weights per different block types.
+	return new BlockEntity((BlockEntity::BlockType) (rand() % BlockEntity::Count), p_X, p_Y, m_Columns, m_Rows);
 }

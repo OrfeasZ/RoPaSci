@@ -33,15 +33,18 @@ namespace Game
 
 		public:
 			void Type(BlockType p_Type);
-			void Position(int p_X, int p_Y);
+			void Position(int p_X, int p_Y, bool p_Simulated = false);
 			void Active(bool p_Active);
 			void Hover(bool p_Hover);
+			void Destroyed(bool p_Destroyed);
+			void MoveToTop();
 
 		public:
 			inline BlockType Type() const { return m_Type; }
 			inline int X() const { return m_X; }
 			inline int Y() const { return m_Y; }
 			inline bool Animating() const { return m_Animating; }
+			inline bool Destroyed() const { return m_Destroyed; }
 
 		private:
 			BlockType m_Type;
@@ -54,6 +57,7 @@ namespace Game
 			bool m_Hover;
 
 		private:
+			bool m_Destroyed;
 			bool m_Animating;
 			float m_TargetX;
 			float m_TargetY;
