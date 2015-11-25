@@ -37,7 +37,7 @@ namespace Game
 			void Active(bool p_Active);
 			void Hover(bool p_Hover);
 			void Destroyed(bool p_Destroyed);
-			void MoveToTop();
+			void MoveToTop(int p_Y);
 
 		public:
 			inline BlockType Type() const { return m_Type; }

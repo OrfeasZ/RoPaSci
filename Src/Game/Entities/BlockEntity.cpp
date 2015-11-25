@@ -292,10 +292,23 @@ void BlockEntity::Destroyed(bool p_Destroyed)
 {
 	// TODO: Animation
 	m_Destroyed = p_Destroyed;
-	m_Model->Color(glm::vec3(1.f, 1.f, 1.f));
 }
 
-void BlockEntity::MoveToTop()
+void BlockEntity::MoveToTop(int p_Y)
 {
-	// TODO: Movement and animation.
+	float s_CenterX = (m_GridColumns - 1.0) / 2.0;
+	float s_CenterY = (m_GridRows - 1.0) / 2.0;
+
+	m_TargetX = (m_X - s_CenterX) * 0.30;
+	m_TargetY = 0.0;
+	m_TargetZ = (m_Y - s_CenterY) * 0.30;
+
+	float s_TargetZ = (p_Y - s_CenterY) * 0.30;
+
+	m_Model->Position(glm::vec3(m_TargetX, 0.f, s_TargetZ));
+
+	m_Animating = true;
+	m_Active = false;
+
+	return;
 }

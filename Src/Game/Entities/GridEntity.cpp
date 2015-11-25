@@ -359,6 +359,9 @@ void GridEntity::DestroyGroup(std::tuple<int, int, int, bool> p_Group, bool p_Si
 
 void GridEntity::RepopulateBlocks()
 {
+	int* s_ColumnBlocks = new int[m_Columns];
+	memset(s_ColumnBlocks, 0x00, sizeof(int) * m_Columns);
+
 	// Go from bottom to top and shift blocks.
 	for (int y = m_Rows - 1; y >= 0; --y)
 	{
@@ -385,10 +388,12 @@ void GridEntity::RepopulateBlocks()
 			// No replacement block found; re-create the current one.
 			if (s_ReplacementBlock == nullptr)
 			{
+				--s_ColumnBlocks[x];
+
 				// TODO: Weight this differently.
 				s_CurrentBlock->Type((BlockEntity::BlockType) (rand() % BlockEntity::Count));
-				s_CurrentBlock->Destroyed(true);
-				s_CurrentBlock->MoveToTop();
+				s_CurrentBlock->Destroyed(false);
+				s_CurrentBlock->MoveToTop(s_ColumnBlocks[x]);
 				
 				continue;
 			}
@@ -401,6 +406,8 @@ void GridEntity::RepopulateBlocks()
 			s_ReplacementBlock->Position(x, y);
 		}
 	}
+
+	delete [] s_ColumnBlocks;
 }
 
 BlockEntity* GridEntity::GenerateRandomBlock(int p_X, int p_Y)
