@@ -24,7 +24,6 @@ Texture* Texture::Create(TextureCreateDesc p_Desc)
 	s_Texture->m_Desc = p_Desc;
 
 	glGenTextures(1, &s_Texture->m_TextureID);
-  
 	glBindTexture(p_Desc.Target, s_Texture->m_TextureID);
   
 	glTexImage2D(p_Desc.Target, p_Desc.Level, p_Desc.InternalFormat, p_Desc.Width, p_Desc.Height, p_Desc.Border, p_Desc.Format, p_Desc.Type, p_Desc.Data);

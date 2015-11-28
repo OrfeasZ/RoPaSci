@@ -51,6 +51,12 @@ bool ShaderManager::Init()
 	if (CreateShaderProgram("ShadedModel", VertexShader | FragmentShader) == 0)
 		return false;
 
+	if (CreateShaderProgram("TexturedModel", VertexShader | FragmentShader) == 0)
+		return false;
+
+	if (CreateShaderProgram("Textured", VertexShader | FragmentShader) == 0)
+		return false;
+
 	return true;
 }
 

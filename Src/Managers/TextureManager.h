@@ -9,7 +9,7 @@ namespace Rendering
 {
 	namespace Textures
 	{
-		class Texture;
+		class ITexture;
 	}
 }
 
@@ -32,9 +32,13 @@ namespace Managers
 		virtual bool Init() override;
 
 	public:
-		Rendering::Textures::Texture* LoadPGMTexture(const std::string& p_Name);
+		bool PrecachePGMTexture(const std::string& p_Name);
+		Rendering::Textures::ITexture* GetTexture(const std::string& p_Name);
 
 	protected:
 		void ReadPGMWhiteSpace(VFS::FSFile* p_File);
+
+	protected:
+		std::unordered_map<uint32_t, Rendering::Textures::ITexture*> m_CachedTextures;
 	};
 }

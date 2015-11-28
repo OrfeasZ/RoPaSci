@@ -213,5 +213,9 @@
     <None Include="Data\pgm\scissors.pgm" />
     <None Include="Data\shaders\ShadedModel.fs" />
     <None Include="Data\shaders\ShadedModel.vs" />
+    <None Include="Data\shaders\Textured.fs" />
+    <None Include="Data\shaders\Textured.vs" />
+    <None Include="Data\shaders\TexturedModel.fs" />
+    <None Include="Data\shaders\TexturedModel.vs" />
   </ItemGroup>
 </Project>

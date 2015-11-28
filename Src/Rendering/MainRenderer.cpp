@@ -4,7 +4,10 @@
 #include <Managers/ModelManager.h>
 #include <Managers/InputManager.h>
 #include <Managers/CameraManager.h>
+#include <Managers/ShaderManager.h>
+#include <Managers/TextureManager.h>
 #include <Rendering/Objects/Model.h>
+#include <Rendering/Textures/Texture.h>
 
 #include <glm/gtc/matrix_transform.hpp>
 
@@ -41,13 +44,18 @@ MainRenderer::~MainRenderer()
 
 }
 
+static Textures::ITexture* g_Texture;
+static GLuint gVAO = 0;
+static GLuint gVBO = 0;
+static GLuint ebo;
+
 bool MainRenderer::Init()
 {
 	m_ProjectionMatrix = glm::perspective(glm::radians(Managers::CameraManager::GetInstance()->FOV()),
 		(float) Application::GetInstance()->WindowWidth() / (float) Application::GetInstance()->WindowHeight(), 
 		0.1f, 1000.f);
 
-	m_ProjectionMatrix = glm::ortho(0.f, (float) Application::GetInstance()->WindowWidth(), (float) Application::GetInstance()->WindowHeight(), 0.f, 0.1f, 1000.f);
+	m_OrthoProjection = glm::ortho(0.f, (float) Application::GetInstance()->WindowWidth(), (float) Application::GetInstance()->WindowHeight(), 0.f);
 
 	m_ViewMatrix = glm::lookAt(
 		Managers::CameraManager::GetInstance()->EyePosition(),
@@ -61,6 +69,52 @@ bool MainRenderer::Init()
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LESS);
 
+	glEnable(GL_BLEND);
+	glBlendEquation(GL_FUNC_ADD);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+	g_Texture = Managers::TextureManager::GetInstance()->GetTexture("paper");
+
+	glGenVertexArrays(1, &gVAO);
+	glBindVertexArray(gVAO);
+
+	// make and bind the VBO
+	glGenBuffers(1, &gVBO);
+	glBindBuffer(GL_ARRAY_BUFFER, gVBO);
+
+	GLfloat vertexData [] = {
+		//  X  Y     U     V
+		100, 100, 0.0f, 0.0f, // Top-left
+		200, 100, 1.0f, 0.0f, // Top-right
+		200, 200, 1.0f, 1.0f, // Bottom-right
+		100, 200, 0.0f, 1.0f  // Bottom-left
+	};
+
+	glBufferData(GL_ARRAY_BUFFER, sizeof(vertexData), vertexData, GL_STATIC_DRAW);
+
+	glGenBuffers(1, &ebo);
+
+	GLuint elements [] = {
+		0, 1, 2,
+		2, 3, 0
+	};
+
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(elements), elements, GL_STATIC_DRAW);
+
+	auto s_Program = Managers::ShaderManager::GetInstance()->GetShaderProgram("Textured");
+
+	// connect the xyz to the "vert" attribute of the vertex shader
+	glEnableVertexAttribArray(s_Program->GetAttributeLocation("v"));
+	glVertexAttribPointer(s_Program->GetAttributeLocation("v"), 2, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), 0);
+
+	// connect the uv coords to the "vertTexCoord" attribute of the vertex shader
+	glEnableVertexAttribArray(s_Program->GetAttributeLocation("tc"));
+	glVertexAttribPointer(s_Program->GetAttributeLocation("tc"), 2, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), (void*) (2 * sizeof(GLfloat)));
+
+	// unbind the VAO
+	glBindVertexArray(0);
+
 	return true;
 }
 
@@ -68,6 +122,7 @@ void MainRenderer::Update(double p_Delta)
 {
 
 }
+
 
 glm::vec3 MainRenderer::ScreenToWorld(int p_X, int p_Y)
 {
@@ -95,6 +150,8 @@ void MainRenderer::Render(double p_Delta)
 			(float) Application::GetInstance()->WindowWidth() / (float) Application::GetInstance()->WindowHeight(),
 			0.1f, 1000.f);
 
+		m_OrthoProjection = glm::ortho(0.f, (float) Application::GetInstance()->WindowWidth(), (float) Application::GetInstance()->WindowHeight(), 0.f);
+
 		m_ViewMatrix = glm::lookAt(
 			Managers::CameraManager::GetInstance()->EyePosition(),
 			Managers::CameraManager::GetInstance()->LookAtPosition(),
@@ -106,6 +163,26 @@ void MainRenderer::Render(double p_Delta)
 	glClearColor(1.f, 1.f, 1.f, 1.f);
 
 	RenderModels();
+
+	auto s_Program = Managers::ShaderManager::GetInstance()->GetShaderProgram("Textured");
+
+	glUseProgram(s_Program->GetProgram());
+
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, g_Texture->GetGLTexture());
+
+	glUniform1i(s_Program->GetUniformLocation("t"), 0);
+	glUniformMatrix4fv(s_Program->GetUniformLocation("p"), 1, GL_FALSE, &m_OrthoProjection[0][0]);
+
+	glBindVertexArray(gVAO);
+
+	// draw the VAO
+	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
+	// unbind the VAO, the program and the texture
+	glBindVertexArray(0);
+	glBindTexture(GL_TEXTURE_2D, 0);
+
 }
 
 void MainRenderer::RenderModels()
@@ -128,6 +205,7 @@ void MainRenderer::RenderModels()
 		GLuint s_ModelMatrixLocation = s_Program->GetUniformLocation("m");
 		GLuint s_LightVectorLocation = s_Program->GetUniformLocation("l");
 		GLuint s_ColorVectorLocation = s_Program->GetUniformLocation("c");
+		GLuint s_TextureLocation = s_Program->GetUniformLocation("t");
 
 		for (auto s_Model : s_ModelGroup.second)
 		{
@@ -148,6 +226,14 @@ void MainRenderer::RenderModels()
 			// Set the model color.
 			if (s_ColorVectorLocation != -1)
 				glUniform3f(s_ColorVectorLocation, s_Model->Color().x, s_Model->Color().y, s_Model->Color().z);
+
+			// Set the model texture.
+			if (s_TextureLocation != -1 && s_Model->Texture() != nullptr)
+			{
+				glActiveTexture(GL_TEXTURE0);
+				glBindTexture(GL_TEXTURE_2D, s_Model->Texture()->GetGLTexture());
+				glUniform1i(s_TextureLocation, 0);
+			}
 
 			// Set Vertices.
 			glEnableVertexAttribArray(0);
@@ -173,6 +259,9 @@ void MainRenderer::RenderModels()
 			glDisableVertexAttribArray(0);
 			glDisableVertexAttribArray(1);
 			glDisableVertexAttribArray(2);
+
+			if (s_TextureLocation != -1 && s_Model->Texture() != nullptr)
+				glBindTexture(GL_TEXTURE_2D, 0);
 		}
 	}
 }
@@ -182,4 +271,6 @@ void MainRenderer::OnResize(int p_Width, int p_Height)
 	m_ProjectionMatrix = glm::perspective(glm::radians(Managers::CameraManager::GetInstance()->FOV()),
 		(float) p_Width / (float) p_Height,
 		0.1f, 1000.f);
+
+	m_OrthoProjection = glm::ortho(0.f, (float) p_Width, (float) p_Height, 0.f);
 }

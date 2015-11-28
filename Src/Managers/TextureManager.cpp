@@ -1,5 +1,6 @@
 #include "TextureManager.h"
 
+#include <Util/Utils.h>
 #include <Application.h>
 #include <VFS/FileSystem.h>
 #include <Rendering/Textures/Texture.h>
@@ -39,11 +40,29 @@ TextureManager::~TextureManager()
 
 bool TextureManager::Init()
 {
+	if (!PrecachePGMTexture("rock"))
+		return false;
+
+	if (!PrecachePGMTexture("paper"))
+		return false;
+
+	if (!PrecachePGMTexture("scissors"))
+		return false;
+
 	return true;
 }
 
-Rendering::Textures::Texture* TextureManager::LoadPGMTexture(const std::string& p_Name)
+bool TextureManager::PrecachePGMTexture(const std::string& p_Name)
 {
+	uint32_t s_NameHash = Util::Utils::StringHash(p_Name);
+
+	auto s_Iterator = m_CachedTextures.find(s_NameHash);
+
+	if (s_Iterator != m_CachedTextures.end())
+		return true;
+
+	Logger(Util::LogLevel::Info, "PreCaching PGM Texture '%s'.", p_Name.c_str());
+
 	std::string s_FullPath = "/data/pgm/" + p_Name + ".pgm";
 
 	VFS::FSFile* s_File;
@@ -61,7 +80,7 @@ Rendering::Textures::Texture* TextureManager::LoadPGMTexture(const std::string& 
 	char s_FileType[256];
 
 	if (s_File->Scan("%s", s_FileType) == EOF)
-		return nullptr;
+		return false;
 
 	if (strcmp(s_FileType, "P2") == 0)
 	{
@@ -135,15 +154,28 @@ Rendering::Textures::Texture* TextureManager::LoadPGMTexture(const std::string& 
 
 	s_Desc.Target = GL_TEXTURE_2D;
 	s_Desc.Level = 0;
-	s_Desc.InternalFormat = GL_LUMINANCE32F_ARB;
+	s_Desc.InternalFormat = GL_ALPHA32F_ARB;
 	s_Desc.Width = s_Width;
 	s_Desc.Height = s_Height;
 	s_Desc.Border = 0;
-	s_Desc.Format = GL_LUMINANCE;
+	s_Desc.Format = GL_ALPHA;
 	s_Desc.Type = GL_FLOAT;
 	s_Desc.Data = &s_PixelValues[0];
 
-	return Rendering::Textures::Texture::Create(s_Desc);
+	auto s_Texture = Rendering::Textures::Texture::Create(s_Desc);
+	m_CachedTextures[s_NameHash] = s_Texture;
+
+	return true;
+}
+
+Rendering::Textures::ITexture* TextureManager::GetTexture(const std::string& p_Name)
+{
+	auto s_Iterator = m_CachedTextures.find(Util::Utils::StringHash(p_Name));
+
+	if (s_Iterator == m_CachedTextures.end())
+		return nullptr;
+
+	return s_Iterator->second;
 }
 
 void TextureManager::ReadPGMWhiteSpace(VFS::FSFile* p_File)

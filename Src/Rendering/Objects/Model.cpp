@@ -6,7 +6,8 @@ Model::Model(Managers::Model::ModelData* p_Data, Managers::Shader::Program* p_Sh
 	m_ShaderProgram(p_ShaderProgram),
 	m_ModelMatrix(1.0),
 	m_Render(true),
-	m_ModelColor(0.f, 1.f, 0.f)
+	m_ModelColor(0.f, 1.f, 0.f),
+	m_Texture(nullptr)
 {
 	ParseModelData(p_Data);
 }
