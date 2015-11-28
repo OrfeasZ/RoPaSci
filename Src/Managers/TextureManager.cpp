@@ -49,6 +49,9 @@ bool TextureManager::Init()
 	if (!PrecachePGMTexture("scissors"))
 		return false;
 
+	if (!PrecachePGMTexture("bomb"))
+		return false;
+
 	return true;
 }
 

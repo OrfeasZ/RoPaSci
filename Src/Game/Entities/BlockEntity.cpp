@@ -72,9 +72,9 @@ void BlockEntity::Init()
 		break;
 
 	case BlockEntity::Bomb:
-		m_Model->Color(glm::vec3(0.25, 0.25, 0.25));
-		m_Model->ShaderProgram(Managers::ShaderManager::GetInstance()->GetShaderProgram("ShadedModel"));
-		m_Model->Texture(nullptr);
+		m_Model->Color(glm::vec3(1.0, 1.0, 1.0));
+		m_Model->ShaderProgram(Managers::ShaderManager::GetInstance()->GetShaderProgram("TexturedModel"));
+		m_Model->Texture(Managers::TextureManager::GetInstance()->GetTexture("bomb"));
 		break;
 	}
 
@@ -257,9 +257,9 @@ void BlockEntity::Type(BlockType p_Type)
 		break;
 
 	case BlockEntity::Bomb:
-		m_Model->Color(glm::vec3(0.15, 0.15, 0.15));
-		m_Model->ShaderProgram(Managers::ShaderManager::GetInstance()->GetShaderProgram("ShadedModel"));
-		m_Model->Texture(nullptr);
+		m_Model->Color(glm::vec3(1.0, 1.0, 1.0));
+		m_Model->ShaderProgram(Managers::ShaderManager::GetInstance()->GetShaderProgram("TexturedModel"));
+		m_Model->Texture(Managers::TextureManager::GetInstance()->GetTexture("bomb"));
 		break;
 	}
 
