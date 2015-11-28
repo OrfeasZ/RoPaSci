@@ -42,31 +42,31 @@ void BlockEntity::Init()
 	switch (m_Type)
 	{
 	case BlockEntity::Rock:
-		m_Model->Color(glm::vec3(1.0, 1.0, 0.0));
+		m_Model->Color(glm::vec3(0.68, 0.4, 0.19));
 		m_Model->ShaderProgram(Managers::ShaderManager::GetInstance()->GetShaderProgram("TexturedModel"));
 		m_Model->Texture(Managers::TextureManager::GetInstance()->GetTexture("rock"));
 		break;
 
 	case BlockEntity::Paper:
-		m_Model->Color(glm::vec3(0.0, 1.0, 1.0));
+		m_Model->Color(glm::vec3(1.0, 1.0, 1.0));
 		m_Model->ShaderProgram(Managers::ShaderManager::GetInstance()->GetShaderProgram("TexturedModel"));
 		m_Model->Texture(Managers::TextureManager::GetInstance()->GetTexture("paper"));
 		break;
 
 	case BlockEntity::Scissors:
-		m_Model->Color(glm::vec3(0.0, 1.0, 0.0));
+		m_Model->Color(glm::vec3(0.12, 0.82, 0.18));
 		m_Model->ShaderProgram(Managers::ShaderManager::GetInstance()->GetShaderProgram("TexturedModel"));
 		m_Model->Texture(Managers::TextureManager::GetInstance()->GetTexture("scissors"));
 		break;
 
 	case BlockEntity::Red:
-		m_Model->Color(glm::vec3(1.0, 0.0, 0.0));
+		m_Model->Color(glm::vec3(0.92, 0.16, 0.16));
 		m_Model->ShaderProgram(Managers::ShaderManager::GetInstance()->GetShaderProgram("ShadedModel"));
 		m_Model->Texture(nullptr);
 		break;
 
 	case BlockEntity::Blue:
-		m_Model->Color(glm::vec3(0.0, 0.0, 1.0));
+		m_Model->Color(glm::vec3(0.16, 0.52, 0.91));
 		m_Model->ShaderProgram(Managers::ShaderManager::GetInstance()->GetShaderProgram("ShadedModel"));
 		m_Model->Texture(nullptr);
 		break;
@@ -227,31 +227,31 @@ void BlockEntity::Type(BlockType p_Type)
 	switch (m_Type)
 	{
 	case BlockEntity::Rock:
-		m_Model->Color(glm::vec3(1.0, 1.0, 0.0));
+		m_Model->Color(glm::vec3(0.68, 0.4, 0.19));
 		m_Model->ShaderProgram(Managers::ShaderManager::GetInstance()->GetShaderProgram("TexturedModel"));
 		m_Model->Texture(Managers::TextureManager::GetInstance()->GetTexture("rock"));
 		break;
 
 	case BlockEntity::Paper:
-		m_Model->Color(glm::vec3(0.0, 1.0, 1.0));
+		m_Model->Color(glm::vec3(1.0, 1.0, 1.0));
 		m_Model->ShaderProgram(Managers::ShaderManager::GetInstance()->GetShaderProgram("TexturedModel"));
 		m_Model->Texture(Managers::TextureManager::GetInstance()->GetTexture("paper"));
 		break;
 
 	case BlockEntity::Scissors:
-		m_Model->Color(glm::vec3(0.0, 1.0, 0.0));
+		m_Model->Color(glm::vec3(0.12, 0.82, 0.18));
 		m_Model->ShaderProgram(Managers::ShaderManager::GetInstance()->GetShaderProgram("TexturedModel"));
 		m_Model->Texture(Managers::TextureManager::GetInstance()->GetTexture("scissors"));
 		break;
 
 	case BlockEntity::Red:
-		m_Model->Color(glm::vec3(1.0, 0.0, 0.0));
+		m_Model->Color(glm::vec3(0.92, 0.16, 0.16));
 		m_Model->ShaderProgram(Managers::ShaderManager::GetInstance()->GetShaderProgram("ShadedModel"));
 		m_Model->Texture(nullptr);
 		break;
 
 	case BlockEntity::Blue:
-		m_Model->Color(glm::vec3(0.0, 0.0, 1.0));
+		m_Model->Color(glm::vec3(0.16, 0.52, 0.91));
 		m_Model->ShaderProgram(Managers::ShaderManager::GetInstance()->GetShaderProgram("ShadedModel"));
 		m_Model->Texture(nullptr);
 		break;
