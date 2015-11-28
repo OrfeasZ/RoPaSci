@@ -10,7 +10,7 @@ namespace Rendering
 		class Texture : public ITexture
 		{
 		public:
-			Texture();
+			Texture(TextureCreateDesc p_Desc);
 			~Texture();
 
 		public:

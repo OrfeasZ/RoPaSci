@@ -87,6 +87,9 @@
     <ClCompile Include="Src\Managers\TextureManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Src\Rendering\Textures\CharacterTexture.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\Managers\ShaderManager.h">
@@ -206,6 +209,9 @@
     <ClInclude Include="Src\Managers\TextureManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Src\Rendering\Textures\CharacterTexture.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Data\pgm\paper.pgm" />
@@ -217,5 +223,7 @@
     <None Include="Data\shaders\Textured.vs" />
     <None Include="Data\shaders\TexturedModel.fs" />
     <None Include="Data\shaders\TexturedModel.vs" />
+    <None Include="Data\shaders\TexturedColored.fs" />
+    <None Include="Data\shaders\TexturedColored.vs" />
   </ItemGroup>
 </Project>
