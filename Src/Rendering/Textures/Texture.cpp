@@ -24,6 +24,48 @@ Texture::Texture(TextureCreateDesc p_Desc) :
 	glGenerateMipmap(m_Desc.Target);
 }
 
+Texture::Texture(GLuint p_TextureID, GLsizei p_Width, GLsizei p_Height, bool p_Buffers /* = false */) :
+	m_TextureID(p_TextureID),
+	m_VAO(0),
+	m_VBO(0),
+	m_EBO(0)
+{
+	m_Desc.Width = p_Width;
+	m_Desc.Height = p_Height;
+
+	if (!p_Buffers)
+		return;
+
+	auto s_Program = Managers::ShaderManager::GetInstance()->GetShaderProgram("Textured");
+
+	glGenVertexArrays(1, &m_VAO);
+	glBindVertexArray(m_VAO);
+
+	glGenBuffers(1, &m_VBO);
+	glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
+
+	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * 4 * 4, nullptr, GL_STATIC_DRAW);
+
+	glGenBuffers(1, &m_EBO);
+
+	GLuint s_Elements [] =
+	{
+		0, 1, 2,
+		2, 3, 0
+	};
+
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_EBO);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(s_Elements), s_Elements, GL_STATIC_DRAW);
+
+	glEnableVertexAttribArray(s_Program->GetAttributeLocation("v"));
+	glVertexAttribPointer(s_Program->GetAttributeLocation("v"), 2, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), 0);
+
+	glEnableVertexAttribArray(s_Program->GetAttributeLocation("tc"));
+	glVertexAttribPointer(s_Program->GetAttributeLocation("tc"), 2, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), (void*) (2 * sizeof(GLfloat)));
+
+	glBindVertexArray(0);
+}
+
 Texture::~Texture()
 {
 
@@ -69,4 +111,6 @@ Texture* Texture::Create(TextureCreateDesc p_Desc, bool p_Buffers)
 	glVertexAttribPointer(s_Program->GetAttributeLocation("tc"), 2, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), (void*) (2 * sizeof(GLfloat)));
 
 	glBindVertexArray(0);
+
+	return s_Texture;
 }

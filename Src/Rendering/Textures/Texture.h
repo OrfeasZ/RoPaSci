@@ -11,6 +11,7 @@ namespace Rendering
 		{
 		public:
 			Texture(TextureCreateDesc p_Desc);
+			Texture(GLuint p_TextureID, GLsizei p_Width, GLsizei p_Height, bool p_Buffers = false);
 			~Texture();
 
 		public:

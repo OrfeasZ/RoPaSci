@@ -254,6 +254,7 @@ xcopy "$(SolutionDir)Depends\bin\win64" "$(TargetDir)" /s /e /y</Command>
     <ClInclude Include="Src\VFS\FSFile.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Data\models\GameBlock.blend" />
     <None Include="Data\pgm\bomb.pgm" />
     <None Include="Data\pgm\paper.pgm" />
     <None Include="Data\pgm\rock.pgm" />
@@ -266,10 +267,14 @@ xcopy "$(SolutionDir)Depends\bin\win64" "$(TargetDir)" /s /e /y</Command>
     <None Include="Data\shaders\TexturedColored.vs" />
     <None Include="Data\shaders\TexturedModel.fs" />
     <None Include="Data\shaders\TexturedModel.vs" />
+    <None Include="Data\textures\main_io.psd" />
   </ItemGroup>
   <ItemGroup>
     <Font Include="Data\fonts\DebugFont.ttf" />
     <Font Include="Data\fonts\MainFont.ttf" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="Data\textures\main_ui.dds" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

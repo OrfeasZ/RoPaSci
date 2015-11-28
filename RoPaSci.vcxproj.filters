@@ -232,9 +232,14 @@
     <None Include="Data\shaders\TexturedColored.fs" />
     <None Include="Data\shaders\TexturedColored.vs" />
     <None Include="Data\pgm\bomb.pgm" />
+    <None Include="Data\textures\main_io.psd" />
+    <None Include="Data\models\GameBlock.blend" />
   </ItemGroup>
   <ItemGroup>
     <Font Include="Data\fonts\DebugFont.ttf" />
     <Font Include="Data\fonts\MainFont.ttf" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="Data\textures\main_ui.dds" />
   </ItemGroup>
 </Project>

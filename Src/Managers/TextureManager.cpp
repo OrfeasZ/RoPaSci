@@ -5,6 +5,8 @@
 #include <VFS/FileSystem.h>
 #include <Rendering/Textures/Texture.h>
 
+#include <gli/gli.hpp>
+
 using namespace Managers;
 
 TextureManager* TextureManager::m_Instance = nullptr;
@@ -50,6 +52,9 @@ bool TextureManager::Init()
 		return false;
 
 	if (!PrecachePGMTexture("bomb"))
+		return false;
+
+	if (!PrecacheDDSTexture("main_ui"))
 		return false;
 
 	return true;
@@ -167,6 +172,192 @@ bool TextureManager::PrecachePGMTexture(const std::string& p_Name)
 
 	auto s_Texture = Rendering::Textures::Texture::Create(s_Desc);
 	m_CachedTextures[s_NameHash] = s_Texture;
+
+	return true;
+}
+
+bool TextureManager::PrecacheDDSTexture(const std::string& p_Name)
+{
+	uint32_t s_NameHash = Util::Utils::StringHash(p_Name);
+
+	auto s_Iterator = m_CachedTextures.find(s_NameHash);
+
+	if (s_Iterator != m_CachedTextures.end())
+		return true;
+
+	Logger(Util::LogLevel::Info, "PreCaching DDS Texture '%s'.", p_Name.c_str());
+
+	std::string s_FullPath = "/data/textures/" + p_Name + ".dds";
+
+	std::string s_TextureData;
+	if (!VFS::FileSystem::GetInstance()->ReadFile(s_FullPath, s_TextureData))
+	{
+		Logger(Util::LogLevel::Warn, "Could not find DDS texture file '%s'.", p_Name.c_str());
+		return false;
+	}
+
+	gli::texture s_Texture = gli::load(s_TextureData.data(), s_TextureData.size());
+
+	if (s_Texture.empty())
+	{
+		Logger(Util::LogLevel::Warn, "Could not load DDS texture file '%s'.", p_Name.c_str());
+		return false;
+	}
+
+	gli::gl s_GL;
+
+	gli::gl::format s_Format = s_GL.translate(s_Texture.format());
+	GLenum s_Target = s_GL.translate(s_Texture.target());
+
+	GLuint s_TextureID = 0;
+
+	glGenTextures(1, &s_TextureID);
+	glBindTexture(s_Target, s_TextureID);
+
+	glTexParameteri(s_Target, GL_TEXTURE_BASE_LEVEL, 0);
+	glTexParameteri(s_Target, GL_TEXTURE_MAX_LEVEL, static_cast<GLint>(s_Texture.levels() - 1));
+
+	glTexParameteri(s_Target, GL_TEXTURE_SWIZZLE_R, s_Format.Swizzle[0]);
+	glTexParameteri(s_Target, GL_TEXTURE_SWIZZLE_G, s_Format.Swizzle[1]);
+	glTexParameteri(s_Target, GL_TEXTURE_SWIZZLE_B, s_Format.Swizzle[2]);
+	glTexParameteri(s_Target, GL_TEXTURE_SWIZZLE_A, s_Format.Swizzle[3]);
+
+	glTexParameteri(s_Target, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(s_Target, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(s_Target, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(s_Target, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+
+	glm::tvec3<GLsizei> s_Dimensions(s_Texture.dimensions());
+	GLsizei s_FaceTotal = static_cast<GLsizei>(s_Texture.layers() * s_Texture.faces());
+
+	switch (s_Texture.target())
+	{
+	case gli::TARGET_1D:
+		glTexStorage1D(s_Target, static_cast<GLint>(s_Texture.levels()), s_Format.Internal, s_Dimensions.x);
+		break;
+
+	case gli::TARGET_1D_ARRAY:
+	case gli::TARGET_2D:
+	case gli::TARGET_CUBE:
+		glTexStorage2D(s_Target, static_cast<GLint>(s_Texture.levels()), s_Format.Internal,
+			s_Dimensions.x, s_Texture.target() == gli::TARGET_2D ? s_Dimensions.y : s_FaceTotal);
+
+		break;
+
+	case gli::TARGET_2D_ARRAY:
+	case gli::TARGET_3D:
+	case gli::TARGET_CUBE_ARRAY:
+		glTexStorage3D(s_Target, static_cast<GLint>(s_Texture.levels()), s_Format.Internal,
+			s_Dimensions.x, s_Dimensions.y,
+			s_Texture.target() == gli::TARGET_3D ? s_Dimensions.z : s_FaceTotal);
+		
+		break;
+	
+	default:
+		return false;
+	}
+
+	for (std::size_t s_Layer = 0; s_Layer < s_Texture.layers(); ++s_Layer)
+	{
+		for (std::size_t s_Face = 0; s_Face < s_Texture.faces(); ++s_Face)
+		{
+			for (std::size_t s_Level = 0; s_Level < s_Texture.levels(); ++s_Level)
+			{
+				GLsizei s_LayerGL = static_cast<GLsizei>(s_Layer);
+
+				glm::tvec3<GLsizei> s_Dimensions(s_Texture.dimensions(s_Level));
+
+				s_Target = gli::is_target_cube(s_Texture.target())
+					? static_cast<GLenum>(GL_TEXTURE_CUBE_MAP_POSITIVE_X + s_Face)
+					: s_Target;
+
+				switch (s_Texture.target())
+				{
+				case gli::TARGET_1D:
+				{
+					if (gli::is_compressed(s_Texture.format()))
+					{
+						glCompressedTexSubImage1D(
+							s_Target, static_cast<GLint>(s_Level), 0, s_Dimensions.x,
+							s_Format.Internal, static_cast<GLsizei>(s_Texture.size(s_Level)),
+							s_Texture.data(s_Layer, s_Face, s_Level));
+					}
+					else
+					{
+						glTexSubImage1D(
+							s_Target, static_cast<GLint>(s_Level), 0, s_Dimensions.x,
+							s_Format.External, s_Format.Type,
+							s_Texture.data(s_Layer, s_Face, s_Level));
+					}
+
+					break;
+				}
+
+				case gli::TARGET_1D_ARRAY:
+				case gli::TARGET_2D:
+				case gli::TARGET_CUBE:
+				{
+					if (gli::is_compressed(s_Texture.format()))
+					{
+						glCompressedTexSubImage2D(
+							s_Target, static_cast<GLint>(s_Level),
+							0, 0,
+							s_Dimensions.x,
+							s_Texture.target() == gli::TARGET_1D_ARRAY ? s_LayerGL : s_Dimensions.y,
+							s_Format.Internal, static_cast<GLsizei>(s_Texture.size(s_Level)),
+							s_Texture.data(s_Layer, s_Face, s_Level));
+					}
+					else
+					{
+						glTexSubImage2D(
+							s_Target, static_cast<GLint>(s_Level),
+							0, 0,
+							s_Dimensions.x,
+							s_Texture.target() == gli::TARGET_1D_ARRAY ? s_LayerGL : s_Dimensions.y,
+							s_Format.External, s_Format.Type,
+							s_Texture.data(s_Layer, s_Face, s_Level));
+					}
+
+					break;
+				}
+
+				case gli::TARGET_2D_ARRAY:
+				case gli::TARGET_3D:
+				case gli::TARGET_CUBE_ARRAY:
+				{
+					if (gli::is_compressed(s_Texture.format()))
+					{
+						glCompressedTexSubImage3D(
+							s_Target, static_cast<GLint>(s_Level),
+							0, 0, 0,
+							s_Dimensions.x, s_Dimensions.y,
+							s_Texture.target() == gli::TARGET_3D ? s_Dimensions.z : s_LayerGL,
+							s_Format.Internal, static_cast<GLsizei>(s_Texture.size(s_Level)),
+							s_Texture.data(s_Layer, s_Face, s_Level));
+					}
+					else
+					{
+						glTexSubImage3D(
+							s_Target, static_cast<GLint>(s_Level),
+							0, 0, 0,
+							s_Dimensions.x, s_Dimensions.y,
+							s_Texture.target() == gli::TARGET_3D ? s_Dimensions.z : s_LayerGL,
+							s_Format.External, s_Format.Type,
+							s_Texture.data(s_Layer, s_Face, s_Level));
+					}
+					
+					break;
+				}
+
+				default: 
+					return false;
+				}
+			}
+		}
+	}
+
+	auto s_RealTexture = new Rendering::Textures::Texture(s_TextureID, s_Dimensions.x, s_Dimensions.y, true);
+	m_CachedTextures[s_NameHash] = s_RealTexture;
 
 	return true;
 }

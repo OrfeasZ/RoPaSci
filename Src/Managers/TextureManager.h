@@ -33,6 +33,8 @@ namespace Managers
 
 	public:
 		bool PrecachePGMTexture(const std::string& p_Name);
+		bool PrecacheDDSTexture(const std::string& p_Name);
+
 		Rendering::Textures::ITexture* GetTexture(const std::string& p_Name);
 
 	protected:
