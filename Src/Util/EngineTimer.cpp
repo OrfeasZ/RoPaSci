@@ -5,8 +5,8 @@
 using namespace Util;
 
 EngineTimer::EngineTimer(int p_UpdatesPerSecond) :
-m_UpdatesPerSecond(p_UpdatesPerSecond),
-m_LastDelta(0.0)
+	m_UpdatesPerSecond(p_UpdatesPerSecond),
+	m_LastDelta(0.0)
 {
 	m_LastTick = std::chrono::high_resolution_clock::now().time_since_epoch();
 
@@ -48,7 +48,7 @@ bool EngineTimer::ShouldUpdate()
 
 	if (m_LastDelta >= m_TickTime)
 	{
-		m_LastDelta = m_TickTime;
+		m_LastTick = std::chrono::high_resolution_clock::now().time_since_epoch();
 		return true;
 	}
 

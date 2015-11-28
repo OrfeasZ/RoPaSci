@@ -52,6 +52,14 @@ int NativeFile::Scan(const char* p_Format, ...)
 	return s_Return;
 }
 
+void NativeFile::Seek(int64_t p_Offset, int p_Origin)
+{
+	if (!m_File)
+		return;
+
+	fseek(m_File, (long) p_Offset, p_Origin);
+}
+
 void NativeFile::Close()
 {
 	if (!m_File)

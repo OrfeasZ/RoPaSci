@@ -108,7 +108,7 @@ void BlockEntity::Update(double p_Delta)
 			if (s_Position.x < m_TargetX)
 			{
 				s_Animating = true;
-				s_Animation.x += 0.5 * p_Delta;
+				s_Animation.x += 1.5 * p_Delta;
 
 				if (s_Position.x + s_Animation.x > m_TargetX)
 					s_Animation.x = m_TargetX - s_Position.x;
@@ -117,7 +117,7 @@ void BlockEntity::Update(double p_Delta)
 			if (s_Position.x > m_TargetX)
 			{
 				s_Animating = true;
-				s_Animation.x -= 0.5 * p_Delta;
+				s_Animation.x -= 1.5 * p_Delta;
 
 				if (s_Position.x - s_Animation.x < m_TargetX)
 					s_Animation.x = m_TargetX - s_Position.x;
@@ -126,7 +126,7 @@ void BlockEntity::Update(double p_Delta)
 			if (s_Position.y < m_TargetY)
 			{
 				s_Animating = true;
-				s_Animation.y += 0.5 * p_Delta;
+				s_Animation.y += 1.5 * p_Delta;
 
 				if (s_Position.y + s_Animation.y > m_TargetY)
 					s_Animation.y = m_TargetY - s_Position.y;
@@ -135,7 +135,7 @@ void BlockEntity::Update(double p_Delta)
 			if (s_Position.y > m_TargetY)
 			{
 				s_Animating = true;
-				s_Animation.y -= 0.5 * p_Delta;
+				s_Animation.y -= 1.5 * p_Delta;
 
 				if (s_Position.y - s_Animation.y < m_TargetY)
 					s_Animation.y = m_TargetY - s_Position.y;
@@ -144,7 +144,7 @@ void BlockEntity::Update(double p_Delta)
 			if (s_Position.z < m_TargetZ)
 			{
 				s_Animating = true;
-				s_Animation.z += 0.5 * p_Delta;
+				s_Animation.z += 1.5 * p_Delta;
 
 				if (s_Position.z + s_Animation.z > m_TargetZ)
 					s_Animation.z = m_TargetZ - s_Position.z;
@@ -153,7 +153,7 @@ void BlockEntity::Update(double p_Delta)
 			if (s_Position.z > m_TargetZ)
 			{
 				s_Animating = true;
-				s_Animation.z -= 0.5 * p_Delta;
+				s_Animation.z -= 1.5 * p_Delta;
 
 				if (s_Position.z - s_Animation.z < m_TargetZ)
 					s_Animation.z = m_TargetZ - s_Position.z;

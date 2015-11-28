@@ -10,6 +10,7 @@
 #include <Managers/SceneManager.h>
 #include <Managers/ModelManager.h>
 #include <Managers/CameraManager.h>
+#include <Managers/TextureManager.h>
 
 #include <Game/Main.h>
 
@@ -34,8 +35,8 @@ void Application::DestroyInstance()
 
 Application::Application() :
 	m_CurrentState(Application::Windowed),
-	m_TickRate(128),
-	m_MaxFPS(60),
+	m_TickRate(256),
+	m_MaxFPS(300),
 	m_SimulationUpdateTask(~0)
 {
 }
@@ -56,6 +57,7 @@ Application::~Application()
 	Managers::ModelManager::DestroyInstance();
 	Managers::SceneManager::DestroyInstance();
 	Managers::CameraManager::DestroyInstance();
+	Managers::TextureManager::DestroyInstance();
 }
 
 void Application::Init(int p_WindowWidth, int p_WindowHeight, const std::string& p_WindowTitle)
@@ -165,6 +167,9 @@ bool Application::InitManagers()
 		return false;
 
 	if (!Managers::ShaderManager::GetInstance()->Init())
+		return false;
+
+	if (!Managers::TextureManager::GetInstance()->Init())
 		return false;
 
 	if (!Managers::ModelManager::GetInstance()->Init())

@@ -195,9 +195,11 @@ xcopy "$(SolutionDir)Depends\bin\win64" "$(TargetDir)" /s /e /y</Command>
     <ClCompile Include="Src\Managers\SimulationManager.cpp" />
     <ClCompile Include="Src\Managers\TaskManager.cpp" />
     <ClCompile Include="Src\Managers\Task\TBBContextID.cpp" />
+    <ClCompile Include="Src\Managers\TextureManager.cpp" />
     <ClCompile Include="Src\Rendering\DebugRenderer.cpp" />
     <ClCompile Include="Src\Rendering\MainRenderer.cpp" />
     <ClCompile Include="Src\Rendering\Objects\Model.cpp" />
+    <ClCompile Include="Src\Rendering\Textures\Texture.cpp" />
     <ClCompile Include="Src\RoPaSci.cpp" />
     <ClCompile Include="Src\Util\EngineTimer.cpp" />
     <ClCompile Include="Src\Util\Log.cpp" />
@@ -227,12 +229,15 @@ xcopy "$(SolutionDir)Depends\bin\win64" "$(TargetDir)" /s /e /y</Command>
     <ClInclude Include="Src\Managers\Task\GenericTask.h" />
     <ClInclude Include="Src\Managers\Task\TBBContextID.h" />
     <ClInclude Include="Src\Managers\Task\TBBTaskSet.h" />
+    <ClInclude Include="Src\Managers\TextureManager.h" />
     <ClInclude Include="Src\Misc\StdAfx.h" />
     <ClInclude Include="Src\Rendering\DebugRenderer.h" />
     <ClInclude Include="Src\Rendering\IRenderer.h" />
     <ClInclude Include="Src\Rendering\MainRenderer.h" />
     <ClInclude Include="Src\Rendering\Objects\Model.h" />
     <ClInclude Include="Src\Rendering\Textures\ITexture.h" />
+    <ClInclude Include="Src\Rendering\Textures\Texture.h" />
+    <ClInclude Include="Src\Rendering\Textures\TextureCreateDesc.h" />
     <ClInclude Include="Src\Util\EasyLock.h" />
     <ClInclude Include="Src\Util\EngineTimer.h" />
     <ClInclude Include="Src\Util\Log.h" />

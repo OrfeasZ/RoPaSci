@@ -404,7 +404,7 @@ void GridEntity::RepopulateBlocks()
 				// TODO: Weight this differently.
 				s_CurrentBlock->Type((BlockEntity::BlockType) (rand() % BlockEntity::Count));
 				s_CurrentBlock->Destroyed(false);
-				s_CurrentBlock->MoveToTop(s_ColumnBlocks[x], 0.5f);
+				s_CurrentBlock->MoveToTop(s_ColumnBlocks[x], 0.4f);
 				
 				continue;
 			}
@@ -414,7 +414,7 @@ void GridEntity::RepopulateBlocks()
 			s_CurrentBlock->Position(s_ReplacementBlock->X(), s_ReplacementBlock->Y(), true);
 
 			m_Blocks[x + (y * m_Columns)] = s_ReplacementBlock;
-			s_ReplacementBlock->Position(x, y, false, 0.5f);
+			s_ReplacementBlock->Position(x, y, false, 0.4f);
 		}
 	}
 
