@@ -201,6 +201,7 @@ xcopy "$(SolutionDir)Depends\bin\win64" "$(TargetDir)" /s /e /y</Command>
     <ClCompile Include="Src\Rendering\Objects\Model.cpp" />
     <ClCompile Include="Src\Rendering\Textures\CharacterTexture.cpp" />
     <ClCompile Include="Src\Rendering\Textures\Texture.cpp" />
+    <ClCompile Include="Src\Rendering\UIRenderer.cpp" />
     <ClCompile Include="Src\RoPaSci.cpp" />
     <ClCompile Include="Src\Util\EngineTimer.cpp" />
     <ClCompile Include="Src\Util\Log.cpp" />
@@ -240,6 +241,7 @@ xcopy "$(SolutionDir)Depends\bin\win64" "$(TargetDir)" /s /e /y</Command>
     <ClInclude Include="Src\Rendering\Textures\ITexture.h" />
     <ClInclude Include="Src\Rendering\Textures\Texture.h" />
     <ClInclude Include="Src\Rendering\Textures\TextureCreateDesc.h" />
+    <ClInclude Include="Src\Rendering\UIRenderer.h" />
     <ClInclude Include="Src\Util\EasyLock.h" />
     <ClInclude Include="Src\Util\EngineTimer.h" />
     <ClInclude Include="Src\Util\Log.h" />
@@ -252,6 +254,7 @@ xcopy "$(SolutionDir)Depends\bin\win64" "$(TargetDir)" /s /e /y</Command>
     <ClInclude Include="Src\VFS\FSFile.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Data\pgm\bomb.pgm" />
     <None Include="Data\pgm\paper.pgm" />
     <None Include="Data\pgm\rock.pgm" />
     <None Include="Data\pgm\scissors.pgm" />
@@ -263,6 +266,10 @@ xcopy "$(SolutionDir)Depends\bin\win64" "$(TargetDir)" /s /e /y</Command>
     <None Include="Data\shaders\TexturedColored.vs" />
     <None Include="Data\shaders\TexturedModel.fs" />
     <None Include="Data\shaders\TexturedModel.vs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Font Include="Data\fonts\DebugFont.ttf" />
+    <Font Include="Data\fonts\MainFont.ttf" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

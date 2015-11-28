@@ -4,6 +4,9 @@
 #include <Application.h>
 
 #include <Rendering/MainRenderer.h>
+#include <Rendering/UIRenderer.h>
+
+#include <Game/Main.h>
 
 using namespace Managers;
 
@@ -44,6 +47,9 @@ bool SceneManager::Init()
 	if (!RegisterRenderer(Rendering::MainRenderer::GetInstance()))
 		return false;
 
+	if (!RegisterRenderer(Rendering::UIRenderer::GetInstance()))
+		return false;
+
 	return true;
 }
 
@@ -76,6 +82,8 @@ void SceneManager::Render()
 
 	for (auto s_Renderer : m_Renderers)
 		s_Renderer->Render(s_Delta);
+
+	Game::Main::GetInstance()->Render(s_Delta);
 
 	glfwSwapBuffers(m_Window);
 }

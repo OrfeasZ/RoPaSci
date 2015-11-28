@@ -20,5 +20,6 @@ namespace Game
 	public:
 		bool Init();
 		void Update(double p_Delta);
+		void Render(double p_Delta);
 	};
 }

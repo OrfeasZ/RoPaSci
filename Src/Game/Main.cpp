@@ -4,6 +4,9 @@
 
 #include <Managers/ModelManager.h>
 #include <Managers/InputManager.h>
+#include <Managers/TextureManager.h>
+
+#include <Rendering/UIRenderer.h>
 
 #include <Game/Entities/GridEntity.h>
 #include <Game/Entities/BlockEntity.h>
@@ -66,4 +69,10 @@ void Main::Update(double p_Delta)
 	}
 
 	s_Entity->Update(p_Delta);
+}
+
+void Main::Render(double p_Delta)
+{
+	// Render the UI.
+	Rendering::UIRenderer::GetInstance()->RenderText("Score: 1", 10, 550, 0.4, glm::vec3(0, 0, 0));
 }
