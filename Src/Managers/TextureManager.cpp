@@ -57,6 +57,9 @@ bool TextureManager::Init()
 	if (!PrecacheDDSTexture("main_ui"))
 		return false;
 
+	if (!PrecacheDDSTexture("ui_background"))
+		return false;
+
 	return true;
 }
 

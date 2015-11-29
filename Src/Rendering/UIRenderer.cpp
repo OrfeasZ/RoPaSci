@@ -129,7 +129,6 @@ void UIRenderer::RenderText(const std::string& p_Text, float p_X, float p_Y, flo
 	glUniformMatrix4fv(s_Program->GetUniformLocation("p"), 1, GL_FALSE, &MainRenderer::GetInstance()->OrthoProjection()[0][0]);
 	glUniform3f(s_Program->GetUniformLocation("c"), p_Color.x, p_Color.y, p_Color.z);
 
-	glActiveTexture(GL_TEXTURE0);
 	glBindVertexArray(m_TextVAO);
 
 	for (auto it = p_Text.begin(); it != p_Text.end(); ++it)
@@ -174,7 +173,6 @@ void UIRenderer::RenderTexture(Textures::Texture* p_Texture, float p_Top, float 
 
 	glUseProgram(s_Program->GetProgram());
 
-	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, p_Texture->GetGLTexture());
 
 	GLfloat s_Vertices [] = 

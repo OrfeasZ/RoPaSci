@@ -74,13 +74,43 @@ void Main::Update(double p_Delta)
 void Main::Render(double p_Delta)
 {
 	// Render the UI.
+	// Main UI Overlay.
+	float s_Size = Application::GetInstance()->WindowHeight() * 1.146153846153846;
+
 	Rendering::UIRenderer::GetInstance()->RenderTexture(
-		(Rendering::Textures::Texture*) Managers::TextureManager::GetInstance()->GetTexture("main_ui"), 
-		0, 
-		0, 
-		Application::GetInstance()->WindowHeight(), 
-		Application::GetInstance()->WindowWidth()
+		(Rendering::Textures::Texture*) Managers::TextureManager::GetInstance()->GetTexture("main_ui"),
+		(Application::GetInstance()->WindowHeight() - s_Size) / 2,
+		(Application::GetInstance()->WindowWidth() - s_Size) / 2,
+		((Application::GetInstance()->WindowHeight() - s_Size) / 2) + s_Size,
+		((Application::GetInstance()->WindowWidth() - s_Size) / 2) + s_Size
 	);
 
-	Rendering::UIRenderer::GetInstance()->RenderText("Score: 1", 10, 550, 0.4, glm::vec3(0, 0, 0));
+	// Borders. Note: VERY HACKY
+	if ((Application::GetInstance()->WindowWidth() - s_Size) / 2 > 0)
+	{
+		Rendering::UIRenderer::GetInstance()->RenderTexture(
+			(Rendering::Textures::Texture*) Managers::TextureManager::GetInstance()->GetTexture("ui_background"),
+			0,
+			0,
+			Application::GetInstance()->WindowHeight(),
+			(Application::GetInstance()->WindowWidth() - s_Size) / 2
+		);
+
+		Rendering::UIRenderer::GetInstance()->RenderTexture(
+			(Rendering::Textures::Texture*) Managers::TextureManager::GetInstance()->GetTexture("ui_background"),
+			0,
+			((Application::GetInstance()->WindowWidth() - s_Size) / 2) + s_Size,
+			Application::GetInstance()->WindowHeight(),
+			Application::GetInstance()->WindowWidth()
+		);
+	}
+
+	char s_Width[128];
+	sprintf(s_Width, "Width: %d", Application::GetInstance()->WindowWidth());
+
+	char s_Height[128];
+	sprintf(s_Height, "Height: %d", Application::GetInstance()->WindowHeight());
+
+	Rendering::UIRenderer::GetInstance()->RenderText(s_Width, 10, 550, 0.1, glm::vec3(1.0, 1.0, 1.0));
+	Rendering::UIRenderer::GetInstance()->RenderText(s_Height, 10, 600, 0.1, glm::vec3(1.0, 1.0, 1.0));
 }

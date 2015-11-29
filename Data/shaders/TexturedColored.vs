@@ -15,5 +15,5 @@ void main()
 {
 	TextureCoordinates = tc;
 
-	gl_Position = p * vec4(v, 0.0, 1.0);
+	gl_Position = p * vec4(v, 0.1, 1.0);
 }

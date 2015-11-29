@@ -65,8 +65,8 @@ bool MainRenderer::Init()
 	glDepthFunc(GL_LESS);
 
 	glEnable(GL_BLEND);
-	glBlendEquation(GL_FUNC_ADD);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glBlendEquationSeparate(GL_FUNC_ADD, GL_FUNC_ADD);
+	glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ZERO);
 
 	return true;
 }
@@ -162,7 +162,6 @@ void MainRenderer::RenderModels()
 			// Set the model texture.
 			if (s_TextureLocation != -1 && s_Model->Texture() != nullptr)
 			{
-				glActiveTexture(GL_TEXTURE0);
 				glBindTexture(GL_TEXTURE_2D, s_Model->Texture()->GetGLTexture());
 				glUniform1i(s_TextureLocation, 0);
 			}

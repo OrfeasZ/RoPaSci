@@ -8,5 +8,5 @@ uniform sampler2D t;
 
 void main()
 {
-    color = texture(t, TextureCoordinates) /* * vec4(Color, 1.0) */;
+    color = texture(t, TextureCoordinates);
 }
