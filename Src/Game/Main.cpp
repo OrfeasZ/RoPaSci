@@ -105,12 +105,13 @@ void Main::Render(double p_Delta)
 		);
 	}
 
-	char s_Width[128];
-	sprintf(s_Width, "Width: %d", Application::GetInstance()->WindowWidth());
+	float s_ScoreLeft = ((Application::GetInstance()->WindowWidth() - s_Size) / 2) + (s_Size * 0.13);
+	float s_MovesLeft = ((Application::GetInstance()->WindowWidth() - s_Size) / 2) + (s_Size * 0.88);
 
-	char s_Height[128];
-	sprintf(s_Height, "Height: %d", Application::GetInstance()->WindowHeight());
+	float s_TextTop = ((Application::GetInstance()->WindowHeight() - s_Size) / 2) + (s_Size * 0.914);
 
-	Rendering::UIRenderer::GetInstance()->RenderText(s_Width, 10, 550, 0.1, glm::vec3(1.0, 1.0, 1.0));
-	Rendering::UIRenderer::GetInstance()->RenderText(s_Height, 10, 600, 0.1, glm::vec3(1.0, 1.0, 1.0));
+	float s_TextSize = ((s_Size - 250.f) / 350.f) / 10.f;
+
+	Rendering::UIRenderer::GetInstance()->RenderText("999999", s_ScoreLeft, s_TextTop, s_TextSize, glm::vec3(1.0, 1.0, 1.0));
+	Rendering::UIRenderer::GetInstance()->RenderText("999", s_MovesLeft, s_TextTop, s_TextSize, glm::vec3(1.0, 1.0, 1.0));
 }
