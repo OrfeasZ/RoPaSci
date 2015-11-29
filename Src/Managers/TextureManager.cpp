@@ -37,7 +37,10 @@ TextureManager::TextureManager()
 
 TextureManager::~TextureManager()
 {
+	for (auto s_Texture : m_CachedTextures)
+		delete s_Texture.second;
 
+	m_CachedTextures.clear();
 }
 
 bool TextureManager::Init()

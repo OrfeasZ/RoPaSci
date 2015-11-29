@@ -5,6 +5,8 @@
 #include "LifeEntity.h"
 
 #include <Managers/InputManager.h>
+#include <Managers/AudioManager.h>
+
 #include <Rendering/MainRenderer.h>
 
 #include <time.h>
@@ -169,6 +171,9 @@ void GridEntity::SetActiveBlock(uint32_t p_X, uint32_t p_Y)
 			m_ActiveBlock->Position(p_X, p_Y);
 			m_ActiveBlock = nullptr;
 
+			// Play "Swap" sound.
+			Managers::AudioManager::GetInstance()->PlayAudio("swap");
+
 			// Run destruction.
 			DestructionStep();
 
@@ -304,6 +309,9 @@ bool GridEntity::DestructionStep(bool p_Simulated /* = false */, bool p_Filler /
 	if (p_Simulated)
 		return true;
 
+	// Play "Explosion" sound.
+	Managers::AudioManager::GetInstance()->PlayAudio("explosion");
+
 	// Repopulate destroyed blocks.
 	RepopulateBlocks();
 
@@ -352,8 +360,7 @@ void GridEntity::DestroyGroup(std::tuple<int, int, int, bool> p_Group, bool p_Si
 
 	if (p_Simulated)
 		return;
-	
-	// TODO: Sound effect.
+
 	if (!p_Filler)
 		m_ScoringEntity->OnGroupDestroyed();
 

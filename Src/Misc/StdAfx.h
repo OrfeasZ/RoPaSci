@@ -22,14 +22,24 @@
 
 #ifdef _WIN32
 #	pragma comment(lib, "opengl32.lib")
+#	pragma comment(lib, "flac.lib")
+#	pragma comment(lib, "ogg.lib")
+#	pragma comment(lib, "openal32.lib")
+#	pragma comment(lib, "vorbis.lib")
+#	pragma comment(lib, "vorbisenc.lib")
+#	pragma comment(lib, "vorbisfile.lib")
 
 #	ifdef NDEBUG
 #		pragma comment(lib, "glfw3.lib")
 #		pragma comment(lib, "freetype.lib")
 #		pragma comment(lib, "glew32s.lib")
+#		pragma comment(lib, "sfml-system-s.lib")
+#		pragma comment(lib, "sfml-audio-s.lib")
 #	else
 #		pragma comment(lib, "glfw3d.lib")
 #		pragma comment(lib, "freetyped.lib")
 #		pragma comment(lib, "glew32sd.lib")
+#		pragma comment(lib, "sfml-system-sd.lib")
+#		pragma comment(lib, "sfml-audio-sd.lib")
 #	endif
 #endif

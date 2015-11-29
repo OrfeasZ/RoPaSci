@@ -5,6 +5,7 @@
 #include <Managers/ModelManager.h>
 #include <Managers/InputManager.h>
 #include <Managers/TextureManager.h>
+#include <Managers/AudioManager.h>
 
 #include <Rendering/UIRenderer.h>
 
@@ -48,12 +49,22 @@ Main::~Main()
 		delete m_GridEntity;
 
 	m_GridEntity = nullptr;
+
+	m_MainLoopAudio.stop();
 }
 
 bool Main::Init()
 {
 	if (!Managers::ModelManager::GetInstance()->PreCacheModel("GameBlock"))
 		return false; 
+
+	// Start the main music loop.
+	auto s_Buffer = Managers::AudioManager::GetInstance()->GetAudio("background");
+
+	m_MainLoopAudio.setBuffer(*s_Buffer);
+	m_MainLoopAudio.setVolume(40.f);
+	m_MainLoopAudio.setLoop(true);
+	m_MainLoopAudio.play();
 
 	m_State = Main::IdleStart;
 	m_GridEntity = nullptr;
@@ -104,7 +115,12 @@ void Main::Update(double p_Delta)
 
 			// Check if we've lost the game.
 			if (!m_GridEntity->Processing() && m_GridEntity->GetLifeEntity() && m_GridEntity->GetLifeEntity()->GetLives() <= 0)
+			{
 				m_State = Main::GameOver;
+
+				// Play "Game Over" sound.
+				Managers::AudioManager::GetInstance()->PlayAudio("game_over");
+			}
 
 			break;
 		}

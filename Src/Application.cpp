@@ -11,6 +11,7 @@
 #include <Managers/ModelManager.h>
 #include <Managers/CameraManager.h>
 #include <Managers/TextureManager.h>
+#include <Managers/AudioManager.h>
 
 #include <Game/Main.h>
 
@@ -58,6 +59,7 @@ Application::~Application()
 	Managers::SceneManager::DestroyInstance();
 	Managers::CameraManager::DestroyInstance();
 	Managers::TextureManager::DestroyInstance();
+	Managers::AudioManager::DestroyInstance();
 }
 
 void Application::Init(int p_WindowWidth, int p_WindowHeight, const std::string& p_WindowTitle)
@@ -182,6 +184,9 @@ bool Application::InitManagers()
 		return false;
 
 	if (!Managers::SceneManager::GetInstance()->Init())
+		return false;
+
+	if (!Managers::AudioManager::GetInstance()->Init())
 		return false;
 
 	if (!Managers::SimulationManager::GetInstance()->Init())

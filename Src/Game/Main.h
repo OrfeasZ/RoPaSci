@@ -2,6 +2,9 @@
 
 #include <Misc/StdAfx.h>
 
+#include <SFML/Audio.hpp>
+#include <queue>
+
 namespace Game
 {
 	namespace Entities
@@ -39,5 +42,6 @@ namespace Game
 		Entities::GridEntity* m_GridEntity;
 		GameState m_State;
 		float m_SelectedMoves;
+		sf::Sound m_MainLoopAudio;
 	};
 }

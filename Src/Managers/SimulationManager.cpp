@@ -2,6 +2,7 @@
 
 #include <Rendering/IRenderer.h>
 #include <Managers/InputManager.h>
+#include <Managers/AudioManager.h>
 
 #include <thread>
 #include <chrono>
@@ -69,6 +70,8 @@ void SimulationManager::UpdateTask(void* p_Argument, int32_t p_ContextID, uint32
 	auto s_Delta = m_SimulationTimer.GetLastDelta();
 
 	Game::Main::GetInstance()->Update(s_Delta);
+
+	Managers::AudioManager::GetInstance()->Update(s_Delta);
 	
 	// Input PostUpdate Task
 	Managers::TaskManager::GetInstance()->CreateTaskSet(
