@@ -29,7 +29,6 @@ namespace Rendering
 
 			inline void Translate(glm::vec3 p_Coordinates) { m_ModelMatrix = glm::translate(m_ModelMatrix, p_Coordinates); }
 			
-			// TODO: Fix rotation.
 			inline void Rotate(float p_Angle, glm::vec3 p_Axis) { m_ModelMatrix = glm::rotate(m_ModelMatrix, p_Angle, p_Axis); }
 			inline void Scale(glm::vec3 p_Ratio) { m_ModelMatrix = glm::scale(m_ModelMatrix, p_Ratio); }
 			inline void SetScale(glm::vec3 p_Scale) { m_ModelMatrix[0].x = p_Scale.x; m_ModelMatrix[1].y = p_Scale.y; m_ModelMatrix[2].z = p_Scale.z; }

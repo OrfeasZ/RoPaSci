@@ -1,13 +1,14 @@
 #pragma once
 
 #include <Misc/StdAfx.h>
+
 #include "IEntity.h"
+#include "BlockEntity.h"
 
 namespace Game
 {
 	namespace Entities
 	{
-		class BlockEntity;
 		class ScoringEntity;
 		class LifeEntity;
 
@@ -43,6 +44,7 @@ namespace Game
 			void DestroyGroup(std::tuple<int, int, int, bool> p_Group, bool p_Simulated = false, bool p_Filler = false);
 			void RepopulateBlocks();
 			BlockEntity* GenerateRandomBlock(int p_X, int p_Y);
+			BlockEntity::BlockType GetRandomBlockType();
 
 		private:
 			BlockEntity* m_ActiveBlock;

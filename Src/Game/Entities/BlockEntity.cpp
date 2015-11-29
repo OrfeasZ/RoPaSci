@@ -321,7 +321,6 @@ void BlockEntity::Hover(bool p_Hover)
 
 void BlockEntity::Destroyed(bool p_Destroyed)
 {
-	// TODO: Animation
 	m_Destroyed = p_Destroyed;
 	m_AnimatingMovement = false;
 	m_Active = false;

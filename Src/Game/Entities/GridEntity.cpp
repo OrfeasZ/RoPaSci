@@ -331,7 +331,7 @@ void GridEntity::DestroyGroup(std::tuple<int, int, int, bool> p_Group, bool p_Si
 			if (p_Simulated)
 			{
 				// If we're running in simulation mode just replace the color.
-				m_Blocks[x + (y * m_Columns)]->Type((BlockEntity::BlockType) (rand() % BlockEntity::Count));
+				m_Blocks[x + (y * m_Columns)]->Type(GetRandomBlockType());
 			}
 			else
 			{
@@ -475,8 +475,7 @@ void GridEntity::RepopulateBlocks()
 			{
 				--s_ColumnBlocks[x];
 
-				// TODO: Weight this differently.
-				s_CurrentBlock->Type((BlockEntity::BlockType) (rand() % BlockEntity::Count));
+				s_CurrentBlock->Type(GetRandomBlockType());
 				s_CurrentBlock->Destroyed(false);
 				s_CurrentBlock->MoveToTop(s_ColumnBlocks[x], 0.4f);
 				
@@ -497,6 +496,17 @@ void GridEntity::RepopulateBlocks()
 
 BlockEntity* GridEntity::GenerateRandomBlock(int p_X, int p_Y)
 {
-	// TODO: Different randomization factors / weights per different block types.
-	return new BlockEntity((BlockEntity::BlockType) (rand() % BlockEntity::Count), p_X, p_Y, m_Columns, m_Rows);
+	return new BlockEntity(GetRandomBlockType(), p_X, p_Y, m_Columns, m_Rows);
+}
+
+BlockEntity::BlockType GridEntity::GetRandomBlockType()
+{
+	// Get a random block type (excluding bomb).
+	auto s_Type = (BlockEntity::BlockType) (rand() % BlockEntity::Bomb);
+
+	// There's a 10% chance the block will be a bomb.
+	if ((rand() % 101) <= 10)
+		s_Type = BlockEntity::Bomb;
+
+	return s_Type;
 }
