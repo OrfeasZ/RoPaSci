@@ -44,4 +44,4 @@ After all required files are in place, simply launch RoPaSci II by double-clicki
 - "[Using Tasking to Scale Game Engine Systems](https://software.intel.com/en-us/articles/using-tasking-to-scale-game-engine-systems)" by Yannis Minadakis (Intel)
 
 ## Special Thanks
-- Joana Castanheiro for drawing the bomb icon
+- Joana Castanheiro for drawing the bomb icon and helping with Blender
