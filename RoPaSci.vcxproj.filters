@@ -102,6 +102,9 @@
     <ClCompile Include="Src\Managers\AudioManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Src\VFS\Backends\PosixBackend.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\Managers\ShaderManager.h">
@@ -234,6 +237,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Src\Managers\AudioManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\VFS\Backends\PosixBackend.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

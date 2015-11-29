@@ -167,19 +167,20 @@ void MainRenderer::RenderModels()
 			}
 
 			// Set Vertices.
-			glEnableVertexAttribArray(0);
+			glEnableVertexAttribArray(s_Program->GetAttributeLocation("mv"));
 			glBindBuffer(GL_ARRAY_BUFFER, s_Model->VertexBuffer());
-			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
+			glVertexAttribPointer(s_Program->GetAttributeLocation("mv"), 3, GL_FLOAT, GL_FALSE, 0, nullptr);
+
 
 			// Set UVs.
-			glEnableVertexAttribArray(1);
+			glEnableVertexAttribArray(s_Program->GetAttributeLocation("mu"));
 			glBindBuffer(GL_ARRAY_BUFFER, s_Model->UVBuffer());
-			glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, nullptr);
+			glVertexAttribPointer(s_Program->GetAttributeLocation("mu"), 2, GL_FLOAT, GL_FALSE, 0, nullptr);
 
 			// Set Normals.
-			glEnableVertexAttribArray(2);
+			glEnableVertexAttribArray(s_Program->GetAttributeLocation("mn"));
 			glBindBuffer(GL_ARRAY_BUFFER, s_Model->NormalBuffer());
-			glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
+			glVertexAttribPointer(s_Program->GetAttributeLocation("mn"), 3, GL_FLOAT, GL_FALSE, 0, nullptr);
 
 			// Set Indices.
 			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, s_Model->IndexBuffer());

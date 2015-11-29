@@ -96,6 +96,10 @@ void Application::Init(int p_WindowWidth, int p_WindowHeight, const std::string&
 	}
 
 	glfwWindowHint(GLFW_SAMPLES, 4);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 2);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
+	//glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+	//glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 	
 	m_Window = glfwCreateWindow(m_WindowWidth, m_WindowHeight, p_WindowTitle.c_str(), NULL, NULL);
 

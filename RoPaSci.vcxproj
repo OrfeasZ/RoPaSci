@@ -209,6 +209,7 @@ xcopy "$(SolutionDir)Depends\bin\win64" "$(TargetDir)" /s /e /y</Command>
     <ClCompile Include="Src\Util\EngineTimer.cpp" />
     <ClCompile Include="Src\Util\Log.cpp" />
     <ClCompile Include="Src\Util\Utils.cpp" />
+    <ClCompile Include="Src\VFS\Backends\PosixBackend.cpp" />
     <ClCompile Include="Src\VFS\Backends\WinBackend.cpp" />
     <ClCompile Include="Src\VFS\FileSystem.cpp" />
     <ClCompile Include="Src\VFS\Files\NativeFile.cpp" />
@@ -253,6 +254,7 @@ xcopy "$(SolutionDir)Depends\bin\win64" "$(TargetDir)" /s /e /y</Command>
     <ClInclude Include="Src\Util\Log.h" />
     <ClInclude Include="Src\Util\SpinLock.h" />
     <ClInclude Include="Src\Util\Utils.h" />
+    <ClInclude Include="Src\VFS\Backends\PosixBackend.h" />
     <ClInclude Include="Src\VFS\Backends\WinBackend.h" />
     <ClInclude Include="Src\VFS\FileSystem.h" />
     <ClInclude Include="Src\VFS\Files\NativeFile.h" />

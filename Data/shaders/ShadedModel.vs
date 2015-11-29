@@ -1,15 +1,30 @@
-#version 330 core
+#version 120
 
+/*
 layout(location = 0) in vec3 ModelVertices;
 layout(location = 1) in vec2 ModelUVs;
 layout(location = 2) in vec3 ModelNormals;
+*/
 
+attribute vec3 mv;
+attribute vec2 mu;
+attribute vec3 mn;
+
+/*
 out vec2 UV;
 out vec3 WorldPos;
 out vec3 NormalCameraPos;
 out vec3 EyeCameraDirection;
 out vec3 LightCameraDirection;
 out vec3 Color;
+*/
+
+varying vec2 UV;
+varying vec3 WorldPos;
+varying vec3 NormalCameraPos;
+varying vec3 EyeCameraDirection;
+varying vec3 LightCameraDirection;
+varying vec3 Color;
 
 // Projection
 uniform mat4 p;
@@ -30,24 +45,18 @@ void main()
 {
 	Color = c;
 
-	// Output position of the vertex, in clip space : MVP * position
-	gl_Position =  (p * v * m) * vec4(ModelVertices, 1);
+	gl_Position =  (p * v * m) * vec4(mv, 1);
 	
-	// Position of the vertex, in worldspace : M * position
-	WorldPos = (m * vec4(ModelVertices, 1)).xyz;
+	WorldPos = (m * vec4(mv, 1)).xyz;
 	
-	// Vector that goes from the vertex to the camera, in camera space.
-	// In camera space, the camera is at the origin (0,0,0).
-	vec3 VertexCameraPos = (v * m * vec4(ModelVertices, 1)).xyz;
+	vec3 VertexCameraPos = (v * m * vec4(mv, 1)).xyz;
 	EyeCameraDirection = vec3(0, 0, 0) - VertexCameraPos;
 
-	// Vector that goes from the vertex to the light, in camera space.
 	vec3 LightPosition_cameraspace = (v * vec4(l, 1)).xyz;
 	LightCameraDirection = LightPosition_cameraspace + EyeCameraDirection;
 	
-	// Normal of the the vertex, in camera space.
-	NormalCameraPos = (v * transpose(inverse(m)) * vec4(ModelNormals, 0)).xyz;
+	//NormalCameraPos = (v * transpose(inverse(m)) * vec4(ModelNormals, 0)).xyz;
+	NormalCameraPos = (v * m * vec4(mn, 0)).xyz;
 	
-	// UV of the vertex.
-	UV = ModelUVs;
+	UV = mu;
 }
