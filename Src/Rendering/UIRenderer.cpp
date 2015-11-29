@@ -156,6 +156,8 @@ void UIRenderer::RenderText(const std::string& p_Text, float p_X, float p_Y, flo
 		glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(s_TextVertices), s_TextVertices);
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 
+		glUniform1i(s_Program->GetUniformLocation("t"), 0);
+
 		// Draw.
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
