@@ -153,11 +153,11 @@ bool TextureManager::PrecachePGMTexture(const std::string& p_Name)
 
 			if (s_MaxValue < 256)
 			{
-				s_PixelValue = (uint8_t) &s_PixelData[0];
+				s_PixelValue = *(uint8_t*) &s_PixelData[0];
 			}
 			else
 			{
-				s_PixelValue = (uint16_t) &s_PixelData[0];
+				s_PixelValue = *(uint16_t*) &s_PixelData[0];
 				s_PixelValue = (s_PixelValue >> 8) | (s_PixelValue << 8);
 			}
 

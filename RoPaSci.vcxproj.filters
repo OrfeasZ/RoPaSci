@@ -259,6 +259,7 @@
     <None Include="Data\textures\main_io.psd" />
     <None Include="Data\models\GameBlock.blend" />
     <None Include=".gitignore" />
+    <None Include="README.md" />
   </ItemGroup>
   <ItemGroup>
     <Font Include="Data\fonts\DebugFont.ttf" />

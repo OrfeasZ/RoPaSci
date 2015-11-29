@@ -16,7 +16,7 @@ Below you will find instructions on how to build RoPaSci II on all supported pla
 - Visual Studio 2013 (msvc120)
 - Windows SDK
 
-To build RoPaSci II on Windows, simply open the provided solution (*RoPaSci.sln*) with Visual Studio, select the configuration and platform of your choice (*Debug or Release, Win32 or x64*), and build the solution.
+To build RoPaSci II on Windows, simply clone (or download) the repository to some local folder, open the provided solution (*RoPaSci.sln*) with Visual Studio, select the configuration and platform of your choice (*Debug or Release, Win32 or x64*), and build the solution.
 
 ### Linux
 #### Prerequisites
@@ -25,7 +25,8 @@ To build RoPaSci II on Windows, simply open the provided solution (*RoPaSci.sln*
 
 To build RoPaSci II on Linux follow the following steps:
 ```
-$ cd <ropasci-directory>
+$ git clone git@github.com:OrfeasZ/RoPaSci.git
+$ cd RoPaSci
 $ mkdir _build
 $ cd _build
 $ cmake ..
