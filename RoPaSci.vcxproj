@@ -262,6 +262,7 @@ xcopy "$(SolutionDir)Depends\bin\win64" "$(TargetDir)" /s /e /y</Command>
     <ClInclude Include="Src\VFS\FSFile.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include=".gitignore" />
     <None Include="Data\models\GameBlock.blend" />
     <None Include="Data\pgm\bomb.pgm" />
     <None Include="Data\pgm\paper.pgm" />
@@ -286,6 +287,9 @@ xcopy "$(SolutionDir)Depends\bin\win64" "$(TargetDir)" /s /e /y</Command>
     <Image Include="Data\textures\main_ui_gameover.dds" />
     <Image Include="Data\textures\main_ui_idle.dds" />
     <Image Include="Data\textures\ui_background.dds" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="CMakeLists.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -258,6 +258,7 @@
     <None Include="Data\pgm\bomb.pgm" />
     <None Include="Data\textures\main_io.psd" />
     <None Include="Data\models\GameBlock.blend" />
+    <None Include=".gitignore" />
   </ItemGroup>
   <ItemGroup>
     <Font Include="Data\fonts\DebugFont.ttf" />
@@ -268,5 +269,8 @@
     <Image Include="Data\textures\main_ui_gameover.dds" />
     <Image Include="Data\textures\main_ui_idle.dds" />
     <Image Include="Data\textures\ui_background.dds" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="CMakeLists.txt" />
   </ItemGroup>
 </Project>

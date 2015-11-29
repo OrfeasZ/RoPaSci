@@ -132,12 +132,16 @@ void MainRenderer::RenderModels()
 
 		glUseProgram(s_Program->GetProgram());
 
-		GLuint s_ProjectionMatrixLocation = s_Program->GetUniformLocation("p");
-		GLuint s_ViewMatrixLocation = s_Program->GetUniformLocation("v");
-		GLuint s_ModelMatrixLocation = s_Program->GetUniformLocation("m");
-		GLuint s_LightVectorLocation = s_Program->GetUniformLocation("l");
-		GLuint s_ColorVectorLocation = s_Program->GetUniformLocation("c");
-		GLuint s_TextureLocation = s_Program->GetUniformLocation("t");
+		GLint s_ProjectionMatrixLocation = s_Program->GetUniformLocation("p");
+		GLint s_ViewMatrixLocation = s_Program->GetUniformLocation("v");
+		GLint s_ModelMatrixLocation = s_Program->GetUniformLocation("m");
+		GLint s_LightVectorLocation = s_Program->GetUniformLocation("l");
+		GLint s_ColorVectorLocation = s_Program->GetUniformLocation("c");
+		GLint s_TextureLocation = s_Program->GetUniformLocation("t");
+
+		GLint s_ModelVerticesLocation = s_Program->GetAttributeLocation("mv");
+		GLint s_ModelUVsLocation = s_Program->GetAttributeLocation("mu");
+		GLint s_ModelNormalsLocation = s_Program->GetAttributeLocation("mn");
 
 		for (auto s_Model : s_ModelGroup.second)
 		{
@@ -167,20 +171,19 @@ void MainRenderer::RenderModels()
 			}
 
 			// Set Vertices.
-			glEnableVertexAttribArray(s_Program->GetAttributeLocation("mv"));
+			glEnableVertexAttribArray(s_ModelVerticesLocation);
 			glBindBuffer(GL_ARRAY_BUFFER, s_Model->VertexBuffer());
-			glVertexAttribPointer(s_Program->GetAttributeLocation("mv"), 3, GL_FLOAT, GL_FALSE, 0, nullptr);
-
+			glVertexAttribPointer(s_ModelVerticesLocation, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
 
 			// Set UVs.
-			glEnableVertexAttribArray(s_Program->GetAttributeLocation("mu"));
+			glEnableVertexAttribArray(s_ModelUVsLocation);
 			glBindBuffer(GL_ARRAY_BUFFER, s_Model->UVBuffer());
-			glVertexAttribPointer(s_Program->GetAttributeLocation("mu"), 2, GL_FLOAT, GL_FALSE, 0, nullptr);
+			glVertexAttribPointer(s_ModelUVsLocation, 2, GL_FLOAT, GL_FALSE, 0, nullptr);
 
 			// Set Normals.
-			glEnableVertexAttribArray(s_Program->GetAttributeLocation("mn"));
+			glEnableVertexAttribArray(s_ModelNormalsLocation);
 			glBindBuffer(GL_ARRAY_BUFFER, s_Model->NormalBuffer());
-			glVertexAttribPointer(s_Program->GetAttributeLocation("mn"), 3, GL_FLOAT, GL_FALSE, 0, nullptr);
+			glVertexAttribPointer(s_ModelNormalsLocation, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
 
 			// Set Indices.
 			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, s_Model->IndexBuffer());

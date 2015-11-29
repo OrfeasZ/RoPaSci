@@ -5,6 +5,8 @@
 #include "IEntity.h"
 #include "BlockEntity.h"
 
+#include <Managers/TaskManager.h>
+
 namespace Game
 {
 	namespace Entities
@@ -20,7 +22,7 @@ namespace Game
 
 		public:
 			virtual void Init() override;
-			virtual void Update(double p_Delta) override;
+			virtual void Update(double p_Delta);
 
 		public:
 			void SetActiveBlock(uint32_t p_X, uint32_t p_Y);
@@ -47,6 +49,9 @@ namespace Game
 			BlockEntity::BlockType GetRandomBlockType();
 
 		private:
+			void BatchUpdateTask(void* p_Argument, int32_t p_ContextID, uint32_t p_Index, uint32_t p_Size);
+
+		private:
 			BlockEntity* m_ActiveBlock;
 			BlockEntity* m_HoverBlock;
 			BlockEntity** m_Blocks;
@@ -56,6 +61,9 @@ namespace Game
 			uint32_t m_Rows;
 			uint32_t m_Lives;
 			bool m_PendingDestruction;
+
+		private:
+			Managers::TaskManager::TaskSetFunction_t m_BatchUpdateTask;
 		};
 	}
 }

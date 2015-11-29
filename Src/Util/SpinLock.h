@@ -23,7 +23,6 @@ namespace Util
 	public:
 		inline void Lock()
 		{
-			// TODO: Linux support
 #ifdef _WIN32
 			while (_InterlockedCompareExchange(&m_Lock, 1, 0) == 1)
 				;

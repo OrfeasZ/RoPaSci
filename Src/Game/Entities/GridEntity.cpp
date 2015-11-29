@@ -41,6 +41,8 @@ GridEntity::~GridEntity()
 
 void GridEntity::Init()
 {
+	m_BatchUpdateTask = std::bind(&GridEntity::BatchUpdateTask, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3, std::placeholders::_4);
+
 	m_ScoringEntity = new ScoringEntity();
 	m_LifeEntity = new LifeEntity(m_Lives);
 
@@ -68,13 +70,25 @@ void GridEntity::Update(double p_Delta)
 {
 	bool s_Animating = false;
 
-	// TODO: Turn these updates into tasks.
+	float s_Delta = (float) p_Delta;
+
+	uint32_t s_BatchTask;
+	Managers::TaskManager::GetInstance()->CreateTaskSet(
+		m_BatchUpdateTask,
+		*(void**) &s_Delta,
+		4,
+		nullptr,
+		0,
+		"GridEntity_BatchUpdate",
+		&s_BatchTask);
+
+	Managers::TaskManager::GetInstance()->WaitForSet(s_BatchTask);
+	Managers::TaskManager::GetInstance()->ReleaseHandle(s_BatchTask);
+
 	for (uint32_t i = 0; i < m_Rows * m_Columns; ++i)
 	{
 		if (m_Blocks[i] == nullptr)
 			continue;
-
-		m_Blocks[i]->Update(p_Delta);
 
 		if (m_Blocks[i]->Animating())
 			s_Animating = true;
@@ -516,4 +530,20 @@ BlockEntity::BlockType GridEntity::GetRandomBlockType()
 		s_Type = BlockEntity::Bomb;
 
 	return s_Type;
+}
+
+void GridEntity::BatchUpdateTask(void* p_Argument, int32_t p_ContextID, uint32_t p_Index, uint32_t p_Size)
+{
+	float s_Delta = *(float*) &p_Argument;
+
+	int s_Start = ((m_Rows * m_Columns) / p_Size) * p_Index;
+	int s_End = s_Start + ((m_Rows * m_Columns) / p_Size);
+
+	for (int i = s_Start; i < s_End; ++i)
+	{
+		if (!m_Blocks[i])
+			continue;
+
+		m_Blocks[i]->Update(s_Delta);
+	}
 }

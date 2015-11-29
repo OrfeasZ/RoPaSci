@@ -129,6 +129,8 @@ void UIRenderer::RenderText(const std::string& p_Text, float p_X, float p_Y, flo
 	glUniformMatrix4fv(s_Program->GetUniformLocation("p"), 1, GL_FALSE, &MainRenderer::GetInstance()->OrthoProjection()[0][0]);
 	glUniform3f(s_Program->GetUniformLocation("c"), p_Color.x, p_Color.y, p_Color.z);
 
+	GLint s_TextureUniformLocation = s_Program->GetUniformLocation("t");
+
 	glBindVertexArray(m_TextVAO);
 
 	for (auto it = p_Text.begin(); it != p_Text.end(); ++it)
@@ -156,7 +158,7 @@ void UIRenderer::RenderText(const std::string& p_Text, float p_X, float p_Y, flo
 		glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(s_TextVertices), s_TextVertices);
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-		glUniform1i(s_Program->GetUniformLocation("t"), 0);
+		glUniform1i(s_TextureUniformLocation, 0);
 
 		// Draw.
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
