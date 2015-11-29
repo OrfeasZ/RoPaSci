@@ -102,7 +102,7 @@ set(CMAKE_CXX_LINK_EXECUTABLE "${CMAKE_CXX_LINK_EXECUTABLE} -ldl")
 target_link_libraries(ropasci
         freetype glew glfw3 sfml-audio sfml-system
         tbb tbb_preview tbbmalloc tbbmalloc_proxy X11 Xrandr Xi Xxf86vm
-        GL Xinerama Xcursor rt m)
+        GL Xinerama Xcursor rt m stdc++)
 
 # target_link_libraries(ropasci optimized flac freetype glew glfw3 ogg openal32 sfml-audio-s sfml-system-s tbb tbb_preview tbbmalloc tbbmalloc_proxy vorbis vorbisenc vorbisfile)
 
