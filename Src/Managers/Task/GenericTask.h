@@ -40,8 +40,8 @@ namespace Managers
 				, m_Argument(0)
 				, m_Index(0)
 				, m_Size(0)
-				, m_SetName("")
-				, m_SetHandle(~0)
+				, m_SetName((char*) "")
+				, m_SetHandle((uint32_t) ~0)
 			{
 			}
 
@@ -73,8 +73,8 @@ namespace Managers
 		private:
 			TaskManager::TaskSetFunction_t m_Function;
 			void* m_Argument;
-			UINT m_Index;
-			UINT m_Size;
+			uint32_t m_Index;
+			uint32_t m_Size;
 			char* m_SetName;
 			uint32_t m_SetHandle;
 		};

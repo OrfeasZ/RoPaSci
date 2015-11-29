@@ -3,6 +3,7 @@
 #include "FSBackend.h"
 #include "FSFile.h"
 #include "Backends/WinBackend.h"
+#include "Backends/PosixBackend.h"
 
 #include <Util/Utils.h>
 
@@ -35,7 +36,7 @@ FileSystem::~FileSystem()
 
 void FileSystem::Init(const std::string& p_BasePath)
 {
-	// TODO: Linux support
+#ifdef _WIN32
 	// Mount the base filesystem to "/native".
 	Mount(new Backends::WinBackend(p_BasePath), "/native");
 
@@ -44,6 +45,16 @@ void FileSystem::Init(const std::string& p_BasePath)
 
 	// Mount the logs folder to "/logs".
 	Mount(new Backends::WinBackend(p_BasePath + "\\logs", true, true, true), "/logs");
+#else
+	// Mount the base filesystem to "/native".
+	Mount(new Backends::PosixBackend(p_BasePath), "/native");
+
+	// Mount the data folder to "/data".
+	Mount(new Backends::PosixBackend(p_BasePath + "/data"), "/data");
+
+	// Mount the logs folder to "/logs".
+	Mount(new Backends::PosixBackend(p_BasePath + "/logs", true, true, true), "/logs");
+#endif
 }
 
 void FileSystem::Mount(FSBackend* p_Backend, const std::string& p_MountPoint)

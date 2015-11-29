@@ -24,7 +24,9 @@
 #include <Misc/StdAfx.h>
 
 #include "IManager.h"
+
 #include <functional>
+#include <tbb/task_scheduler_init.h>
 
 namespace Managers
 {
@@ -69,6 +71,6 @@ namespace Managers
 		Task::TBBTaskSet* m_Sets[255];
 		uint32_t m_NextFreeSet;
 		Task::TBBContextID* m_TBBContextID;
-		void* m_TBBInit;
+		tbb::task_scheduler_init* m_TBBInit;
 	};
 }

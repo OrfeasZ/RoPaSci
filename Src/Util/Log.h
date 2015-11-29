@@ -6,7 +6,11 @@
 
 // We only want the logging function if we're in debug mode
 // Otherwise it should be nothing
+#ifdef _WIN32
 #define Logger(x, y, ...) Util::Log::GetInstance()->Write(x, __FILE__, __LINE__, __FUNCTION__, y, __VA_ARGS__);
+#else
+#define Logger(x, y, ...) Util::Log::GetInstance()->Write(x, __FILE__, __LINE__, __FUNCTION__, y, ## __VA_ARGS__);
+#endif
 
 namespace VFS
 {
@@ -78,7 +82,7 @@ namespace Util
 
 	public:
 		void Init(LogLevel::type p_LogLevel, const std::string& p_OutputFile = "", bool p_Append = true);
-		void Write(LogLevel::type p_LogLevel, char* p_File, int p_Line, char* p_Function, char* p_Text, ...);
+		void Write(LogLevel::type p_LogLevel, const char* p_File, int p_Line, const char* p_Function, const char* p_Text, ...);
 
 	protected:
 		void SetConsoleColor(ConsoleColor::type p_Color);

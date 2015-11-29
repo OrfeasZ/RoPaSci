@@ -4,7 +4,22 @@
 #include <sstream>
 
 #include <VFS/FileSystem.h>
-#include <VFS/FSFile.h>
+
+#ifndef _WIN32
+#include <time.h>
+
+int _vscprintf (const char * format, va_list pargs)
+{
+	int retval;
+	va_list argcopy;
+	va_copy(argcopy, pargs);
+	retval = vsnprintf(NULL, 0, format, argcopy);
+	va_end(argcopy);
+	return retval;
+}
+
+#define vsprintf_s vsnprintf
+#endif
 
 using namespace Util;
 
@@ -33,8 +48,11 @@ Log::~Log()
 
 void Log::SetConsoleColor(ConsoleColor::type p_Color)
 {
+#ifdef _WIN32
 	HANDLE s_Screen = GetStdHandle(STD_OUTPUT_HANDLE);
 	SetConsoleTextAttribute(s_Screen, p_Color);
+#endif
+    // TODO: Add Linux support for this?!
 }
 
 void Log::Init(LogLevel::type p_LogLevel, const std::string& p_OutputFile /* = "" */, bool p_Append /* = true */)
@@ -91,11 +109,11 @@ void Log::Init(LogLevel::type p_LogLevel, const std::string& p_OutputFile /* = "
 	}
 }
 
-void Log::Write(LogLevel::type p_LogLevel, char* p_File, int p_Line, char* p_Function, char* p_Text, ...)
+void Log::Write(LogLevel::type p_LogLevel, const char* p_File, int p_Line, const char* p_Function, const char* p_Text, ...)
 {
 	EasyLockScopeGuard s_Guard(&m_Lock);
 
-	if (m_OutputFile == nullptr || p_LogLevel > m_LogLevel)
+	if (p_LogLevel > m_LogLevel)
 		return;
 
 	va_list s_ArgList;
@@ -109,16 +127,16 @@ void Log::Write(LogLevel::type p_LogLevel, char* p_File, int p_Line, char* p_Fun
 
 	va_end(s_ArgList);
 
-	char* s_TimeStr = (char*) malloc(9 * sizeof(char));
-	_strtime(s_TimeStr);
-
 	std::time_t s_RawTime;
 	std::tm* s_TimeInfo;
-	char s_TimeBuffer[80];
 
 	std::time(&s_RawTime);
 	s_TimeInfo = std::localtime(&s_RawTime);
 
+	char* s_TimeStr = (char*) malloc(9 * sizeof(char));
+	std::strftime(s_TimeStr, 9, "%H:%M:%S", s_TimeInfo);
+
+	char s_TimeBuffer[80];
 	std::strftime(s_TimeBuffer, 80, "%Y-%m-%d %H:%M:%S", s_TimeInfo);
 
 	char* s_LongTimeStr = (char*) malloc((strlen(s_TimeBuffer) + 1) * sizeof(char*));

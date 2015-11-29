@@ -203,7 +203,7 @@ void Main::Render(double p_Delta)
 	float s_TextSize = ((s_Size - 250.f) / 350.f) / 10.f;
 
 	char s_Score[128];
-	sprintf(s_Score, "%d", m_GridEntity ? (m_GridEntity->GetScoringEntity() ? m_GridEntity->GetScoringEntity()->GetScore() : 0) : 0);
+	sprintf(s_Score, "%li", m_GridEntity ? (m_GridEntity->GetScoringEntity() ? m_GridEntity->GetScoringEntity()->GetScore() : 0) : 0);
 
 	char s_Lives[128];
 	sprintf(s_Lives, "%d", m_GridEntity ? (m_GridEntity->GetLifeEntity() ? m_GridEntity->GetLifeEntity()->GetLives() : 0) : 0);

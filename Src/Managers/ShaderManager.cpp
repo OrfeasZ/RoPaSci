@@ -115,7 +115,7 @@ Shader::Program* ShaderManager::CreateShaderProgram(const std::string& p_Name, u
 		glGetProgramInfoLog(s_Program, s_InfoLogLength, NULL, &s_InfoLog[0]);
 
 		Logger(Util::LogLevel::Error, "Could not link shader program '%s': %s", p_Name.c_str(), &s_InfoLog[0]);
-		return 0;
+		return nullptr;
 	}
 
 	// Store the program in our local map.

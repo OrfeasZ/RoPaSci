@@ -25,8 +25,6 @@
 #include "Task/TBBContextID.h"
 #include "Task/TBBTaskSet.h"
 
-#include <tbb/task_scheduler_init.h>
-
 using namespace Managers;
 using namespace Managers::Task;
 
@@ -93,7 +91,7 @@ void TaskManager::Shutdown()
 bool TaskManager::CreateTaskSet(TaskSetFunction_t p_Function, void* p_Argument, uint32_t p_TaskCount, uint32_t* p_Depends, uint32_t p_DependCount, char* p_SetName, uint32_t* p_Handle)
 {
 	uint32_t s_SetHandle;
-	uint32_t s_SetParent = ~0;
+	uint32_t s_SetParent = (uint32_t) ~0;
 	uint32_t* s_Depends = p_Depends;
 	uint32_t s_DependCount = p_DependCount;
 	bool s_Result = false;
@@ -171,7 +169,7 @@ bool TaskManager::CreateTaskSet(TaskSetFunction_t p_Function, void* p_Argument, 
 		//  already has completed.  This mechanism allows us tasksets that are
 		//  already done to appear active and capable of spawning successors.
 		//
-		s_PreviousCompletion = _InterlockedExchangeAdd(&s_DependsOnTaskSet->m_CompletionCount, 1);
+		s_PreviousCompletion = ++s_DependsOnTaskSet->m_CompletionCount;
 
 		if (s_PreviousCompletion == 0 && s_SetParent != s_DependsOn)
 		{
@@ -182,7 +180,7 @@ bool TaskManager::CreateTaskSet(TaskSetFunction_t p_Function, void* p_Argument, 
 			//
 			//  NOTE: There is no race condition here since the caller must still
 			//  hold a reference to the dependent taskset which was passed in.
-			_InterlockedIncrement(&s_DependsOnTaskSet->m_RefCount);
+			++s_DependsOnTaskSet->m_RefCount;
 		}
 
 		s_DependsOnTaskSet->m_SuccessorsLock.Lock();
@@ -230,7 +228,7 @@ Cleanup:
 
 void TaskManager::ReleaseHandle(uint32_t p_SetHandle)
 {
-	_InterlockedDecrement(&m_Sets[p_SetHandle]->m_RefCount);
+	--m_Sets[p_SetHandle]->m_RefCount;
 
 	//
 	//  Release cannot destroy the object since TBB may still be
@@ -305,7 +303,7 @@ uint32_t TaskManager::AllocateTaskSet()
 void TaskManager::CompleteTaskSet(uint32_t p_SetHandle)
 {
 	TBBTaskSet* s_Set = m_Sets[p_SetHandle];
-	UINT s_CompletionCount = _InterlockedDecrement(&s_Set->m_CompletionCount);
+	uint32_t s_CompletionCount = --s_Set->m_CompletionCount;
 
 	if (s_CompletionCount != 0)
 		return;
@@ -316,7 +314,7 @@ void TaskManager::CompleteTaskSet(uint32_t p_SetHandle)
 	//
 	s_Set->m_SuccessorsLock.Lock();
 
-	for (UINT i = 0; i < 5; ++i)
+	for (uint32_t i = 0; i < 5; ++i)
 	{
 		TBBTaskSet* s_Successor = s_Set->m_Successors[i];
 
@@ -328,7 +326,7 @@ void TaskManager::CompleteTaskSet(uint32_t p_SetHandle)
 
 		if (s_Successor != nullptr)
 		{
-			uint32_t s_StartCount = _InterlockedDecrement(&s_Successor->m_StartCount);
+			uint32_t s_StartCount = --s_Successor->m_StartCount;
 
 			//
 			//  If the start count is 0 the successor has had all its 

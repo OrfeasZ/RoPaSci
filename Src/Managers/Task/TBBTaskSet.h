@@ -24,6 +24,7 @@
 #include <Misc/StdAfx.h>
 
 #include <tbb/task.h>
+#include <tbb/atomic.h>
 #include <Util/SpinLock.h>
 
 #include <Managers/TaskManager.h>
@@ -40,7 +41,7 @@ namespace Managers
 				m_Function(nullptr), 
 				m_Argument(0), 
 				m_Size(0), 
-				m_SetHandle(~0),
+				m_SetHandle((uint32_t) ~0),
 				m_HasBeenWaitedOn(false)
 			{
 				m_Name[0] = 0;
@@ -48,7 +49,7 @@ namespace Managers
 			};
 
 		public:
-			task* execute()
+			tbb::task* execute()
 			{
 				//  set the tbb reference count for this TaskSetTbb to
 				//  one plus the task set count
@@ -69,9 +70,9 @@ namespace Managers
 			TaskManager::TaskSetFunction_t m_Function;
 			void* m_Argument;
 
-			volatile uint32_t m_StartCount;
-			volatile uint32_t m_CompletionCount;
-			volatile uint32_t m_RefCount;
+			tbb::atomic<uint32_t> m_StartCount;
+			tbb::atomic<uint32_t> m_CompletionCount;
+			tbb::atomic<uint32_t> m_RefCount;
 
 			uint32_t m_Size;
 			Util::SpinLock m_SuccessorsLock;

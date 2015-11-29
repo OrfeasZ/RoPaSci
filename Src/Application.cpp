@@ -80,6 +80,7 @@ void Application::Init(int p_WindowWidth, int p_WindowHeight, const std::string&
 
 	Logger(Util::LogLevel::Info, "Starting application...");
 
+
 	// Initialize FreeType.
 	if (FT_Init_FreeType(&m_FreeType))
 	{
