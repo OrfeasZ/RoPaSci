@@ -9,17 +9,13 @@ in vec3 LightCameraDirection;
 in vec3 Color;
 
 // Ouput data
-out vec3 color;
-
-// Values that stay constant for the whole mesh.
-//uniform sampler2D myTextureSampler;
+out vec4 color;
 
 void main()
 {
 	// Material properties
-	//vec3 MaterialDiffuseColor = texture(myTextureSampler, UV).rgb;
-	vec3 MaterialDiffuseColor = Color;
-	vec3 MaterialAmbientColor = vec3(0.1, 0.1, 0.1) * MaterialDiffuseColor;
+	vec4 MaterialDiffuseColor = vec4(Color, 1.0);
+	vec4 MaterialAmbientColor = vec4(0.1, 0.1, 0.1, 1.0) * MaterialDiffuseColor;
 
     vec3 NormalizedNormal = normalize(NormalCameraPos);
     vec3 NormalizedVertexToLightVector = normalize(LightCameraDirection);

@@ -21,7 +21,12 @@ BlockEntity::BlockEntity(BlockType p_Type, int p_X, int p_Y, int p_Columns, int 
 	m_AnimatingMovement(false),
 	m_ResetHeight(false),
 	m_Destroyed(false),
-	m_PendingPosition(false)
+	m_PendingPosition(false),
+	m_MovementDelay(0.f),
+	m_PendingX(0),
+	m_PendingY(0),
+	m_ScaleStep(0.f),
+	m_ScaleTimer(0.f)
 {
 	Logger(Util::LogLevel::Debug, "Creating BlockEntity of type '%d' at %dx%d.", m_Type, m_X, m_Y);
 }

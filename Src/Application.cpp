@@ -75,7 +75,7 @@ void Application::Init(int p_WindowWidth, int p_WindowHeight, const std::string&
 	Util::Utils::AllocateConsole(p_WindowTitle);
 	Util::Log::GetInstance()->Init(Util::LogLevel::All, "RoPaSci", false);
 #else
-	Util::Log::GetInstance()->Init(Util::LogLevel::Warn, "RoPaSci", false);
+	Util::Log::GetInstance()->Init(Util::LogLevel::All, "RoPaSci", false);
 #endif
 
 	Logger(Util::LogLevel::Info, "Starting application...");
