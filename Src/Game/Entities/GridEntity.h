@@ -23,13 +23,13 @@ namespace Game
 			virtual void Update(double p_Delta) override;
 
 		public:
-			void SetActiveBlock(int p_X, int p_Y);
-			void SetHoverBlock(int p_X, int p_Y);
+			void SetActiveBlock(uint32_t p_X, uint32_t p_Y);
+			void SetHoverBlock(uint32_t p_X, uint32_t p_Y);
 			bool Processing();
 
 		public:
 			inline BlockEntity** GetBlocks() const { return m_Blocks; }
-			inline BlockEntity* GetBlock(int p_X, int p_Y) const { return m_Blocks[p_X + (p_Y * m_Columns)]; }
+			inline BlockEntity* GetBlock(uint32_t p_X, uint32_t p_Y) const { return m_Blocks[p_X + (p_Y * m_Columns)]; }
 
 			inline uint32_t GetColumns() const { return m_Columns; }
 			inline uint32_t GetRows() const { return m_Rows; }
@@ -43,7 +43,7 @@ namespace Game
 			bool DestructionStep(bool p_Simulated = false, bool p_Filler = false);
 			void DestroyGroup(std::tuple<int, int, int, bool> p_Group, bool p_Simulated = false, bool p_Filler = false);
 			void RepopulateBlocks();
-			BlockEntity* GenerateRandomBlock(int p_X, int p_Y);
+			BlockEntity* GenerateRandomBlock(uint32_t p_X, uint32_t p_Y);
 			BlockEntity::BlockType GetRandomBlockType();
 
 		private:

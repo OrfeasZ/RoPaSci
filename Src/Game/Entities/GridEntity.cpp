@@ -24,8 +24,8 @@ GridEntity::GridEntity(uint32_t p_Columns, uint32_t p_Rows, uint32_t p_Lives) :
 
 GridEntity::~GridEntity()
 {
-	for (int i = 0; i < m_Columns; ++i)
-		for (int j = 0; j < m_Rows; ++j)
+	for (uint32_t i = 0; i < m_Columns; ++i)
+		for (uint32_t j = 0; j < m_Rows; ++j)
 			delete m_Blocks[i + (j * m_Columns)];
 
 	free(m_Blocks);
@@ -45,11 +45,11 @@ void GridEntity::Init()
 	m_Blocks = (BlockEntity**) malloc(m_Columns * m_Rows * sizeof(BlockEntity*));
 
 	// Set our random seed
-	srand(time(NULL) + (uint32_t) m_Blocks);
+	srand((uint32_t) time(NULL) + (uint32_t) m_Blocks);
 
-	for (int j = 0; j < m_Rows; ++j)
+	for (uint32_t j = 0; j < m_Rows; ++j)
 	{
-		for (int i = 0; i < m_Columns; ++i)
+		for (uint32_t i = 0; i < m_Columns; ++i)
 		{
 			m_Blocks[i + (j * m_Columns)] = GenerateRandomBlock(i, j);
 			m_Blocks[i + (j * m_Columns)]->Init();
@@ -67,7 +67,7 @@ void GridEntity::Update(double p_Delta)
 	bool s_Animating = false;
 
 	// TODO: Turn these updates into tasks.
-	for (int i = 0; i < m_Rows * m_Columns; ++i)
+	for (uint32_t i = 0; i < m_Rows * m_Columns; ++i)
 	{
 		if (m_Blocks[i] == nullptr)
 			continue;
@@ -104,12 +104,12 @@ void GridEntity::Update(double p_Delta)
 	s_FarBottom += 0.15;
 
 	auto s_CursorPos = Rendering::MainRenderer::GetInstance()->ScreenToWorld(
-		Managers::InputManager::GetInstance()->GetCursorX(),
-		Managers::InputManager::GetInstance()->GetCursorY()
+		(int) Managers::InputManager::GetInstance()->GetCursorX(),
+		(int) Managers::InputManager::GetInstance()->GetCursorY()
 	);
 
-	int s_CurrentX = glm::floor((s_CursorPos.x - s_FarLeft) / 0.3);
-	int s_CurrentY = glm::floor((s_CursorPos.z - s_FarTop) / 0.3);
+	int s_CurrentX = (int) glm::floor((s_CursorPos.x - s_FarLeft) / 0.3);
+	int s_CurrentY = (int) glm::floor((s_CursorPos.z - s_FarTop) / 0.3);
 
 	if (Managers::InputManager::GetInstance()->IsMouseButtonPressed(GLFW_MOUSE_BUTTON_1))
 		SetActiveBlock(s_CurrentX, s_CurrentY);
@@ -122,7 +122,7 @@ bool GridEntity::Processing()
 	if (m_PendingDestruction)
 		return true;
 
-	for (int i = 0; i < m_Rows * m_Columns; ++i)
+	for (uint32_t i = 0; i < m_Rows * m_Columns; ++i)
 	{
 		if (m_Blocks[i] == nullptr)
 			continue;
@@ -134,7 +134,7 @@ bool GridEntity::Processing()
 	return false;
 }
 
-void GridEntity::SetActiveBlock(int p_X, int p_Y)
+void GridEntity::SetActiveBlock(uint32_t p_X, uint32_t p_Y)
 {
 	if (p_X < 0 || p_X >= m_Columns || p_Y < 0 || p_Y >= m_Rows)
 	{
@@ -190,7 +190,7 @@ void GridEntity::SetActiveBlock(int p_X, int p_Y)
 	m_ActiveBlock->Active(true);
 }
 
-void GridEntity::SetHoverBlock(int p_X, int p_Y)
+void GridEntity::SetHoverBlock(uint32_t p_X, uint32_t p_Y)
 {
 	if (p_X < 0 || p_X >= m_Columns || p_Y < 0 || p_Y >= m_Rows)
 	{
@@ -223,12 +223,12 @@ bool GridEntity::DestructionStep(bool p_Simulated /* = false */, bool p_Filler /
 
 	// TODO: Split this to tasks.
 	// Search for horizontal groups.
-	for (int j = 0; j < m_Rows; ++j) 
+	for (uint32_t j = 0; j < m_Rows; ++j)
 	{
 		// We always have 1 match since we start with a single block.
 		int s_MatchedBlocks = 1;
 
-		for (int i = 0; i < m_Columns; ++i) 
+		for (uint32_t i = 0; i < m_Columns; ++i)
 		{
 			bool s_Check = false;
 
@@ -261,12 +261,12 @@ bool GridEntity::DestructionStep(bool p_Simulated /* = false */, bool p_Filler /
 	}
 
 	// Do the same for vertical groups.
-	for (int i = 0; i < m_Columns; ++i) 
+	for (uint32_t i = 0; i < m_Columns; ++i)
 	{
 		// Start with a single tile, cluster of 1
 		int s_MatchedBlocks = 1;
 
-		for (int j = 0; j < m_Rows; ++j) 
+		for (uint32_t j = 0; j < m_Rows; ++j)
 		{
 			bool s_Check = false;
 
@@ -364,10 +364,10 @@ void GridEntity::DestroyGroup(std::tuple<int, int, int, bool> p_Group, bool p_Si
 
 	// Destroy all neighboring blocks.
 	int s_StartX = std::get<0>(p_Group) - 3;
-	int s_EndX = std::get<3>(p_Group) ? (std::get<0>(p_Group) + std::get<2>(p_Group) + 4) : std::get<0>(p_Group) + 4;
+	uint32_t s_EndX = std::get<3>(p_Group) ? (std::get<0>(p_Group) +std::get<2>(p_Group) +4) : std::get<0>(p_Group) +4;
 
 	int s_StartY = std::get<1>(p_Group) - 3;
-	int s_EndY = !std::get<3>(p_Group) ? (std::get<1>(p_Group) + std::get<2>(p_Group) + 4) : std::get<1>(p_Group) + 4;
+	uint32_t s_EndY = !std::get<3>(p_Group) ? (std::get<1>(p_Group) +std::get<2>(p_Group) +4) : std::get<1>(p_Group) +4;
 	
 	if (s_StartX < 0)
 		s_StartX = 0;
@@ -386,15 +386,15 @@ void GridEntity::DestroyGroup(std::tuple<int, int, int, bool> p_Group, bool p_Si
 	uint32_t s_LevelTwoThreeDestroyed = 0;
 	uint32_t s_BombsDestroyed = 0;
 
-	for (int y = s_StartY; y < s_EndY; ++y)
+	for (uint32_t y = s_StartY; y < s_EndY; ++y)
 	{
-		for (int x = s_StartX; x < s_EndX; ++x)
+		for (uint32_t x = s_StartX; x < s_EndX; ++x)
 		{
 			if (m_Blocks[x + (y * m_Columns)] == nullptr)
 				continue;
 
-			if ((x <= std::get<0>(p_Group) - 2 || x >= (std::get<3>(p_Group) ? (std::get<0>(p_Group) + std::get<2>(p_Group) + 2) : std::get<0>(p_Group) + 2)) &&
-				(y <= std::get<1>(p_Group) - 2 || y >= (!std::get<3>(p_Group) ? (std::get<1>(p_Group) + std::get<2>(p_Group) + 2) : std::get<1>(p_Group) + 2)))
+			if (((int) x <= std::get<0>(p_Group) - 2 || (int) x >= (std::get<3>(p_Group) ? (std::get<0>(p_Group) + std::get<2>(p_Group) + 2) : std::get<0>(p_Group) + 2)) &&
+				((int) y <= std::get<1>(p_Group) - 2 || (int) y >= (!std::get<3>(p_Group) ? (std::get<1>(p_Group) + std::get<2>(p_Group) + 2) : std::get<1>(p_Group) + 2)))
 			{
 				// Outer two.
 				if ((s_BlockType == BlockEntity::Rock && m_Blocks[x + (y * m_Columns)]->Type() == BlockEntity::Scissors) || 
@@ -448,9 +448,9 @@ void GridEntity::RepopulateBlocks()
 	memset(s_ColumnBlocks, 0x00, sizeof(int) * m_Columns);
 
 	// Go from bottom to top and shift blocks.
-	for (int y = m_Rows - 1; y >= 0; --y)
+	for (int y = (int) m_Rows - 1; y >= 0; --y)
 	{
-		for (int x = 0; x < m_Columns; ++x)
+		for (uint32_t x = 0; x < m_Columns; ++x)
 		{
 			auto s_CurrentBlock = m_Blocks[x + (y * m_Columns)];
 
@@ -494,7 +494,7 @@ void GridEntity::RepopulateBlocks()
 	delete [] s_ColumnBlocks;
 }
 
-BlockEntity* GridEntity::GenerateRandomBlock(int p_X, int p_Y)
+BlockEntity* GridEntity::GenerateRandomBlock(uint32_t p_X, uint32_t p_Y)
 {
 	return new BlockEntity(GetRandomBlockType(), p_X, p_Y, m_Columns, m_Rows);
 }

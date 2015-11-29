@@ -53,7 +53,7 @@ bool UIRenderer::Init()
 		return false;
 	}
 
-	if (FT_New_Memory_Face(Application::GetInstance()->GetFreeType(), (const FT_Byte*) s_FontData.data(), s_FontData.size(), 0, &m_MainFontFace))
+	if (FT_New_Memory_Face(Application::GetInstance()->GetFreeType(), (const FT_Byte*) s_FontData.data(), (FT_Long) s_FontData.size(), 0, &m_MainFontFace))
 	{
 		Logger(Util::LogLevel::Error, "Could not parse main font face.");
 		return false;

@@ -90,10 +90,10 @@ void Main::Update(double p_Delta)
 
 			// Increment or decrement move count based on input.
 			if (Managers::InputManager::GetInstance()->IsKeyboardKeyPressed(GLFW_KEY_LEFT) && m_SelectedMoves > 1.f)
-				m_SelectedMoves -= 0.05;
+				m_SelectedMoves -= 0.05f;
 
 			if (Managers::InputManager::GetInstance()->IsKeyboardKeyPressed(GLFW_KEY_RIGHT) && m_SelectedMoves < 99.f)
-				m_SelectedMoves += 0.05;
+				m_SelectedMoves += 0.05f;
 
 			break;
 		}
@@ -131,7 +131,7 @@ void Main::Render(double p_Delta)
 {
 	// Render the UI.
 	// Main UI Overlay.
-	float s_Size = Application::GetInstance()->WindowHeight() * 1.146153846153846;
+	float s_Size = Application::GetInstance()->WindowHeight() * 1.1461538f;
 
 	Rendering::Textures::Texture* s_MainTexture = nullptr;
 
@@ -152,37 +152,37 @@ void Main::Render(double p_Delta)
 
 	Rendering::UIRenderer::GetInstance()->RenderTexture(
 		s_MainTexture,
-		(Application::GetInstance()->WindowHeight() - s_Size) / 2,
-		(Application::GetInstance()->WindowWidth() - s_Size) / 2,
-		((Application::GetInstance()->WindowHeight() - s_Size) / 2) + s_Size,
-		((Application::GetInstance()->WindowWidth() - s_Size) / 2) + s_Size
+		(Application::GetInstance()->WindowHeight() - s_Size) / 2.f,
+		(Application::GetInstance()->WindowWidth() - s_Size) / 2.f,
+		((Application::GetInstance()->WindowHeight() - s_Size) / 2.f) + s_Size,
+		((Application::GetInstance()->WindowWidth() - s_Size) / 2.f) + s_Size
 	);
 
 	// Borders. Note: VERY HACKY
-	if ((Application::GetInstance()->WindowWidth() - s_Size) / 2 > 0)
+	if ((Application::GetInstance()->WindowWidth() - s_Size) / 2.f > 0.f)
 	{
 		Rendering::UIRenderer::GetInstance()->RenderTexture(
 			(Rendering::Textures::Texture*) Managers::TextureManager::GetInstance()->GetTexture("ui_background"),
-			0,
-			0,
-			Application::GetInstance()->WindowHeight(),
-			(Application::GetInstance()->WindowWidth() - s_Size) / 2
+			0.f,
+			0.f,
+			(float) Application::GetInstance()->WindowHeight(),
+			(Application::GetInstance()->WindowWidth() - s_Size) / 2.f
 		);
 
 		Rendering::UIRenderer::GetInstance()->RenderTexture(
 			(Rendering::Textures::Texture*) Managers::TextureManager::GetInstance()->GetTexture("ui_background"),
-			0,
-			((Application::GetInstance()->WindowWidth() - s_Size) / 2) + s_Size,
-			Application::GetInstance()->WindowHeight(),
-			Application::GetInstance()->WindowWidth()
+			0.f,
+			((Application::GetInstance()->WindowWidth() - s_Size) / 2.f) + s_Size,
+			(float) Application::GetInstance()->WindowHeight(),
+			(float) Application::GetInstance()->WindowWidth()
 		);
 	}
 
 	// Score and lives text.
-	float s_ScoreLeftOffset = ((Application::GetInstance()->WindowWidth() - s_Size) / 2) + (s_Size * 0.13);
-	float s_LivesLeftOffset = ((Application::GetInstance()->WindowWidth() - s_Size) / 2) + (s_Size * 0.88);
+	float s_ScoreLeftOffset = ((Application::GetInstance()->WindowWidth() - s_Size) / 2.f) + (s_Size * 0.13f);
+	float s_LivesLeftOffset = ((Application::GetInstance()->WindowWidth() - s_Size) / 2.f) + (s_Size * 0.88f);
 
-	float s_TextTopOffset = ((Application::GetInstance()->WindowHeight() - s_Size) / 2) + (s_Size * 0.914);
+	float s_TextTopOffset = ((Application::GetInstance()->WindowHeight() - s_Size) / 2.f) + (s_Size * 0.914f);
 
 	float s_TextSize = ((s_Size - 250.f) / 350.f) / 10.f;
 
@@ -200,10 +200,10 @@ void Main::Render(double p_Delta)
 	{
 		uint32_t s_MovesNumber = (uint32_t) round(m_SelectedMoves);
 
-		float s_MovesLeftPercentage = s_MovesNumber < 10 ? 0.58 : 0.57;
+		float s_MovesLeftPercentage = s_MovesNumber < 10 ? 0.58f : 0.57f;
 
-		float s_MovesLeftOffset = ((Application::GetInstance()->WindowWidth() - s_Size) / 2) + (s_Size * s_MovesLeftPercentage);
-		float s_MovesTopOffset = ((Application::GetInstance()->WindowHeight() - s_Size) / 2) + (s_Size * 0.445);
+		float s_MovesLeftOffset = ((Application::GetInstance()->WindowWidth() - s_Size) / 2.f) + (s_Size * s_MovesLeftPercentage);
+		float s_MovesTopOffset = ((Application::GetInstance()->WindowHeight() - s_Size) / 2.f) + (s_Size * 0.445f);
 
 		char s_Moves[128];
 		sprintf(s_Moves, "%d", s_MovesNumber);
