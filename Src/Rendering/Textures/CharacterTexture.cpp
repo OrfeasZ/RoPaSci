@@ -25,11 +25,11 @@ CharacterTexture* CharacterTexture::Create(FT_Face p_Face, char p_Char)
 
 	s_Desc.Target = GL_TEXTURE_2D;
 	s_Desc.Level = 0;
-	s_Desc.InternalFormat = GL_RED;
+	s_Desc.InternalFormat = GL_ALPHA8;
 	s_Desc.Width = p_Face->glyph->bitmap.width;
 	s_Desc.Height = p_Face->glyph->bitmap.rows;
 	s_Desc.Border = 0;
-	s_Desc.Format = GL_RED;
+	s_Desc.Format = GL_ALPHA;
 	s_Desc.Type = GL_UNSIGNED_BYTE;
 	s_Desc.Data = p_Face->glyph->bitmap.buffer;
 
