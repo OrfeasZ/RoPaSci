@@ -93,6 +93,12 @@
     <ClCompile Include="Src\Rendering\UIRenderer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Src\Game\Entities\ScoringEntity.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Game\Entities\LifeEntity.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\Managers\ShaderManager.h">
@@ -218,6 +224,12 @@
     <ClInclude Include="Src\Rendering\UIRenderer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Src\Game\Entities\ScoringEntity.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Game\Entities\LifeEntity.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Data\pgm\paper.pgm" />
@@ -241,5 +253,8 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="Data\textures\main_ui.dds" />
+    <Image Include="Data\textures\main_ui_gameover.dds" />
+    <Image Include="Data\textures\main_ui_idle.dds" />
+    <Image Include="Data\textures\ui_background.dds" />
   </ItemGroup>
 </Project>

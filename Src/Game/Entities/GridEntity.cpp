@@ -1,6 +1,8 @@
 #include "GridEntity.h"
 
 #include "BlockEntity.h"
+#include "ScoringEntity.h"
+#include "LifeEntity.h"
 
 #include <Managers/InputManager.h>
 #include <Rendering/MainRenderer.h>
@@ -9,12 +11,14 @@
 
 using namespace Game::Entities;
 
-GridEntity::GridEntity(int p_Columns, int p_Rows) :
+GridEntity::GridEntity(uint32_t p_Columns, uint32_t p_Rows, uint32_t p_Lives) :
 	m_Columns(p_Columns),
 	m_Rows(p_Rows),
+	m_Lives(p_Lives),
 	m_ActiveBlock(nullptr),
 	m_HoverBlock(nullptr),
-	m_PendingDestruction(false)
+	m_PendingDestruction(false),
+	m_ScoringEntity(nullptr)
 {
 }
 
@@ -22,13 +26,22 @@ GridEntity::~GridEntity()
 {
 	for (int i = 0; i < m_Columns; ++i)
 		for (int j = 0; j < m_Rows; ++j)
-			delete m_Blocks[i * j];
+			delete m_Blocks[i + (j * m_Columns)];
 
 	free(m_Blocks);
+
+	if (m_ScoringEntity)
+		delete m_ScoringEntity;
+
+	if (m_LifeEntity)
+		delete m_LifeEntity;
 }
 
 void GridEntity::Init()
 {
+	m_ScoringEntity = new ScoringEntity();
+	m_LifeEntity = new LifeEntity(m_Lives);
+
 	m_Blocks = (BlockEntity**) malloc(m_Columns * m_Rows * sizeof(BlockEntity*));
 
 	// Set our random seed
@@ -40,6 +53,7 @@ void GridEntity::Init()
 		{
 			m_Blocks[i + (j * m_Columns)] = GenerateRandomBlock(i, j);
 			m_Blocks[i + (j * m_Columns)]->Init();
+			m_Blocks[i + (j * m_Columns)]->MoveToTop(j - m_Columns);
 		}
 	}
 
@@ -70,7 +84,7 @@ void GridEntity::Update(double p_Delta)
 	if (m_PendingDestruction)
 	{
 		m_PendingDestruction = false;
-		DestructionStep();
+		DestructionStep(false, true);
 		return;
 	}
 
@@ -101,6 +115,23 @@ void GridEntity::Update(double p_Delta)
 		SetActiveBlock(s_CurrentX, s_CurrentY);
 
 	SetHoverBlock(s_CurrentX, s_CurrentY);
+}
+
+bool GridEntity::Processing()
+{
+	if (m_PendingDestruction)
+		return true;
+
+	for (int i = 0; i < m_Rows * m_Columns; ++i)
+	{
+		if (m_Blocks[i] == nullptr)
+			continue;
+
+		if (m_Blocks[i]->Animating())
+			return true;
+	}
+
+	return false;
 }
 
 void GridEntity::SetActiveBlock(int p_X, int p_Y)
@@ -140,6 +171,8 @@ void GridEntity::SetActiveBlock(int p_X, int p_Y)
 
 			// Run destruction.
 			DestructionStep();
+
+			m_LifeEntity->OnLifeLost();
 
 			return;
 		}
@@ -181,7 +214,7 @@ void GridEntity::SetHoverBlock(int p_X, int p_Y)
 	m_HoverBlock->Hover(true);
 }
 
-bool GridEntity::DestructionStep(bool p_Simulated /* = false */)
+bool GridEntity::DestructionStep(bool p_Simulated /* = false */, bool p_Filler /* = false */)
 {
 	Logger(Util::LogLevel::Debug, "Running Grid Destruction.");
 
@@ -266,7 +299,7 @@ bool GridEntity::DestructionStep(bool p_Simulated /* = false */)
 
 	// Destroy blocks.
 	for (size_t i = 0; i < s_Groups.size(); ++i) 
-		DestroyGroup(s_Groups[i], p_Simulated);
+		DestroyGroup(s_Groups[i], p_Simulated, p_Filler);
 
 	if (p_Simulated)
 		return true;
@@ -280,7 +313,7 @@ bool GridEntity::DestructionStep(bool p_Simulated /* = false */)
 	return true;
 }
 
-void GridEntity::DestroyGroup(std::tuple<int, int, int, bool> p_Group, bool p_Simulated /* = false */)
+void GridEntity::DestroyGroup(std::tuple<int, int, int, bool> p_Group, bool p_Simulated /* = false */, bool p_Filler /* = false */)
 {
 	int s_ColumnOffset = 0;
 	int s_RowOffset = 0;
@@ -290,8 +323,8 @@ void GridEntity::DestroyGroup(std::tuple<int, int, int, bool> p_Group, bool p_Si
 	// Destroy the main blocks.
 	for (int j = 0; j < std::get<2>(p_Group); ++j)
 	{
-		int x = std::get<0>(p_Group) +s_ColumnOffset;
-		int y = std::get<1>(p_Group) +s_RowOffset;
+		int x = std::get<0>(p_Group) + s_ColumnOffset;
+		int y = std::get<1>(p_Group) + s_RowOffset;
 
 		if (m_Blocks[x + (y * m_Columns)] != nullptr)
 		{
@@ -303,8 +336,10 @@ void GridEntity::DestroyGroup(std::tuple<int, int, int, bool> p_Group, bool p_Si
 			else
 			{
 				// Otherwise, handle a proper block destruction along with destruction of neighboring blocks.
-				// TODO: Scoring.
 				m_Blocks[x + (y * m_Columns)]->Destroyed(true);
+
+				if (p_Filler)
+					m_ScoringEntity->OnFillDestroyed();
 			}
 
 		}
@@ -317,6 +352,10 @@ void GridEntity::DestroyGroup(std::tuple<int, int, int, bool> p_Group, bool p_Si
 
 	if (p_Simulated)
 		return;
+	
+	// TODO: Sound effect.
+	if (!p_Filler)
+		m_ScoringEntity->OnGroupDestroyed();
 
 	// Red and blue blocks don't destroy neighboring blocks.
 	if (s_BlockType == BlockEntity::Blue ||
@@ -342,6 +381,11 @@ void GridEntity::DestroyGroup(std::tuple<int, int, int, bool> p_Group, bool p_Si
 	if (s_EndY > m_Rows)
 		s_EndY = m_Rows;
 
+	uint32_t s_LevelOneMissed = 0;
+	uint32_t s_LevelOneDestroyed = 0;
+	uint32_t s_LevelTwoThreeDestroyed = 0;
+	uint32_t s_BombsDestroyed = 0;
+
 	for (int y = s_StartY; y < s_EndY; ++y)
 	{
 		for (int x = s_StartX; x < s_EndX; ++x)
@@ -349,22 +393,52 @@ void GridEntity::DestroyGroup(std::tuple<int, int, int, bool> p_Group, bool p_Si
 			if (m_Blocks[x + (y * m_Columns)] == nullptr)
 				continue;
 
-			if (s_BlockType == m_Blocks[x + (y * m_Columns)]->Type())
-				continue;
+			if ((x <= std::get<0>(p_Group) - 2 || x >= (std::get<3>(p_Group) ? (std::get<0>(p_Group) + std::get<2>(p_Group) + 2) : std::get<0>(p_Group) + 2)) &&
+				(y <= std::get<1>(p_Group) - 2 || y >= (!std::get<3>(p_Group) ? (std::get<1>(p_Group) + std::get<2>(p_Group) + 2) : std::get<1>(p_Group) + 2)))
+			{
+				// Outer two.
+				if ((s_BlockType == BlockEntity::Rock && m_Blocks[x + (y * m_Columns)]->Type() == BlockEntity::Scissors) || 
+					(s_BlockType == BlockEntity::Paper && m_Blocks[x + (y * m_Columns)]->Type() == BlockEntity::Rock) ||
+					(s_BlockType == BlockEntity::Scissors && m_Blocks[x + (y * m_Columns)]->Type() == BlockEntity::Paper))
+				{
+					m_Blocks[x + (y * m_Columns)]->Destroyed(true);
+					++s_LevelTwoThreeDestroyed;
+				}
+			}
+			else
+			{
+				// Inner one.
+				// We can't eat our opposites or ourselves.
+				if ((s_BlockType == BlockEntity::Rock && m_Blocks[x + (y * m_Columns)]->Type() == BlockEntity::Paper) ||
+					(s_BlockType == BlockEntity::Paper && m_Blocks[x + (y * m_Columns)]->Type() == BlockEntity::Scissors) ||
+					(s_BlockType == BlockEntity::Scissors && m_Blocks[x + (y * m_Columns)]->Type() == BlockEntity::Rock) || 
+					s_BlockType == m_Blocks[x + (y * m_Columns)]->Type())
+				{
+					++s_LevelOneMissed;
+					continue;
+				}
 
-			if (s_BlockType == BlockEntity::Rock && m_Blocks[x + (y * m_Columns)]->Type() == BlockEntity::Paper)
-				continue;
+				// Did we hit a bomb?
+				if (m_Blocks[x + (y * m_Columns)]->Type() == BlockEntity::Bomb)
+					++s_BombsDestroyed;
+				else
+					++s_LevelOneDestroyed;
 
-			if (s_BlockType == BlockEntity::Paper && m_Blocks[x + (y * m_Columns)]->Type() == BlockEntity::Scissors)
-				continue;
-
-			if (s_BlockType == BlockEntity::Scissors && m_Blocks[x + (y * m_Columns)]->Type() == BlockEntity::Rock)
-				continue;
-
-			// TODO
-			// TODO: Scoring.
-			m_Blocks[x + (y * m_Columns)]->Destroyed(true);
+				m_Blocks[x + (y * m_Columns)]->Destroyed(true);
+			}
 		}
+	}
+
+	if (p_Filler)
+	{
+		// We ignore bombs here.
+		m_ScoringEntity->OnFillDestroyed(s_LevelOneDestroyed + s_LevelTwoThreeDestroyed);
+	}
+	else
+	{
+		m_ScoringEntity->OnLevelOneDestroyed(s_LevelOneDestroyed, s_LevelOneMissed);
+		m_ScoringEntity->OnLevelTwoThreeDestroyed(s_LevelTwoThreeDestroyed);
+		m_ScoringEntity->OnBombsDestroyed(s_BombsDestroyed);
 	}
 }
 

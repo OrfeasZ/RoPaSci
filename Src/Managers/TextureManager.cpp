@@ -57,6 +57,12 @@ bool TextureManager::Init()
 	if (!PrecacheDDSTexture("main_ui"))
 		return false;
 
+	if (!PrecacheDDSTexture("main_ui_idle"))
+		return false;
+
+	if (!PrecacheDDSTexture("main_ui_gameover"))
+		return false;
+
 	if (!PrecacheDDSTexture("ui_background"))
 		return false;
 

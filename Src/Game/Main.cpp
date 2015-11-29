@@ -10,6 +10,8 @@
 
 #include <Game/Entities/GridEntity.h>
 #include <Game/Entities/BlockEntity.h>
+#include <Game/Entities/ScoringEntity.h>
+#include <Game/Entities/LifeEntity.h>
 
 using namespace Game;
 
@@ -32,29 +34,30 @@ void Main::DestroyInstance()
 	m_Instance = nullptr;
 }
 
-Main::Main()
+Main::Main() :
+	m_GridEntity(nullptr),
+	m_State(Main::IdleStart),
+	m_SelectedMoves(0.f)
 {
 
 }
 
 Main::~Main()
 {
+	if (m_GridEntity)
+		delete m_GridEntity;
 
+	m_GridEntity = nullptr;
 }
-
-static Entities::GridEntity* s_Entity;
 
 bool Main::Init()
 {
 	if (!Managers::ModelManager::GetInstance()->PreCacheModel("GameBlock"))
 		return false; 
-	
-	glfwSetWindowSize(Application::GetInstance()->GetWindow(), 750, 600);
 
-	// TODO: REMOVE THIS TEST CODE
-	s_Entity = new Entities::GridEntity(15, 12);
-	s_Entity->Init();
-	// TEST CODE END
+	m_State = Main::IdleStart;
+	m_GridEntity = nullptr;
+	m_SelectedMoves = 10.f;
 
 	return true;
 }
@@ -68,7 +71,60 @@ void Main::Update(double p_Delta)
 		return;
 	}
 
-	s_Entity->Update(p_Delta);
+	switch (m_State)
+	{
+		case Main::IdleStart:
+		{
+			// Start the game if B is pressed.
+			if (Managers::InputManager::GetInstance()->IsKeyboardKeyPressed(GLFW_KEY_B))
+			{
+				if (m_GridEntity)
+					delete m_GridEntity;
+
+				m_GridEntity = new Entities::GridEntity(15, 12, (uint32_t) round(m_SelectedMoves));
+				m_GridEntity->Init();
+
+				m_State = Main::Playing;
+				break;
+			}
+
+			// Increment or decrement move count based on input.
+			if (Managers::InputManager::GetInstance()->IsKeyboardKeyPressed(GLFW_KEY_LEFT) && m_SelectedMoves > 1.f)
+				m_SelectedMoves -= 0.05;
+
+			if (Managers::InputManager::GetInstance()->IsKeyboardKeyPressed(GLFW_KEY_RIGHT) && m_SelectedMoves < 99.f)
+				m_SelectedMoves += 0.05;
+
+			break;
+		}
+
+		case Main::Playing:
+		{
+			m_GridEntity->Update(p_Delta);
+
+			// Check if we've lost the game.
+			if (!m_GridEntity->Processing() && m_GridEntity->GetLifeEntity() && m_GridEntity->GetLifeEntity()->GetLives() <= 0)
+				m_State = Main::GameOver;
+
+			break;
+		}
+
+		case Main::GameOver:
+		{
+			if (Managers::InputManager::GetInstance()->IsKeyboardKeyPressed(GLFW_KEY_B))
+			{
+				if (m_GridEntity)
+					delete m_GridEntity;
+
+				m_GridEntity = new Entities::GridEntity(15, 12, (uint32_t) round(m_SelectedMoves));
+				m_GridEntity->Init();
+
+				m_State = Main::Playing;
+			}
+
+			break;
+		}
+	}
 }
 
 void Main::Render(double p_Delta)
@@ -77,8 +133,25 @@ void Main::Render(double p_Delta)
 	// Main UI Overlay.
 	float s_Size = Application::GetInstance()->WindowHeight() * 1.146153846153846;
 
+	Rendering::Textures::Texture* s_MainTexture = nullptr;
+
+	switch (m_State)
+	{
+	case Main::IdleStart:
+		s_MainTexture = (Rendering::Textures::Texture*) Managers::TextureManager::GetInstance()->GetTexture("main_ui_idle");
+		break;
+
+	case Main::Playing:
+		s_MainTexture = (Rendering::Textures::Texture*) Managers::TextureManager::GetInstance()->GetTexture("main_ui");
+		break;
+
+	case Main::GameOver:
+		s_MainTexture = (Rendering::Textures::Texture*) Managers::TextureManager::GetInstance()->GetTexture("main_ui_gameover");
+		break;
+	}
+
 	Rendering::UIRenderer::GetInstance()->RenderTexture(
-		(Rendering::Textures::Texture*) Managers::TextureManager::GetInstance()->GetTexture("main_ui"),
+		s_MainTexture,
 		(Application::GetInstance()->WindowHeight() - s_Size) / 2,
 		(Application::GetInstance()->WindowWidth() - s_Size) / 2,
 		((Application::GetInstance()->WindowHeight() - s_Size) / 2) + s_Size,
@@ -105,13 +178,36 @@ void Main::Render(double p_Delta)
 		);
 	}
 
-	float s_ScoreLeft = ((Application::GetInstance()->WindowWidth() - s_Size) / 2) + (s_Size * 0.13);
-	float s_MovesLeft = ((Application::GetInstance()->WindowWidth() - s_Size) / 2) + (s_Size * 0.88);
+	// Score and lives text.
+	float s_ScoreLeftOffset = ((Application::GetInstance()->WindowWidth() - s_Size) / 2) + (s_Size * 0.13);
+	float s_LivesLeftOffset = ((Application::GetInstance()->WindowWidth() - s_Size) / 2) + (s_Size * 0.88);
 
-	float s_TextTop = ((Application::GetInstance()->WindowHeight() - s_Size) / 2) + (s_Size * 0.914);
+	float s_TextTopOffset = ((Application::GetInstance()->WindowHeight() - s_Size) / 2) + (s_Size * 0.914);
 
 	float s_TextSize = ((s_Size - 250.f) / 350.f) / 10.f;
 
-	Rendering::UIRenderer::GetInstance()->RenderText("999999", s_ScoreLeft, s_TextTop, s_TextSize, glm::vec3(1.0, 1.0, 1.0));
-	Rendering::UIRenderer::GetInstance()->RenderText("999", s_MovesLeft, s_TextTop, s_TextSize, glm::vec3(1.0, 1.0, 1.0));
+	char s_Score[128];
+	sprintf(s_Score, "%d", m_GridEntity ? (m_GridEntity->GetScoringEntity() ? m_GridEntity->GetScoringEntity()->GetScore() : 0) : 0);
+
+	char s_Lives[128];
+	sprintf(s_Lives, "%d", m_GridEntity ? (m_GridEntity->GetLifeEntity() ? m_GridEntity->GetLifeEntity()->GetLives() : 0) : 0);
+
+	Rendering::UIRenderer::GetInstance()->RenderText(s_Score, s_ScoreLeftOffset, s_TextTopOffset, s_TextSize, glm::vec3(1.0, 1.0, 1.0));
+	Rendering::UIRenderer::GetInstance()->RenderText(s_Lives, s_LivesLeftOffset, s_TextTopOffset, s_TextSize, glm::vec3(1.0, 1.0, 1.0));
+
+	// Moves text.
+	if (m_State == Main::IdleStart)
+	{
+		uint32_t s_MovesNumber = (uint32_t) round(m_SelectedMoves);
+
+		float s_MovesLeftPercentage = s_MovesNumber < 10 ? 0.58 : 0.57;
+
+		float s_MovesLeftOffset = ((Application::GetInstance()->WindowWidth() - s_Size) / 2) + (s_Size * s_MovesLeftPercentage);
+		float s_MovesTopOffset = ((Application::GetInstance()->WindowHeight() - s_Size) / 2) + (s_Size * 0.445);
+
+		char s_Moves[128];
+		sprintf(s_Moves, "%d", s_MovesNumber);
+
+		Rendering::UIRenderer::GetInstance()->RenderText(s_Moves, s_MovesLeftOffset, s_MovesTopOffset, s_TextSize, glm::vec3(1.0, 1.0, 1.0));
+	}
 }

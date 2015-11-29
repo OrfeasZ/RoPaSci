@@ -4,8 +4,21 @@
 
 namespace Game
 {
+	namespace Entities
+	{
+		class GridEntity;
+	}
+
 	class Main
 	{
+	public:
+		enum GameState
+		{
+			IdleStart,
+			Playing,
+			GameOver
+		};
+
 	public:
 		static Main* GetInstance();
 		static void DestroyInstance();
@@ -21,5 +34,10 @@ namespace Game
 		bool Init();
 		void Update(double p_Delta);
 		void Render(double p_Delta);
+
+	protected:
+		Entities::GridEntity* m_GridEntity;
+		GameState m_State;
+		float m_SelectedMoves;
 	};
 }
