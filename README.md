@@ -1,5 +1,5 @@
 # RoPaSci II
-RoPaSci II is a simple "match-3" game implementation in a custom multi-platform game engine utilizing OpenGL for rendering. It is written in C++, and is designed with performance and scalability in-mind.
+RoPaSci II is a simple "match-3" game implementation in a custom multi-platform game engine utilizing OpenGL for rendering. It is written in C++, and is designed with performance and scalability in-mind. This project was initially developed as part of an assignment for the Graphics course at University of Ioannina.
 
 ## Supported Platforms
 - Windows
